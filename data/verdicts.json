@@ -1,0 +1,224 @@
+{
+  "soloVerdicts": {
+    "the_architect": {
+      "low": {
+        "id": "the_architect_low",
+        "headlineStamp": "MAIN-ROAD MASTERPLANNER",
+        "heat": 1,
+        "compliment": "Your exit routes are clean, sensible and shockingly stress-free.",
+        "roast": "You obey every traffic light in an open-world sandbox and still check your mirrors."
+      },
+      "mid": {
+        "id": "the_architect_mid",
+        "headlineStamp": "BLUEPRINT OPERATOR",
+        "heat": 3,
+        "compliment": "You read three steps ahead while everyone else is still opening the map.",
+        "roast": "You paused a 140 GB install just to reorganize your desktop icons by genre."
+      },
+      "high": {
+        "id": "the_architect_high",
+        "headlineStamp": "FIVE-FLAME HEIST STRATEGIST",
+        "heat": 5,
+        "compliment": "You could spend a decade planning the getaway, skip the tutorial, and clear the map spotless.",
+        "roast": "Your idea of relaxing is color-coding a contingency tree for a Sunday grocery run."
+      }
+    },
+    "the_lone_oracle": {
+      "low": {
+        "id": "the_lone_oracle_low",
+        "headlineStamp": "QUIET COMPASS",
+        "heat": 2,
+        "compliment": "Calm, grounded intuition keeps you right where you need to be.",
+        "roast": "You watched the whole opening cutscene without touching the skip button once."
+      },
+      "mid": {
+        "id": "the_lone_oracle_mid",
+        "headlineStamp": "OFF-RADAR SEER",
+        "heat": 3,
+        "compliment": "You spot the twist three scenes early and pack snacks for the reveal.",
+        "roast": "You mute the lobby mic, predict the exact boss phase, and say nothing until after."
+      },
+      "high": {
+        "id": "the_lone_oracle_high",
+        "headlineStamp": "GHOST-SIGNAL PROPHET",
+        "heat": 5,
+        "compliment": "Your hunches hit secret warps nobody else even knew existed on the cartridge.",
+        "roast": "You ignored every glowing waypoint marker and somehow unlocked the true ending first."
+      }
+    },
+    "the_dispatcher": {
+      "low": {
+        "id": "the_dispatcher_low",
+        "headlineStamp": "CERTIFIED SQUAD CAPTAIN",
+        "heat": 1,
+        "compliment": "You turn messy group chats into actual plans people show up to on time.",
+        "roast": "You are the only player in co-op who actually reads the mission briefing aloud."
+      },
+      "mid": {
+        "id": "the_dispatcher_mid",
+        "headlineStamp": "OBJECTIVE CLEARED // CLOUT +",
+        "heat": 3,
+        "compliment": "Sharp logistics with real social radar: your crew moves like a synced speedrun.",
+        "roast": "You brought a shared spreadsheet to a casual Friday hangout and somehow got applause."
+      },
+      "high": {
+        "id": "the_dispatcher_high",
+        "headlineStamp": "FIVE-FLAME COMMANDER",
+        "heat": 4,
+        "compliment": "You orchestrate wild, unconventional squad plays that look rehearsed from frame one.",
+        "roast": "Even your spontaneous detours have a backup rally point and an ETA pinned in chat."
+      }
+    },
+    "the_anchor": {
+      "low": {
+        "id": "the_anchor_low",
+        "headlineStamp": "SQUAD SAFEHOUSE",
+        "heat": 1,
+        "compliment": "You read the room effortlessly and keep every lobby feeling like home base.",
+        "roast": "You carry extra healing items for teammates who sprint straight into every puddle."
+      },
+      "mid": {
+        "id": "the_anchor_mid",
+        "headlineStamp": "STEADY SIGNAL KEEPER",
+        "heat": 3,
+        "compliment": "Warm instinct and reliable timing make you the glue when plans wobble.",
+        "roast": "Everyone drops different pins on the map and somehow still orbits back to your snack bag."
+      },
+      "high": {
+        "id": "the_anchor_high",
+        "headlineStamp": "RARE VIBE GUARDIAN",
+        "heat": 4,
+        "compliment": "You blend unexpected instincts with total loyalty, pulling off clutch saves on feel.",
+        "roast": "You waited twelve years for the sequel with zero complaints and still brought friends pizza."
+      }
+    },
+    "the_rogue_tactician": {
+      "low": {
+        "id": "the_rogue_tactician_low",
+        "headlineStamp": "CALCULATED DETOUR",
+        "heat": 2,
+        "compliment": "Clever shortcuts keep you moving fast without ever losing control of the wheel.",
+        "roast": "You call it improvising, even though you mentally checked three backup exits first."
+      },
+      "mid": {
+        "id": "the_rogue_tactician_mid",
+        "headlineStamp": "GLITCH-RUN INVENTOR",
+        "heat": 4,
+        "compliment": "You bend the rules of an ordinary afternoon into a highlight reel that actually works.",
+        "roast": "You refused to follow the road, clipped across a grassy hill, and arrived four minutes early."
+      },
+      "high": {
+        "id": "the_rogue_tactician_high",
+        "headlineStamp": "FIVE-FLAME IMPROVISER",
+        "heat": 5,
+        "compliment": "Pure galaxy-brain audacity: absurd lines that make zero sense until they win.",
+        "roast": "You treated a 200 GB patch download as a personal challenge to invent a new hobby."
+      }
+    },
+    "the_free_agent": {
+      "low": {
+        "id": "the_free_agent_low",
+        "headlineStamp": "BREEZY DRIFTER",
+        "heat": 2,
+        "compliment": "Unbothered, curious and immune to overthinking—you always find the fun pocket.",
+        "roast": "You started the main story quest, spotted a cool seagull, and forgot the plot."
+      },
+      "mid": {
+        "id": "the_free_agent_mid",
+        "headlineStamp": "SIDE-QUEST MENACE",
+        "heat": 4,
+        "compliment": "Pure curiosity drags you into stories nobody else on the map gets to witness.",
+        "roast": "Ignored the main objective for six hours straight, befriended a stray pelican, zero regrets."
+      },
+      "high": {
+        "id": "the_free_agent_high",
+        "headlineStamp": "OFF-MAP LEGEND",
+        "heat": 5,
+        "compliment": "Unpredictable in the best way—you turn empty corners of the world into folklore.",
+        "roast": "Your minimap is turned off, your quest log has 94 open tabs, and you are thriving."
+      }
+    },
+    "the_plot_twister": {
+      "low": {
+        "id": "the_plot_twister_low",
+        "headlineStamp": "LIGHTNING PLANNER",
+        "heat": 2,
+        "compliment": "You sprinkle just enough surprise into group plans to keep everyone smiling.",
+        "roast": "You casually suggest a 'quick five-minute detour' that everybody secretly loves."
+      },
+      "mid": {
+        "id": "the_plot_twister_mid",
+        "headlineStamp": "CO-OP CHAOS ENGINEER",
+        "heat": 4,
+        "compliment": "Sharp wit plus bold timing: you turn routine hangouts into instant group lore.",
+        "roast": "You voted to change the lobby map at 0:01 on the countdown and got away with it."
+      },
+      "high": {
+        "id": "the_plot_twister_high",
+        "headlineStamp": "FIVE-FLAME PLOT DRIVER",
+        "heat": 5,
+        "compliment": "Mastermind of iconic group detours—nobody knows how you pulled the strings.",
+        "roast": "Half the lobby thinks it was their idea, and you already planned the sequel detour."
+      }
+    },
+    "the_spark": {
+      "low": {
+        "id": "the_spark_low",
+        "headlineStamp": "MAIN-ROAD AUX LEGEND",
+        "heat": 2,
+        "compliment": "Infectious energy makes every crew immediately brighter the second you join.",
+        "roast": "You stop at red lights in open-world games, yet everyone still trusts you with the aux cord."
+      },
+      "mid": {
+        "id": "the_spark_mid",
+        "headlineStamp": "TURBO LOBBY IGNITER",
+        "heat": 4,
+        "compliment": "First to say 'trust me' and somehow turn a quiet night into a classic highlight.",
+        "roast": "You hit Ready Up before anyone picked their loadout and dragged the squad into glory."
+      },
+      "high": {
+        "id": "the_spark_high",
+        "headlineStamp": "FIVE-FLAME WILDCARD",
+        "heat": 5,
+        "compliment": "Electric, fearless and wildly original—you create the moments people retell for years.",
+        "roast": "Zero tutorial, full throttle, maxed soundtrack volume, somehow zero scratches on arrival."
+      }
+    }
+  },
+  "packLines": {
+    "neon_coast": {
+      "the_architect": "Boardwalk scout report: already memorized every tide chart and rooftop zip-line.",
+      "the_lone_oracle": "Coastline signal: found the secret sunset lookout ten minutes before golden hour.",
+      "the_dispatcher": "Harbor briefing: got the whole squad onto the midnight ferry with iced sodas in hand.",
+      "the_anchor": "Sunset strip note: kept the convoy together from the roller rink to dawn waffles.",
+      "the_rogue_tactician": "Pier ledger: traded one arcade token into VIP rooftop access by midnight.",
+      "the_free_agent": "Beachfront log: skipped the main rally and somehow won a cassette from a pelican.",
+      "the_plot_twister": "Neon strip rumor: turned a stalled tram ride into the best trivia night on the coast.",
+      "the_spark": "Promenade dispatch: claimed the aux cable at midnight and owned the entire pier."
+    },
+    "campus_chaos": {
+      "the_architect": "Library dossier: claimed the single working power outlet two weeks before finals.",
+      "the_lone_oracle": "Lecture note: predicted all three essay prompts purely from the professor's sigh.",
+      "the_dispatcher": "Group project log: turned four blank slides into an A-minus before breakfast.",
+      "the_anchor": "Hallway dispatch: showed up to the 1 AM fire drill with snacks for the whole floor.",
+      "the_rogue_tactician": "Quad rumor: discovered an unlocked seminar room with velvet chairs and strong Wi-Fi.",
+      "the_free_agent": "Canteen bulletin: entered a random club fair booth and left with three free hoodies.",
+      "the_plot_twister": "Study group report: derailed calculus review for 40 minutes and still boosted morale.",
+      "the_spark": "Semester finale: turned a cancelled rain day into an unforgettable hallway tournament."
+    }
+  },
+  "squadRoasts": {
+    "high": {
+      "title": "CO-OP SPEEDRUN SQUAD",
+      "line": "One shared braincell running at 120 FPS. Zero friendly fire, terrifyingly synchronized."
+    },
+    "mid": {
+      "title": "CHAOTIC HEIST LOBBY",
+      "line": "Half the squad read the briefing, the other half accidentally hit eject over the coastline."
+    },
+    "low": {
+      "title": "PUBLIC LOBBY DISASTER",
+      "line": "Everyone dropped a different waypoint. Nobody reached the rendezvous, maximum entertainment."
+    }
+  }
+}

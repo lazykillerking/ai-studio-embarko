@@ -1,0 +1,238 @@
+{
+  "pack": {
+    "id": "neon_coast",
+    "slug": "neon-coast",
+    "name": "NEON COAST",
+    "description": "Sunset-synthwave coastal adventure and risk choices",
+    "visual_theme": "neon_coast",
+    "status": "published",
+    "sort_order": 2
+  },
+  "questions": [
+    {
+      "id": "nc_001",
+      "pack_id": "neon_coast",
+      "prompt": "You arrive on a glowing boardwalk with one scooter, 500 credits and no map. First move?",
+      "options": [
+        { "text": "Climb the tallest roof to scout the coast", "axes": [-2, -2, -1] },
+        { "text": "Follow the loudest rooftop bassline", "axes": [2, 2, 1] },
+        { "text": "Take the sketchiest side-quest on the pier", "axes": [2, -2, 2] },
+        { "text": "Split a coastal cab with two strangers", "axes": [-1, 2, 1] }
+      ],
+      "difficulty": "easy",
+      "tags": ["exploration", "arrival"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "nc_002",
+      "pack_id": "neon_coast",
+      "prompt": "A midnight arcade tournament offers a vintage synth bike as first prize. Your angle?",
+      "options": [
+        { "text": "Study the leaderboard patterns first", "axes": [-2, -2, -2] },
+        { "text": "Enter blind on pure button-mashing nerve", "axes": [2, -2, 2] },
+        { "text": "Form a relay team with local regulars", "axes": [-2, 2, -1] },
+        { "text": "Hype up the crowd to rattle the champ", "axes": [2, 2, 2] }
+      ],
+      "difficulty": "medium",
+      "tags": ["arcade", "competition"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "nc_003",
+      "pack_id": "neon_coast",
+      "prompt": "The harbor ferry is leaving in 90 seconds with a mysterious courier parcel aboard.",
+      "options": [
+        { "text": "Calculate the next dock and intercept it", "axes": [-2, -1, -2] },
+        { "text": "Rent a jet-skiff and chase the wake", "axes": [2, -2, 2] },
+        { "text": "Radio your spotter waiting at Pier Four", "axes": [-2, 2, -1] },
+        { "text": "Convince the harbor band to stall boarding", "axes": [2, 2, 1] }
+      ],
+      "difficulty": "medium",
+      "tags": ["harbor", "chase"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "nc_004",
+      "pack_id": "neon_coast",
+      "prompt": "A coastal storm knocks out every neon sign on Sunset Strip for ten minutes. Next move?",
+      "options": [
+        { "text": "Use the dark to map quiet shortcut alleys", "axes": [-2, -2, -2] },
+        { "text": "Watch the lightning from the empty pier", "axes": [1, -2, 2] },
+        { "text": "Keep your whole squad grouped at the cafe", "axes": [-2, 2, 1] },
+        { "text": "Start a flashlight dance circle outside", "axes": [2, 2, 2] }
+      ],
+      "difficulty": "easy",
+      "tags": ["storm", "vibe"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "nc_005",
+      "pack_id": "neon_coast",
+      "prompt": "A retired stunt driver hands you keys to a pastel coupe for a sunset rally. Priority?",
+      "options": [
+        { "text": "Inspect tire pressure and plot clean turns", "axes": [-2, -2, -2] },
+        { "text": "Trust the road feel and drift the hairpin", "axes": [2, -2, 2] },
+        { "text": "Assign a co-pilot to call every checkpoint", "axes": [-2, 2, -2] },
+        { "text": "Blast retro wave and invite two passengers", "axes": [2, 2, 2] }
+      ],
+      "difficulty": "medium",
+      "tags": ["driving", "rally"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "nc_006",
+      "pack_id": "neon_coast",
+      "prompt": "You discover a hidden rooftop radio tower broadcasting riddle coordinates. Response?",
+      "options": [
+        { "text": "Log every broadcast and decode the cipher", "axes": [-2, -2, -2] },
+        { "text": "Guess the landmark by gut and head out", "axes": [2, -2, 2] },
+        { "text": "Share the clues to crowd-solve in minutes", "axes": [-1, 2, -1] },
+        { "text": "Hijack the open mic with your own riddle", "axes": [2, 2, 1] }
+      ],
+      "difficulty": "medium",
+      "tags": ["mystery", "radio"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "nc_007",
+      "pack_id": "neon_coast",
+      "prompt": "A flashy night market vendor offers a locked mystery cassette for 200 credits.",
+      "options": [
+        { "text": "Compare serial numbers before paying", "axes": [-2, -1, -2] },
+        { "text": "Buy it instantly for the thrill of it", "axes": [2, -2, 2] },
+        { "text": "Pool credits with friends to split the lore", "axes": [-1, 2, 1] },
+        { "text": "Trade your weirdest souvenir in a barter", "axes": [2, 2, -1] }
+      ],
+      "difficulty": "easy",
+      "tags": ["market", "risk"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "nc_008",
+      "pack_id": "neon_coast",
+      "prompt": "You are scouting a treasure hunt across five palm-lined islands before dawn. Plan?",
+      "options": [
+        { "text": "Chart tide times and optimize the loop", "axes": [-2, -2, -2] },
+        { "text": "Swim straight for the glowing lighthouse", "axes": [2, -2, 2] },
+        { "text": "Split the crew across islands on walkies", "axes": [-2, 2, -2] },
+        { "text": "Follow a friendly pelican that seems wise", "axes": [2, 1, 2] }
+      ],
+      "difficulty": "medium",
+      "tags": ["islands", "quest"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "nc_009",
+      "pack_id": "neon_coast",
+      "prompt": "Your crew's beachside food truck runs out of ice right before the sunset rush. Move?",
+      "options": [
+        { "text": "Ration portions and streamline the menu", "axes": [-2, 1, -2] },
+        { "text": "Sprint solo to the marina ice locker", "axes": [1, -2, -1] },
+        { "text": "Pivot to hot churros and pitch it loud", "axes": [2, 2, 2] },
+        { "text": "Calm the line with free synth trivia", "axes": [-1, 2, 2] }
+      ],
+      "difficulty": "medium",
+      "tags": ["hustle", "teamwork"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "nc_010",
+      "pack_id": "neon_coast",
+      "prompt": "A neon blimp drops shimmering golden vouchers over the beach promenade. What now?",
+      "options": [
+        { "text": "Track the wind drift to predict landings", "axes": [-2, -2, -2] },
+        { "text": "Dive into the boardwalk scramble right away", "axes": [2, 1, 2] },
+        { "text": "Set up a two-person catch net formation", "axes": [-1, 2, -1] },
+        { "text": "Skip the rush and snag a quiet roof drop", "axes": [1, -2, 1] }
+      ],
+      "difficulty": "easy",
+      "tags": ["luck", "boardwalk"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "nc_011",
+      "pack_id": "neon_coast",
+      "prompt": "The coastal tram stalls halfway up a scenic cliff overlooking the bay. Your vibe?",
+      "options": [
+        { "text": "Check the manual override chart calmly", "axes": [-2, -1, -2] },
+        { "text": "Sketch the sunset view in peaceful silence", "axes": [-1, -2, 2] },
+        { "text": "Break the tension with tram-car trivia", "axes": [1, 2, 2] },
+        { "text": "Plan a dramatic cliff-trail hike once open", "axes": [2, 1, -1] }
+      ],
+      "difficulty": "easy",
+      "tags": ["scenic", "patience"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "nc_012",
+      "pack_id": "neon_coast",
+      "prompt": "An indie film crew asks to borrow your vintage jacket for a quick sunset shot.",
+      "options": [
+        { "text": "Agree only with a written credit and fee", "axes": [-2, -2, -2] },
+        { "text": "Lend it and improvise a cameo walk-on", "axes": [2, 2, 2] },
+        { "text": "Negotiate snacks for your entire crew", "axes": [-1, 2, -1] },
+        { "text": "Say yes just to watch how they light it", "axes": [1, -2, 1] }
+      ],
+      "difficulty": "easy",
+      "tags": ["cinema", "sunset"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "nc_013",
+      "pack_id": "neon_coast",
+      "prompt": "You unlock a secret VIP elevator at the retro hotel, with two unlabeled buttons.",
+      "options": [
+        { "text": "Listen for machinery cues before pressing", "axes": [-2, -2, -1] },
+        { "text": "Hit the top button without blinking", "axes": [2, -2, 2] },
+        { "text": "Text the squad your floor before riding", "axes": [-2, 2, 1] },
+        { "text": "Press both buttons to see what happens", "axes": [2, 2, -1] }
+      ],
+      "difficulty": "medium",
+      "tags": ["mystery", "risk"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "nc_014",
+      "pack_id": "neon_coast",
+      "prompt": "A midnight roller-rink DJ hands you the auxiliary cable for one track. What drops?",
+      "options": [
+        { "text": "A razor-sharp synth classic everyone knows", "axes": [-2, 2, -1] },
+        { "text": "A deep-cut B-side nobody expects", "axes": [2, -2, 2] },
+        { "text": "Read the skater rhythm and match the BPM", "axes": [-1, 2, 2] },
+        { "text": "A bizarre remix that splits the rink", "axes": [2, 1, -1] }
+      ],
+      "difficulty": "easy",
+      "tags": ["music", "crowd"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "nc_015",
+      "pack_id": "neon_coast",
+      "prompt": "Dawn breaks over the empty highway after an all-night festival. How do you wrap up?",
+      "options": [
+        { "text": "Take the quietest route back to rest early", "axes": [-2, -2, -2] },
+        { "text": "Catch sunrise waffles with whoever is left", "axes": [-1, 2, 2] },
+        { "text": "Detour to the cliffs for one last photo", "axes": [2, -2, 2] },
+        { "text": "Pitch an immediate morning surf session", "axes": [2, 2, -1] }
+      ],
+      "difficulty": "easy",
+      "tags": ["dawn", "finale"],
+      "status": "published",
+      "version": 1
+    }
+  ]
+}
