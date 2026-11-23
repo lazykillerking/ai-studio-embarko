@@ -790,7 +790,13 @@ export default function App() {
   const [crewAt, setCrewAt] = useState(0);
   const [crewSetup, setCrewSetup] = useState(false);
   const [setupMode, setSetupMode] = useState<'themed' | 'mixed' | 'join'>('themed');
-  const [nickname, setNickname] = useState('');
+  const [nickname, setNickname] = useState(() => {
+    try {
+      return localStorage.getItem('brainprint-nickname') || '';
+    } catch {
+      return '';
+    }
+  });
   const [crewName, setCrewName] = useState('');
 
   // Track answered question and user choice for reveal screen inspection
@@ -836,11 +842,17 @@ export default function App() {
   }, []);
 
   const loadCrew = async (code: string, nick = '') => {
+    const activeNick = (nick || nickname || localStorage.getItem('brainprint-nickname') || '').trim();
+    if (activeNick) {
+      try {
+        localStorage.setItem('brainprint-nickname', activeNick);
+      } catch { }
+    }
     await fetch(`/api/crews/${code}/join`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ deviceId: device(), nickname: nick }),
-    });
+      body: JSON.stringify({ deviceId: device(), nickname: activeNick || undefined }),
+    }).catch(() => { });
     const r = await fetch(`/api/crews/${code}?deviceId=${device()}`),
       d = await r.json();
     if (!r.ok) throw Error(d.error || 'Could not open crew');
@@ -990,9 +1002,15 @@ export default function App() {
     setBusy(true);
     setErr('');
     try {
+      const activeNick = nickname.trim();
+      if (activeNick) {
+        try {
+          localStorage.setItem('brainprint-nickname', activeNick);
+        } catch { }
+      }
       if (setupMode === 'join') {
         setCrewSetup(false);
-        await loadCrew(crewCode, nickname);
+        await loadCrew(crewCode, activeNick);
         return;
       }
       const r = await fetch('/api/crews', {
@@ -1003,7 +1021,7 @@ export default function App() {
           packId: pack,
           mode: setupMode,
           name: crewName,
-          nickname,
+          nickname: activeNick || undefined,
           exclude_question_ids: seenIds(),
         }),
       });
@@ -1011,7 +1029,7 @@ export default function App() {
       if (!r.ok) throw Error(d.error || 'Could not create crew');
       history.pushState({}, '', `/crew/${d.code}`);
       setCrewSetup(false);
-      await loadCrew(d.code, nickname);
+      await loadCrew(d.code, activeNick);
     } catch (e: any) {
       setErr(e.message);
     } finally {
@@ -1027,15 +1045,21 @@ export default function App() {
       const questions = (crew.crew?.questions || crew.questions || []) as Question[];
       const question = questions[crewAt];
       if (!question) throw new Error('Question not found');
+      const activeNick = (nickname || localStorage.getItem('brainprint-nickname') || '').trim();
       const r = await fetch(`/api/crews/${crewCode}/answer`, {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ deviceId: device(), questionId: question.id, optionIndex }),
+          body: JSON.stringify({
+            deviceId: device(),
+            questionId: question.id,
+            optionIndex,
+            nickname: activeNick || undefined,
+          }),
         }),
         d = await r.json();
       if (!r.ok) throw Error(d.error || 'Could not save answer');
       setCrewAt(d.progress ?? (crewAt + 1));
-      await loadCrew(crewCode);
+      await loadCrew(crewCode, activeNick);
     } catch (e: any) {
       setErr(e.message);
     } finally {
@@ -1873,10 +1897,11 @@ export default function App() {
                             🌟 PERFECT SYNC ({crew.board.twoPlayerSummary.perfectSyncQuestions.length}/7 SIGNALS)
                           </div>
                           <div className="crew-award-desc">
-                            Both picked identical choices on Signals{' '}
-                            {crew.board.twoPlayerSummary.perfectSyncQuestions
-                              .map((q: any) => `#${q.index}`)
-                              .join(', ')}!
+                            {crew.board.twoPlayerSummary.perfectSyncQuestions.map((ps: any, idx: number) => (
+                              <div key={idx} style={{ marginTop: idx > 0 ? '6px' : '0' }}>
+                                <strong>Signal #{ps.index}:</strong> Both agreed on "{ps.chosenText}"
+                              </div>
+                            ))}
                           </div>
                         </div>
                       )}
@@ -1888,10 +1913,12 @@ export default function App() {
                             ⚔️ SPLIT DECISIONS ({crew.board.twoPlayerSummary.splitDecisionQuestions.length}/7 SIGNALS)
                           </div>
                           <div className="crew-award-desc">
-                            Opinions diverged on Signals{' '}
-                            {crew.board.twoPlayerSummary.splitDecisionQuestions
-                              .map((q: any) => `#${q.index}`)
-                              .join(', ')}.
+                            {crew.board.twoPlayerSummary.splitDecisionQuestions.map((sd: any, idx: number) => (
+                              <div key={idx} style={{ marginTop: idx > 0 ? '6px' : '0' }}>
+                                <strong>Signal #{sd.index}:</strong>{' '}
+                                {sd.choices?.map((c: any) => `${c.nickname}: "${c.text}"`).join(' vs ')}
+                              </div>
+                            ))}
                           </div>
                         </div>
                       )}
@@ -1989,44 +2016,104 @@ export default function App() {
                   </div>
                 )}
 
-                {/* 5. Question Breakdown */}
+                {/* 5. Question Breakdown: Who Chose What */}
                 {((crew.board.questionBreakdowns?.length > 0) || (crew.board.questions?.length > 0)) && (
                   <div className="crew-section">
-                    <div className="eyebrow">SIGNAL BREAKDOWN</div>
+                    <div className="eyebrow">
+                      <span>SIGNAL BREAKDOWN</span>
+                      <span>WHO CHOSE WHAT</span>
+                    </div>
                     <div className="crew-questions-list">
                       {(crew.board.questionBreakdowns || crew.board.questions).map(
                         (q: any, i: number) => {
                           const agreement = q.agreementPercent ?? q.agreement ?? 0;
                           const isPerfect = q.isPerfectSync || agreement === 100;
+
+                          // Find what I chose and what others chose for the quick summary
+                          let myChoiceText = '';
+                          const otherChoices: { nickname: string; text: string }[] = [];
+                          q.options?.forEach((opt: any) => {
+                            opt.voters?.forEach((v: any) => {
+                              const voterIsMe = v.isMe || v.deviceId === device();
+                              if (voterIsMe) {
+                                myChoiceText = opt.text;
+                              } else {
+                                otherChoices.push({
+                                  nickname: v.nickname || 'Player',
+                                  text: opt.text,
+                                });
+                              }
+                            });
+                          });
+
                           return (
                             <div key={q.questionId || i} className="crew-q-card">
                               <div className="crew-q-header">
-                                <span className="crew-q-num">SIGNAL {i + 1}</span>
+                                <span className="crew-q-num">SIGNAL 0{i + 1}</span>
                                 <span className={`crew-q-agreement ${isPerfect ? 'perfect' : ''}`}>
                                   {isPerfect ? '🌟 PERFECT SYNC' : `${agreement}% SYNC`}
                                 </span>
                               </div>
-                              <div className="crew-q-prompt">{q.prompt}</div>
+                              <h4 className="crew-q-prompt">{q.prompt}</h4>
+
+                              {/* Quick Decision Banner */}
+                              {myChoiceText && otherChoices.length > 0 && (
+                                <div className={`crew-choice-summary-pill ${isPerfect ? 'is-sync' : 'is-split'}`}>
+                                  {isPerfect ? (
+                                    <span>
+                                      🤝 <strong>Unanimous:</strong> Everyone chose "{myChoiceText}"
+                                    </span>
+                                  ) : (
+                                    <span>
+                                      ⚔️ <strong>You:</strong> "{myChoiceText}" ·{' '}
+                                      {otherChoices.map((oc, ocIdx) => (
+                                        <span key={ocIdx}>
+                                          <strong>{oc.nickname}:</strong> "{oc.text}"{ocIdx < otherChoices.length - 1 ? ' · ' : ''}
+                                        </span>
+                                      ))}
+                                    </span>
+                                  )}
+                                </div>
+                              )}
+
+                              {/* All 4 Options List */}
                               {q.options?.length > 0 && (
                                 <div className="crew-q-options-breakdown">
                                   {q.options.map((opt: any, optIdx: number) => {
                                     const voters = opt.voters || [];
                                     const count = opt.count ?? voters.length ?? 0;
-                                    if (count === 0) return null;
                                     const hasMe = voters.some((v: any) => v.isMe || v.deviceId === device());
+                                    const otherVoters = voters.filter((v: any) => !v.isMe && v.deviceId !== device());
+                                    const isSyncMatch = hasMe && otherVoters.length > 0;
+
+                                    let rowClass = 'crew-q-opt-row';
+                                    if (count === 0) rowClass += ' no-votes';
+                                    else if (isSyncMatch) rowClass += ' is-sync-match';
+                                    else if (hasMe) rowClass += ' is-my-choice';
+                                    else rowClass += ' is-peer-choice';
+
                                     return (
-                                      <div
-                                        key={optIdx}
-                                        className={`crew-q-opt-row has-votes ${hasMe ? 'is-my-choice' : ''}`}
-                                      >
+                                      <div key={optIdx} className={rowClass}>
                                         <div className="crew-q-opt-header">
-                                          <span className="crew-q-opt-text">"{opt.text}"</span>
-                                          <span className="fine" style={{ whiteSpace: 'nowrap' }}>
-                                            {count} {count === 1 ? 'vote' : 'votes'}
-                                          </span>
+                                          <div className="crew-q-opt-main">
+                                            <span className="signal-opt-index">0{optIdx + 1}</span>
+                                            <span className="crew-q-opt-text">{opt.text}</span>
+                                          </div>
+                                          {hasMe && (
+                                            <span className={`your-choice-tag ${isSyncMatch ? 'sync-match' : ''}`}>
+                                              {isSyncMatch ? '🌟 SYNC MATCH' : 'YOUR PICK'}
+                                            </span>
+                                          )}
+                                          {!hasMe && otherVoters.length > 0 && (
+                                            <span className="peer-choice-tag">
+                                              {otherVoters.map((v: any) => v.nickname || 'Friend').join(', ')}'S PICK
+                                            </span>
+                                          )}
                                         </div>
+
                                         {voters.length > 0 && (
                                           <div className="crew-q-voter-chips">
+                                            <span className="voter-label">Voted by:</span>
                                             {voters.map((v: any, vIdx: number) => {
                                               const voterIsMe = v.isMe || v.deviceId === device();
                                               return (

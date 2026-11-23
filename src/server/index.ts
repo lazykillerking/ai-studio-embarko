@@ -215,6 +215,25 @@ export function createApp(db: Database.Database, options?: { rateLimitPerMin?: n
     res.json({ deviceId, ...state });
   });
 
+  // POST /api/crews/:code/join
+  app.post('/api/crews/:code/join', (req: Request, res: Response) => {
+    const code = String(req.params.code || '').trim().toUpperCase();
+    if (!/^[A-Z0-9]{4,12}$/.test(code)) {
+      res.status(404).json({ error: 'Invalid crew code' });
+      return;
+    }
+    const deviceId = resolveDeviceId(req, res, req.body?.deviceId);
+    const nickname = typeof req.body?.nickname === 'string' ? req.body.nickname : undefined;
+    try {
+      const state = submitCrewAnswer(db, { code, deviceId, nickname });
+      res.json({ deviceId, ...state });
+    } catch (err: unknown) {
+      const status = (err as { statusCode?: number }).statusCode ?? 400;
+      const message = err instanceof Error ? err.message : 'Failed to join crew';
+      res.status(status).json({ error: message });
+    }
+  });
+
   // POST /api/crews/:code/answer
   app.post('/api/crews/:code/answer', (req: Request, res: Response) => {
     const code = String(req.params.code || '').trim().toUpperCase();

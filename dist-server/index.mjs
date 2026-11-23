@@ -2068,6 +2068,23 @@ function createApp(db, options) {
     }
     res.json({ deviceId, ...state });
   });
+  app.post("/api/crews/:code/join", (req, res) => {
+    const code = String(req.params.code || "").trim().toUpperCase();
+    if (!/^[A-Z0-9]{4,12}$/.test(code)) {
+      res.status(404).json({ error: "Invalid crew code" });
+      return;
+    }
+    const deviceId = resolveDeviceId(req, res, req.body?.deviceId);
+    const nickname = typeof req.body?.nickname === "string" ? req.body.nickname : void 0;
+    try {
+      const state = submitCrewAnswer(db, { code, deviceId, nickname });
+      res.json({ deviceId, ...state });
+    } catch (err) {
+      const status = err.statusCode ?? 400;
+      const message = err instanceof Error ? err.message : "Failed to join crew";
+      res.status(status).json({ error: message });
+    }
+  });
   app.post("/api/crews/:code/answer", (req, res) => {
     const code = String(req.params.code || "").trim().toUpperCase();
     if (!/^[A-Z0-9]{4,12}$/.test(code)) {

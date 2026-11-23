@@ -915,6 +915,74 @@ footer {
   font-weight: 700;
 }
 
+.crew-choice-summary-pill {
+  font-size: 12px;
+  line-height: 1.5;
+  padding: 8px 12px;
+  border-radius: 4px;
+  margin: 8px 0 10px;
+}
+
+.crew-choice-summary-pill.is-sync {
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: #a7f3d0;
+}
+
+.crew-choice-summary-pill.is-split {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+}
+
+.crew-q-opt-main {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex: 1;
+}
+
+.crew-q-opt-row.is-sync-match {
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.1);
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.15);
+}
+
+.crew-q-opt-row.is-peer-choice {
+  border-color: #a855f7;
+  background: rgba(168, 85, 247, 0.08);
+}
+
+.crew-q-opt-row.no-votes {
+  opacity: 0.5;
+  background: #090e1c;
+  border-color: #162035;
+}
+
+.peer-choice-tag {
+  font: 9px 'Press Start 2P', monospace;
+  padding: 3px 6px;
+  border-radius: 3px;
+  background: rgba(168, 85, 247, 0.2);
+  color: #d8b4fe;
+  border: 1px solid #c084fc;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.your-choice-tag.sync-match {
+  background: #059669;
+  color: #ffffff;
+  border-color: #34d399;
+}
+
+.voter-label {
+  font: 10px 'JetBrains Mono', monospace;
+  color: #64748b;
+  margin-right: 2px;
+  align-self: center;
+}
+
 /* Theme Packs Section */
 .theme-packs-section {
   margin: 32px 0 16px;
