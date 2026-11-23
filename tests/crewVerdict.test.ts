@@ -14,6 +14,7 @@ import {
 } from '../src/shared/crewCommentaryBank';
 import { openDatabase, seedPacksAndQuestions } from '../src/server/db';
 import { createCrew, getCrewState, submitCrewAnswer } from '../src/server/crew';
+import { getDailySoloState, submitSoloAnswer } from '../src/server/solo';
 
 // Sample 7 questions with 3-axis vectors
 const MOCK_QUESTIONS = [
@@ -322,6 +323,44 @@ describe('Crew Verdict & Personality Roast Engine', () => {
     // Fetch again as dev2: returns the exact same cached verdict payload
     const state2 = getCrewState(db, created.code, dev2);
     expect(state2?.board?.verdict).toEqual(state1?.board?.verdict);
+
+    db.close();
+  });
+
+  it('provides a fresh set of 7 questions on replay for theme and mix packs', () => {
+    const db = openDatabase(':memory:');
+    seedPacksAndQuestions(db);
+    const dev = crypto.randomUUID();
+
+    // 1. Initial run on campus_chaos
+    const initial = getDailySoloState(db, 'campus_chaos', dev);
+    expect(initial?.questions).toHaveLength(7);
+    const initialQids = initial!.questions.map((q) => q.id);
+
+    // Complete all 7 questions
+    for (let i = 0; i < 7; i++) {
+      submitSoloAnswer(db, {
+        deviceId: dev,
+        packId: 'campus_chaos',
+        date: initial!.date,
+        questionId: initialQids[i],
+        optionIndex: 0,
+      });
+    }
+
+    const completedState = getDailySoloState(db, 'campus_chaos', dev);
+    expect(completedState?.completed).toBe(true);
+
+    // 2. Replay campus_chaos: must give a whole new set of 7 questions and reset completed
+    const replayState = getDailySoloState(db, 'campus_chaos', dev, undefined, true);
+    expect(replayState?.completed).toBe(false);
+    expect(replayState?.questions).toHaveLength(7);
+    expect(replayState?.answerRecords).toHaveLength(0);
+
+    // 3. Replay the_mix: must give 7 questions and reset completed
+    const replayMix = getDailySoloState(db, 'the_mix', dev, undefined, true);
+    expect(replayMix?.completed).toBe(false);
+    expect(replayMix?.questions).toHaveLength(7);
 
     db.close();
   });

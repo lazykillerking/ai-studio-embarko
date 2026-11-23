@@ -841,9 +841,15 @@ export default function App() {
 
   useEffect(() => {
     const tick = () => {
-      const now = new Date(),
-        next = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1);
-      setResetSeconds(Math.max(0, Math.ceil((next - now.getTime()) / 1000)));
+      const now = new Date();
+      // Indian Standard Time (IST) is UTC + 5:30 (19,800,000 ms)
+      const IST_OFFSET_MS = 5.5 * 60 * 60 * 1000;
+      const istNow = new Date(now.getTime() + IST_OFFSET_MS);
+      // Next midnight IST converted back to absolute time:
+      const nextMidnightIstUtcTime =
+        Date.UTC(istNow.getUTCFullYear(), istNow.getUTCMonth(), istNow.getUTCDate() + 1, 0, 0, 0) -
+        IST_OFFSET_MS;
+      setResetSeconds(Math.max(0, Math.ceil((nextMidnightIstUtcTime - now.getTime()) / 1000)));
     };
     tick();
     const t = setInterval(tick, 1000);
@@ -915,23 +921,30 @@ export default function App() {
     return () => clearInterval(t);
   }, [view, at]);
 
-  const startWithPack = async (packIdToUse: string) => {
+  const startWithPack = async (packIdToUse: string, replay = false) => {
     sound.playSelect();
     setErr('');
     setBusy(true);
     try {
-      const r = await fetch('/api/solo/daily?packId=' + packIdToUse + '&deviceId=' + device());
+      const url =
+        '/api/solo/daily?packId=' +
+        packIdToUse +
+        '&deviceId=' +
+        device() +
+        (replay ? '&replay=true' : '');
+      const r = await fetch(url);
       const d = await r.json();
       if (!r.ok) throw Error(d.error || 'Could not start');
       setQs(d.questions);
-      const isDone = Boolean(d.completed || d.resume?.completed_at);
+      const isDone = !replay && Boolean(d.completed || d.resume?.completed_at);
       const resData = d.finalResult || d.result || null;
-      setAt(d.answerRecords?.length || d.resume?.answer_records?.length || 0);
+      setAt(replay ? 0 : d.answerRecords?.length || d.resume?.answer_records?.length || 0);
       if (isDone && resData) {
         setResult(resData);
         setView('done');
         sound.playFanfare();
       } else {
+        setResult(null);
         setView('play');
       }
     } catch (e: any) {
@@ -1290,8 +1303,23 @@ export default function App() {
       </div>
       <header>
         <div className="brand-group">
-          <span className="brand">BRAINPRINT</span>
-          <span className="tag">SAME QUESTIONS. DIFFERENT MINDS.</span>
+          {view !== 'home' && (
+            <button
+              type="button"
+              className="home-nav-btn"
+              onClick={() => {
+                sound.playSelect();
+                setView('home');
+              }}
+              title="Return to Home"
+            >
+              ◀ HOME
+            </button>
+          )}
+          <div className="brand-text">
+            <span className="brand">BRAINPRINT</span>
+            <span className="tag">SAME QUESTIONS. DIFFERENT MINDS.</span>
+          </div>
         </div>
         <div className="audio-controls">
           <button
@@ -1319,7 +1347,7 @@ export default function App() {
             <div className="eyebrow">
               <span>DAILY SIGNAL</span>
               <span>
-                UTC RESET{' '}
+                IST RESET{' '}
                 {String(Math.floor(resetSeconds / 3600)).padStart(2, '0')}:
                 {String(Math.floor(resetSeconds / 60) % 60).padStart(2, '0')}:
                 {String(resetSeconds % 60).padStart(2, '0')}
@@ -1725,7 +1753,7 @@ export default function App() {
                     className={`theme-card ${pack === p.id ? 'active' : ''}`}
                     onClick={() => {
                       setPack(p.id);
-                      startWithPack(p.id);
+                      startWithPack(p.id, true);
                     }}
                   >
                     <span className="theme-card-tag">

@@ -6,9 +6,11 @@ import {
   TIER_META,
   computeSmoothedShare,
   evaluateSoloAnswer,
+  fisherYatesShuffle,
   getDailyExclusionWindow,
   getRarityBand,
   getScoreTitle,
+  mulberry32,
   selectDailyQuestionIds,
   selectTheMixQuestionIds,
 } from '../shared/scoring';
@@ -28,13 +30,24 @@ import type {
 } from '../shared/types';
 import { loadVerdicts } from './db';
 
+// Indian Standard Time (IST) is UTC+5:30 (19,800,000 ms)
+const IST_OFFSET_MS = 5.5 * 60 * 60 * 1000;
+
+export function getIstDate(date = new Date()): Date {
+  return new Date(date.getTime() + IST_OFFSET_MS);
+}
+
 export function getUtcDateString(date = new Date()): string {
-  return date.toISOString().slice(0, 10);
+  const ist = getIstDate(date);
+  return ist.toISOString().slice(0, 10);
 }
 
 export function getNextUtcResetIso(date = new Date()): string {
-  const next = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + 1, 0, 0, 0));
-  return next.toISOString();
+  const ist = getIstDate(date);
+  // Next midnight in IST: tomorrow 00:00:00 IST
+  const nextIstMidnightUtcTime =
+    Date.UTC(ist.getUTCFullYear(), ist.getUTCMonth(), ist.getUTCDate() + 1, 0, 0, 0) - IST_OFFSET_MS;
+  return new Date(nextIstMidnightUtcTime).toISOString();
 }
 
 export function isLaunchSetMode(): boolean {
@@ -448,7 +461,8 @@ export function getDailySoloState(
   db: Database.Database,
   packId: PackId,
   deviceId: string,
-  dateStr = getUtcDateString()
+  dateStr = getUtcDateString(),
+  replay = false
 ): SoloDailyResponse | null {
   const pack = db
     .prepare(
@@ -457,6 +471,72 @@ export function getDailySoloState(
     .get(packId) as { id: PackId; name: string; description: string; visual_theme: PackId } | undefined;
 
   if (!pack) return null;
+
+  // When replay is requested, remove any completed run for this pack on this date
+  // and select a fresh randomized 7-question set.
+  if (replay) {
+    db.prepare(
+      `DELETE FROM solo_runs WHERE device_id = ? AND pack_id = ? AND challenge_date = ?`
+    ).run(deviceId, packId, dateStr);
+
+    let freshQuestionIds: string[] = [];
+    const seed = crypto.randomBytes(4).readUInt32BE(0);
+    const rng = mulberry32(seed);
+
+    if (packId === 'the_mix') {
+      const allPublished = db
+        .prepare(
+          `SELECT q.id, q.pack_id, q.sort_order
+           FROM questions q
+           JOIN packs p ON p.id = q.pack_id
+           WHERE q.status = 'published' AND p.status = 'published' AND p.id != 'the_mix'
+           ORDER BY q.id ASC`
+        )
+        .all() as { id: string; pack_id: string; sort_order: number }[];
+
+      // Select 7 balanced across packs randomly
+      const shuffled = fisherYatesShuffle(allPublished, rng);
+      const picked: string[] = [];
+      const packCount: Record<string, number> = {};
+
+      for (const q of shuffled) {
+        if (picked.length >= 7) break;
+        const cur = packCount[q.pack_id] || 0;
+        if (cur < 3) {
+          picked.push(q.id);
+          packCount[q.pack_id] = cur + 1;
+        }
+      }
+      freshQuestionIds = picked.slice(0, 7);
+    } else {
+      const rows = db
+        .prepare(
+          `SELECT id FROM questions WHERE pack_id = ? AND status = 'published' ORDER BY id ASC`
+        )
+        .all(packId) as { id: string }[];
+      const shuffled = fisherYatesShuffle(rows.map((r) => r.id), rng);
+      freshQuestionIds = shuffled.slice(0, 7);
+    }
+
+    // Save as the active question_ids for this run
+    if (freshQuestionIds.length >= 7) {
+      const runId = crypto.randomUUID();
+      db.prepare(
+        `INSERT INTO solo_runs (
+          id, device_id, pack_id, challenge_date, question_ids, answer_records,
+          total_points, scoring_version, created_at
+        ) VALUES (?, ?, ?, ?, ?, '[]', 0, ?, ?)`
+      ).run(
+        runId,
+        deviceId,
+        packId,
+        dateStr,
+        JSON.stringify(freshQuestionIds),
+        SCORING_VERSION,
+        new Date().toISOString()
+      );
+    }
+  }
 
   const existingRun = db
     .prepare(

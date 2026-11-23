@@ -2168,12 +2168,18 @@ var AnswerRateLimiter = class {
 
 // src/server/solo.ts
 import crypto2 from "crypto";
+var IST_OFFSET_MS = 5.5 * 60 * 60 * 1e3;
+function getIstDate(date = /* @__PURE__ */ new Date()) {
+  return new Date(date.getTime() + IST_OFFSET_MS);
+}
 function getUtcDateString(date = /* @__PURE__ */ new Date()) {
-  return date.toISOString().slice(0, 10);
+  const ist = getIstDate(date);
+  return ist.toISOString().slice(0, 10);
 }
 function getNextUtcResetIso(date = /* @__PURE__ */ new Date()) {
-  const next = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + 1, 0, 0, 0));
-  return next.toISOString();
+  const ist = getIstDate(date);
+  const nextIstMidnightUtcTime = Date.UTC(ist.getUTCFullYear(), ist.getUTCMonth(), ist.getUTCDate() + 1, 0, 0, 0) - IST_OFFSET_MS;
+  return new Date(nextIstMidnightUtcTime).toISOString();
 }
 function isLaunchSetMode() {
   return process.env.LAUNCH_SET_MODE === "true";
@@ -2445,11 +2451,63 @@ function listPublishedPacks(db, deviceId, dateStr = getUtcDateString()) {
     };
   });
 }
-function getDailySoloState(db, packId, deviceId, dateStr = getUtcDateString()) {
+function getDailySoloState(db, packId, deviceId, dateStr = getUtcDateString(), replay = false) {
   const pack = db.prepare(
     `SELECT id, name, description, visual_theme FROM packs WHERE id = ? AND status = 'published'`
   ).get(packId);
   if (!pack) return null;
+  if (replay) {
+    db.prepare(
+      `DELETE FROM solo_runs WHERE device_id = ? AND pack_id = ? AND challenge_date = ?`
+    ).run(deviceId, packId, dateStr);
+    let freshQuestionIds = [];
+    const seed = crypto2.randomBytes(4).readUInt32BE(0);
+    const rng = mulberry32(seed);
+    if (packId === "the_mix") {
+      const allPublished = db.prepare(
+        `SELECT q.id, q.pack_id, q.sort_order
+           FROM questions q
+           JOIN packs p ON p.id = q.pack_id
+           WHERE q.status = 'published' AND p.status = 'published' AND p.id != 'the_mix'
+           ORDER BY q.id ASC`
+      ).all();
+      const shuffled = fisherYatesShuffle(allPublished, rng);
+      const picked = [];
+      const packCount = {};
+      for (const q of shuffled) {
+        if (picked.length >= 7) break;
+        const cur = packCount[q.pack_id] || 0;
+        if (cur < 3) {
+          picked.push(q.id);
+          packCount[q.pack_id] = cur + 1;
+        }
+      }
+      freshQuestionIds = picked.slice(0, 7);
+    } else {
+      const rows = db.prepare(
+        `SELECT id FROM questions WHERE pack_id = ? AND status = 'published' ORDER BY id ASC`
+      ).all(packId);
+      const shuffled = fisherYatesShuffle(rows.map((r) => r.id), rng);
+      freshQuestionIds = shuffled.slice(0, 7);
+    }
+    if (freshQuestionIds.length >= 7) {
+      const runId = crypto2.randomUUID();
+      db.prepare(
+        `INSERT INTO solo_runs (
+          id, device_id, pack_id, challenge_date, question_ids, answer_records,
+          total_points, scoring_version, created_at
+        ) VALUES (?, ?, ?, ?, ?, '[]', 0, ?, ?)`
+      ).run(
+        runId,
+        deviceId,
+        packId,
+        dateStr,
+        JSON.stringify(freshQuestionIds),
+        SCORING_VERSION,
+        (/* @__PURE__ */ new Date()).toISOString()
+      );
+    }
+  }
   const existingRun = db.prepare(
     `SELECT * FROM solo_runs WHERE device_id = ? AND pack_id = ? AND challenge_date = ?`
   ).get(deviceId, packId, dateStr);
@@ -3147,7 +3205,8 @@ function createApp(db, options) {
       return;
     }
     const deviceId = resolveDeviceId(req, res);
-    const state = getDailySoloState(db, parsedPack.data, deviceId);
+    const replay = req.query.replay === "true" || req.query.replay === "1";
+    const state = getDailySoloState(db, parsedPack.data, deviceId, void 0, replay);
     if (!state) {
       res.status(404).json({ error: "Pack not found" });
       return;

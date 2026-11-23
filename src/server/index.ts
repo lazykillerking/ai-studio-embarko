@@ -96,7 +96,7 @@ export function createApp(db: Database.Database, options?: { rateLimitPerMin?: n
     });
   });
 
-  // GET /api/solo/daily?packId=
+  // GET /api/solo/daily?packId=&replay=true
   app.get('/api/solo/daily', (req: Request, res: Response) => {
     const parsedPack = PackIdSchema.safeParse(req.query.packId);
     if (!parsedPack.success) {
@@ -104,7 +104,8 @@ export function createApp(db: Database.Database, options?: { rateLimitPerMin?: n
       return;
     }
     const deviceId = resolveDeviceId(req, res);
-    const state = getDailySoloState(db, parsedPack.data, deviceId);
+    const replay = req.query.replay === 'true' || req.query.replay === '1';
+    const state = getDailySoloState(db, parsedPack.data, deviceId, undefined, replay);
     if (!state) {
       res.status(404).json({ error: 'Pack not found' });
       return;

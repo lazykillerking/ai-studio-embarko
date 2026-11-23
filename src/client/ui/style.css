@@ -84,6 +84,15 @@ main[data-theme=campus_chaos] {
   filter: drop-shadow(0 0 30px #fb718566);
 }
 
+@keyframes gridMove {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 60px;
+  }
+}
+
 .grid {
   position: absolute;
   inset: 48% -60% -20%;
@@ -91,6 +100,7 @@ main[data-theme=campus_chaos] {
   background-image: linear-gradient(#38bdf866 1px, transparent 1px), linear-gradient(90deg, #38bdf866 1px, transparent 1px);
   background-size: 30px 30px;
   mask-image: linear-gradient(transparent, #000);
+  animation: gridMove 2.4s linear infinite;
 }
 
 header, footer, .game {
@@ -109,6 +119,35 @@ header {
 }
 
 .brand-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.home-nav-btn {
+  background: #141d31;
+  color: #38bdf8;
+  border: 1px solid #38bdf866;
+  padding: 6px 9px;
+  font: 8px 'Press Start 2P', monospace;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+  box-shadow: 2px 2px #050812;
+  white-space: nowrap;
+}
+
+.home-nav-btn:hover {
+  background: #38bdf8;
+  color: #020617;
+  border-color: #38bdf8;
+  box-shadow: 0 0 10px #38bdf8;
+}
+
+.brand-text {
   display: flex;
   flex-direction: column;
   gap: 3px;
