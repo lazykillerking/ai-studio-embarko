@@ -1191,9 +1191,12 @@ function buildFinalResultFromRun(db, run) {
   const questionIds = JSON.parse(run.question_ids);
   const answerRecords = JSON.parse(run.answer_records);
   const qRows = fetchQuestionsByIds(db, questionIds);
-  const qMap = new Map(qRows.map((r) => [r.id, JSON.parse(r.options)]));
+  const qRowMap = new Map(qRows.map((r) => [r.id, r]));
+  const recMap = new Map(answerRecords.map((r) => [r.question_id, r]));
   const chosenAxes = answerRecords.map((rec) => {
-    const opts = qMap.get(rec.question_id);
+    const qRow = qRowMap.get(rec.question_id);
+    if (!qRow) return [0, 0, 0];
+    const opts = JSON.parse(qRow.options);
     const chosen = opts?.[rec.option_index];
     return chosen ? chosen.axes : [0, 0, 0];
   });
@@ -1203,6 +1206,52 @@ function buildFinalResultFromRun(db, run) {
   const band = getRarityBand(run.total_points);
   const verdict = verdicts.soloVerdicts[run.archetype_id][band];
   const packLine = verdicts.packLines[run.pack_id]?.[run.archetype_id] ?? null;
+  const questionBreakdown = questionIds.map((qid) => {
+    const qRow = qRowMap.get(qid);
+    const rec = recMap.get(qid);
+    const chosenIdx = rec ? rec.option_index : 0;
+    const voteCounts = getVoteCounts(db, qid);
+    const totalVotes = voteCounts[0] + voteCounts[1] + voteCounts[2] + voteCounts[3];
+    const qOptions = qRow ? JSON.parse(qRow.options) : [];
+    const options = qOptions.map((opt, idx) => {
+      const votes = voteCounts[idx] ?? 0;
+      const smoothedP = computeSmoothedShare(votes, totalVotes);
+      let tier;
+      if (totalVotes < 5) {
+        tier = "PROVISIONAL";
+      } else if (totalVotes < 15) {
+        if (smoothedP >= 0.35) tier = "FAMILIAR";
+        else if (smoothedP >= 0.22) tier = "UNUSUAL";
+        else tier = "OUTLIER";
+      } else {
+        if (smoothedP >= 0.35) tier = "FAMILIAR";
+        else if (smoothedP >= 0.22) tier = "UNUSUAL";
+        else if (smoothedP >= 0.12) tier = "OUTLIER";
+        else tier = "WILDCARD";
+      }
+      const meta = TIER_META[tier];
+      const points = idx === chosenIdx && rec?.points != null ? rec.points : meta.points;
+      const percentage = totalVotes > 0 ? Math.round(votes / totalVotes * 100) : null;
+      return {
+        optionIndex: idx,
+        text: opt.text,
+        points,
+        tier: idx === chosenIdx && rec?.tier ? rec.tier : tier,
+        tierColor: meta.color,
+        percentage,
+        votes,
+        isChosen: idx === chosenIdx
+      };
+    });
+    return {
+      questionId: qid,
+      prompt: qRow ? qRow.prompt : "",
+      chosenIndex: chosenIdx,
+      chosenPoints: rec?.points ?? options[chosenIdx]?.points ?? 0,
+      chosenTier: rec?.tier ?? options[chosenIdx]?.tier ?? "FAMILIAR",
+      options
+    };
+  });
   return {
     packId: run.pack_id,
     challengeDate: run.challenge_date,
@@ -1217,7 +1266,8 @@ function buildFinalResultFromRun(db, run) {
     },
     verdict,
     packLine,
-    answerRecords
+    answerRecords,
+    questionBreakdown
   };
 }
 function listPublishedPacks(db, deviceId, dateStr = getUtcDateString()) {
@@ -1458,7 +1508,7 @@ function selectCrewQuestions(db, mode, packId, excludeQuestionIds) {
   const rng = mulberry32(seed);
   const recentOrder = excludeQuestionIds.slice(-21);
   const excludeSet = new Set(recentOrder);
-  if (mode === "themed" && packId) {
+  if (mode === "themed" && packId && packId !== "the_mix") {
     const rows2 = db.prepare(
       `SELECT id FROM questions WHERE pack_id = ? AND status = 'published' ORDER BY id ASC`
     ).all(packId);
@@ -1472,10 +1522,17 @@ function selectCrewQuestions(db, mode, packId, excludeQuestionIds) {
     }
     const seenOldestFirst = recentOrder.filter((id) => allIds.includes(id) && !fresh.includes(id));
     const remaining = allIds.filter((id) => !fresh.includes(id) && !seenOldestFirst.includes(id));
-    return [...fresh, ...seenOldestFirst, ...remaining].slice(0, 7);
+    const themedPicked = [...fresh, ...seenOldestFirst, ...remaining];
+    if (themedPicked.length >= 7) {
+      return themedPicked.slice(0, 7);
+    }
+    const fallbackRows = db.prepare(
+      `SELECT id FROM questions WHERE status = 'published' AND id NOT IN (${themedPicked.map(() => "?").join(",") || "''"}) ORDER BY id ASC`
+    ).all(...themedPicked);
+    return [...themedPicked, ...fisherYatesShuffle(fallbackRows.map((r) => r.id), rng)].slice(0, 7);
   }
   const rows = db.prepare(
-    `SELECT id, pack_id FROM questions WHERE status = 'published' ORDER BY id ASC`
+    `SELECT id, pack_id FROM questions WHERE status = 'published' AND pack_id != 'the_mix' ORDER BY id ASC`
   ).all();
   const freshRows = fisherYatesShuffle(
     rows.filter((r) => !excludeSet.has(r.id)),
@@ -1597,13 +1654,64 @@ function getCrewState(db, codeInput, deviceId) {
         answers: JSON.parse(m.answers)
       };
     });
-    board = computeCrewBoard({
+    const rawBoard = computeCrewBoard({
       questions: publicQuestions,
       completedMembers: scoringInputs,
       squadRoasts: verdicts.squadRoasts
     });
+    const mindTwinsList = rawBoard.awards?.mindTwins ? rawBoard.awards.mindTwins.pairs.map((p) => ({
+      names: [p.memberAName, p.memberBName],
+      matches: rawBoard.awards?.mindTwins?.matches ?? 0,
+      percent: rawBoard.awards?.mindTwins?.percentage ?? 0
+    })) : [];
+    const commonGroundList = rawBoard.awards?.commonGround ? [
+      {
+        prompt: rawBoard.awards.commonGround.prompt,
+        agreement: rawBoard.awards.commonGround.agreementPercent
+      }
+    ] : [];
+    const civilWarList = rawBoard.awards?.civilWar ? [
+      {
+        prompt: rawBoard.awards.civilWar.prompt,
+        agreement: rawBoard.awards.civilWar.agreementPercent
+      }
+    ] : [];
+    const loneSignalObj = rawBoard.awards?.loneSignal ? {
+      member: { nickname: rawBoard.awards.loneSignal.nickname },
+      soloChoices: rawBoard.awards.loneSignal.loneCount
+    } : null;
+    board = {
+      ...rawBoard,
+      sync: rawBoard.crewSyncPercent,
+      roast: {
+        ...rawBoard.roast,
+        headline: rawBoard.roast.title
+      },
+      members: rawBoard.members.map((m) => ({
+        ...m,
+        score: m.totalScore
+      })),
+      pairs: rawBoard.pairwise.map((p) => ({
+        ...p,
+        names: [p.memberAName, p.memberBName],
+        percent: p.percentage
+      })),
+      questions: rawBoard.questionBreakdowns.map((q) => ({
+        ...q,
+        agreement: q.agreementPercent,
+        counts: q.options.map((o) => o.count)
+      })),
+      mindTwins: mindTwinsList,
+      commonGround: commonGroundList,
+      civilWar: civilWarList,
+      loneSignal: loneSignalObj,
+      perfectSync: rawBoard.twoPlayerSummary?.perfectSyncQuestions ?? []
+    };
   }
   return {
+    completed: meCompleted,
+    memberCount: members.length,
+    completedCount: completedMembers.length,
     crew: {
       id: crew.id,
       code: crew.code,
@@ -1616,7 +1724,9 @@ function getCrewState(db, codeInput, deviceId) {
       completedCount: completedMembers.length,
       isFull: members.length >= crew.max_players && !meRow,
       invitePath: `/crew/${crew.code}`,
-      createdAt: crew.created_at
+      createdAt: crew.created_at,
+      questions: publicQuestions,
+      completed: meCompleted
     },
     me: {
       joined: Boolean(meRow),

@@ -21,9 +21,11 @@ const seenIds = () => {
   }
 };
 
-const remember = (questions: Question[]) => {
+const remember = (questions?: Question[]) => {
+  if (!Array.isArray(questions)) return;
   const list = seenIds();
   for (const q of questions) {
+    if (!q?.id) continue;
     const at = list.indexOf(q.id);
     if (at >= 0) list.splice(at, 1);
     list.push(q.id);
@@ -31,81 +33,685 @@ const remember = (questions: Question[]) => {
   localStorage.setItem('brainprint-seen', JSON.stringify(list.slice(-21)));
 };
 
-async function makeCard(
-  title: string,
-  subtitle: string,
-  lines: string[],
-  axes?: Record<string, number>,
-  avatarKey = 'architect'
+export type MakeCardPayload = {
+  isCrew?: boolean;
+  archetype?: string;
+  avatarKey?: string;
+  scoreTitle?: string;
+  points?: number | string;
+  trait?: string;
+  verdictHeadline?: string;
+  verdictHeat?: number;
+  compliment?: string;
+  roast?: string;
+  axes?: Record<string, number>;
+  // For crew cards:
+  crewTitle?: string;
+  crewSync?: number;
+  crewRoastHeadline?: string;
+  crewRoastLine?: string;
+  crewStats?: string[];
+  crewHighlights?: { label: string; text: string }[];
+  // Legacy / fallback fields:
+  title?: string;
+  subtitle?: string;
+  lines?: string[];
+};
+
+function drawRoundedRect(
+  c: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  r: number
 ) {
-  await document.fonts.load('34px "Press Start 2P"');
-  await document.fonts.load('24px "Space Grotesk"');
-  await document.fonts.ready;
+  if (typeof c.roundRect === 'function') {
+    c.beginPath();
+    c.roundRect(x, y, w, h, r);
+  } else {
+    c.beginPath();
+    c.moveTo(x + r, y);
+    c.lineTo(x + w - r, y);
+    c.quadraticCurveTo(x + w, y, x + w, y + r);
+    c.lineTo(x + w, y + h - r);
+    c.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    c.lineTo(x + r, y + h);
+    c.quadraticCurveTo(x, y + h, x, y + h - r);
+    c.lineTo(x, y + r);
+    c.quadraticCurveTo(x, y, x + r, y);
+    c.closePath();
+  }
+}
+
+function wrapTextToWidth(c: CanvasRenderingContext2D, text: string, maxWidth: number): string[] {
+  const words = text.split(/\s+/);
+  const lines: string[] = [];
+  let cur = '';
+  for (const w of words) {
+    const test = cur ? `${cur} ${w}` : w;
+    if (c.measureText(test).width > maxWidth && cur) {
+      lines.push(cur);
+      cur = w;
+    } else {
+      cur = test;
+    }
+  }
+  if (cur) lines.push(cur);
+  return lines;
+}
+
+async function makeCard(
+  optionsOrTitle: string | MakeCardPayload,
+  legacySubtitle?: string,
+  legacyLines?: string[],
+  legacyAxes?: Record<string, number>,
+  legacyAvatarKey = 'architect'
+): Promise<File> {
+  let opts: MakeCardPayload;
+  if (typeof optionsOrTitle === 'object') {
+    opts = optionsOrTitle;
+  } else {
+    const isCrewMode = optionsOrTitle.includes('CREW SYNC');
+    if (isCrewMode) {
+      const syncVal = parseInt(optionsOrTitle) || 0;
+      opts = {
+        isCrew: true,
+        crewTitle: 'BRAINPRINT CREW',
+        crewSync: syncVal,
+        crewRoastHeadline: legacySubtitle || 'CREW REPORT',
+        crewRoastLine: legacyLines?.[0] || '',
+        crewStats: legacyLines?.slice(1, 2) || [],
+        crewHighlights: legacyLines?.slice(2).filter(Boolean).map((line) => {
+          const parts = line.split(':');
+          return { label: parts[0]?.trim() || 'HIGHLIGHT', text: parts.slice(1).join(':').trim() || line };
+        }) || [],
+      };
+    } else {
+      let pts = 0;
+      let sTitle = 'The Signal';
+      if (legacySubtitle) {
+        const m = legacySubtitle.match(/^(\d+)\s+POINTS\s*·?\s*(.*)$/i);
+        if (m) {
+          pts = parseInt(m[1]) || 0;
+          sTitle = m[2]?.trim() || 'The Signal';
+        } else {
+          sTitle = legacySubtitle;
+        }
+      }
+      opts = {
+        isCrew: false,
+        archetype: optionsOrTitle || 'BRAINPRINT',
+        avatarKey: legacyAvatarKey,
+        scoreTitle: sTitle,
+        points: pts,
+        compliment: legacyLines?.[0] || '',
+        roast: legacyLines?.[1] || '',
+        axes: legacyAxes,
+      };
+    }
+  }
+
+  try {
+    await Promise.all([
+      document.fonts.load('38px "Press Start 2P"'),
+      document.fonts.load('32px "Press Start 2P"'),
+      document.fonts.load('22px "Press Start 2P"'),
+      document.fonts.load('16px "Press Start 2P"'),
+      document.fonts.load('bold 26px "Space Grotesk"'),
+      document.fonts.load('20px "Space Grotesk"'),
+      document.fonts.load('16px "Space Grotesk"'),
+      document.fonts.ready,
+    ]);
+  } catch {}
+
   const canvas = document.createElement('canvas');
   canvas.width = 1080;
   canvas.height = 1920;
   const c = canvas.getContext('2d')!;
-  c.fillStyle = '#0b1020';
+
+  // 1. Background Gradient
+  const bgGrad = c.createLinearGradient(0, 0, 1080, 1920);
+  bgGrad.addColorStop(0, '#060a14');
+  bgGrad.addColorStop(0.3, '#0c152a');
+  bgGrad.addColorStop(0.7, '#13122b');
+  bgGrad.addColorStop(1, '#060914');
+  c.fillStyle = bgGrad;
   c.fillRect(0, 0, 1080, 1920);
-  c.fillStyle = '#141d31';
-  c.fillRect(64, 64, 952, 1792);
-  c.strokeStyle = '#38bdf8';
-  c.lineWidth = 8;
-  c.strokeRect(64, 64, 952, 1792);
-  c.fillStyle = '#38bdf8';
-  c.font = '36px "Press Start 2P",monospace';
-  c.fillText('BRAINPRINT', 110, 170);
-  const av = avatarPixels(avatarKey);
+
+  // 2. Faint Cyber Grid
+  c.save();
+  c.strokeStyle = 'rgba(56, 189, 248, 0.04)';
+  c.lineWidth = 1;
+  for (let x = 40; x < 1080; x += 40) {
+    c.beginPath();
+    c.moveTo(x, 0);
+    c.lineTo(x, 1920);
+    c.stroke();
+  }
+  for (let y = 40; y < 1920; y += 40) {
+    c.beginPath();
+    c.moveTo(0, y);
+    c.lineTo(1080, y);
+    c.stroke();
+  }
+  c.restore();
+
+  const avKey = opts.avatarKey || 'architect';
   const avIndex = Math.max(
     0,
-    ['architect', 'lone_oracle', 'dispatcher', 'anchor', 'rogue_tactician', 'free_agent', 'plot_twister', 'spark'].indexOf(avatarKey)
+    ['architect', 'lone_oracle', 'dispatcher', 'anchor', 'rogue_tactician', 'free_agent', 'plot_twister', 'spark'].indexOf(avKey)
   );
-  av.forEach((row, y) =>
-    [...row].forEach((v, x) => {
-      if (v === '1') {
-        c.fillStyle = avatarColors[avIndex];
-        c.fillRect(470 + x * 10, 230 + y * 10, 10, 10);
-      }
-    })
-  );
-  c.fillStyle = '#f8fafc';
-  c.font = '34px "Press Start 2P",monospace';
-  let yy = 470;
-  for (const line of [title, subtitle]) {
-    for (const part of wrap(line, 29)) {
-      c.fillText(part, 110, yy);
-      yy += 58;
-    }
-    yy += 24;
-  }
+  const primaryThemeColor = opts.isCrew ? '#34d399' : avatarColors[avIndex];
+
+  // 3. Ambient Glow behind Hero section
+  c.save();
+  const glow = c.createRadialGradient(540, 480, 40, 540, 480, 440);
+  glow.addColorStop(0, primaryThemeColor + '30'); // ~19% opacity
+  glow.addColorStop(1, 'transparent');
+  c.fillStyle = glow;
+  c.fillRect(0, 120, 1080, 750);
+  c.restore();
+
+  // 4. Outer Framed Panel
+  c.save();
+  drawRoundedRect(c, 48, 48, 984, 1824, 28);
+  c.fillStyle = 'rgba(11, 17, 34, 0.78)';
+  c.fill();
+  c.lineWidth = 2.5;
+  c.strokeStyle = 'rgba(56, 189, 248, 0.35)';
+  c.stroke();
+
+  // Inset tech border
+  drawRoundedRect(c, 62, 62, 956, 1796, 20);
+  c.lineWidth = 1;
+  c.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+  c.stroke();
+  c.restore();
+
+  // 5. Corner brackets [ + ]
+  const bracketLen = 28;
+  const bracketInset = 70;
+  c.save();
+  c.strokeStyle = '#38bdf8';
+  c.lineWidth = 3;
+  // Top Left
+  c.beginPath();
+  c.moveTo(bracketInset, bracketInset + bracketLen);
+  c.lineTo(bracketInset, bracketInset);
+  c.lineTo(bracketInset + bracketLen, bracketInset);
+  c.stroke();
+  // Top Right
+  c.beginPath();
+  c.moveTo(1080 - bracketInset - bracketLen, bracketInset);
+  c.lineTo(1080 - bracketInset, bracketInset);
+  c.lineTo(1080 - bracketInset, bracketInset + bracketLen);
+  c.stroke();
+  // Bottom Left
+  c.beginPath();
+  c.moveTo(bracketInset, 1920 - bracketInset - bracketLen);
+  c.lineTo(bracketInset, 1920 - bracketInset);
+  c.lineTo(bracketInset + bracketLen, 1920 - bracketInset);
+  c.stroke();
+  // Bottom Right
+  c.beginPath();
+  c.moveTo(1080 - bracketInset - bracketLen, 1920 - bracketInset);
+  c.lineTo(1080 - bracketInset, 1920 - bracketInset);
+  c.lineTo(1080 - bracketInset, 1920 - bracketInset - bracketLen);
+  c.stroke();
+  c.restore();
+
+  // 6. Header Section
+  c.save();
+  c.font = '600 15px "Space Grotesk", sans-serif';
+  c.textAlign = 'center';
+  const tagText = opts.isCrew ? '// CREW SYNCHRONIZATION REPORT' : '// SIGNAL DOSSIER · VERIFIED RECORD';
+  const tagWidth = c.measureText(tagText).width + 36;
+  drawRoundedRect(c, 540 - tagWidth / 2, 98, tagWidth, 34, 17);
+  c.fillStyle = 'rgba(56, 189, 248, 0.12)';
+  c.fill();
+  c.strokeStyle = 'rgba(56, 189, 248, 0.4)';
+  c.lineWidth = 1.5;
+  c.stroke();
   c.fillStyle = '#38bdf8';
-  c.font = '24px "Space Grotesk",Arial,sans-serif';
-  for (const line of lines.filter(Boolean)) {
-    for (const part of wrap(line, 42)) {
-      c.fillText(part, 110, yy);
-      yy += 42;
+  c.fillText(tagText, 540, 121);
+
+  // BRAINPRINT Title
+  c.font = '38px "Press Start 2P", monospace';
+  c.shadowColor = '#38bdf8';
+  c.shadowBlur = 18;
+  c.fillStyle = '#f8fafc';
+  c.fillText('BRAINPRINT', 540, 178);
+
+  // Subtitle
+  c.shadowBlur = 0;
+  c.font = '500 16px "Space Grotesk", sans-serif';
+  c.fillStyle = '#94a3b8';
+  c.fillText('SAME QUESTIONS. DIFFERENT MINDS.', 540, 214);
+
+  // Neon Divider line
+  const lineGrad = c.createLinearGradient(120, 235, 960, 235);
+  lineGrad.addColorStop(0, 'transparent');
+  lineGrad.addColorStop(0.5, 'rgba(56, 189, 248, 0.6)');
+  lineGrad.addColorStop(1, 'transparent');
+  c.strokeStyle = lineGrad;
+  c.lineWidth = 1.5;
+  c.beginPath();
+  c.moveTo(140, 235);
+  c.lineTo(940, 235);
+  c.stroke();
+  c.restore();
+
+  if (!opts.isCrew) {
+    // ==========================================
+    // SOLO SHARE CARD
+    // ==========================================
+    const archetype = opts.archetype || 'BRAINPRINT';
+    const trait = opts.trait || '';
+    const scoreTitle = opts.scoreTitle || 'THE UNCONVENTIONAL';
+    const points = opts.points ?? 0;
+    const verdictHeadline = opts.verdictHeadline || 'CLASSIFIED SIGNAL';
+    const verdictHeat = opts.verdictHeat || 3;
+    const compliment = opts.compliment || 'Your choices left a distinct cognitive footprint.';
+    const roast = opts.roast || '';
+
+    // Avatar Podium Box
+    const avBoxSize = 200;
+    const avBoxX = 540 - avBoxSize / 2;
+    const avBoxY = 258;
+    c.save();
+    drawRoundedRect(c, avBoxX, avBoxY, avBoxSize, avBoxSize, 20);
+    c.fillStyle = '#0f172a';
+    c.fill();
+    c.strokeStyle = primaryThemeColor;
+    c.lineWidth = 3;
+    c.shadowColor = primaryThemeColor;
+    c.shadowBlur = 18;
+    c.stroke();
+    c.restore();
+
+    // Corner brackets on avatar frame
+    c.save();
+    c.strokeStyle = '#a78bfa';
+    c.lineWidth = 2;
+    c.strokeRect(avBoxX + 6, avBoxY + 6, 10, 10);
+    c.strokeRect(avBoxX + avBoxSize - 16, avBoxY + 6, 10, 10);
+    c.strokeRect(avBoxX + 6, avBoxY + avBoxSize - 16, 10, 10);
+    c.strokeRect(avBoxX + avBoxSize - 16, avBoxY + avBoxSize - 16, 10, 10);
+    c.restore();
+
+    // Draw Avatar pixels (16x16, 9.5px per pixel = 152px)
+    const av = avatarPixels(avKey);
+    const pxSize = 9.5;
+    const pxStartX = avBoxX + (avBoxSize - 16 * pxSize) / 2;
+    const pxStartY = avBoxY + (avBoxSize - 16 * pxSize) / 2;
+    c.fillStyle = primaryThemeColor;
+    av.forEach((row, y) => {
+      [...row].forEach((v, x) => {
+        if (v === '1') {
+          c.fillRect(pxStartX + x * pxSize, pxStartY + y * pxSize, pxSize, pxSize);
+        }
+      });
+    });
+
+    // Archetype Name
+    c.save();
+    c.font = '22px "Press Start 2P", monospace';
+    c.textAlign = 'center';
+    c.fillStyle = '#f8fafc';
+    c.fillText(archetype.toUpperCase(), 540, 495);
+
+    // Trait Line
+    if (trait) {
+      c.font = 'italic 18px "Space Grotesk", sans-serif';
+      c.fillStyle = '#cbd5e1';
+      const traitLines = wrapTextToWidth(c, `"${trait}"`, 800);
+      let traitY = 528;
+      for (const tline of traitLines.slice(0, 2)) {
+        c.fillText(tline, 540, traitY);
+        traitY += 26;
+      }
     }
-    yy += 25;
-  }
-  if (axes) {
-    yy += 28;
-    for (const [name, val] of Object.entries(axes)) {
+    c.restore();
+
+    // ----------------------------------------------------
+    // HERO SCORE TITLE BANNER (WORDING BIGGER THAN POINTS)
+    // ----------------------------------------------------
+    const bannerY = 580;
+    const bannerH = 145;
+    c.save();
+    drawRoundedRect(c, 100, bannerY, 880, bannerH, 20);
+    const bannerGrad = c.createLinearGradient(100, bannerY, 980, bannerY + bannerH);
+    bannerGrad.addColorStop(0, 'rgba(28, 41, 71, 0.92)');
+    bannerGrad.addColorStop(1, 'rgba(14, 22, 41, 0.92)');
+    c.fillStyle = bannerGrad;
+    c.fill();
+    c.strokeStyle = 'rgba(56, 189, 248, 0.55)';
+    c.lineWidth = 2;
+    c.shadowColor = 'rgba(56, 189, 248, 0.25)';
+    c.shadowBlur = 14;
+    c.stroke();
+    c.restore();
+
+    // Eyebrow
+    c.save();
+    c.font = '600 13px "Space Grotesk", sans-serif';
+    c.textAlign = 'center';
+    c.fillStyle = '#94a3b8';
+    c.fillText('MIND RARITY CLASSIFICATION', 540, bannerY + 30);
+
+    // THE WORDING (BIGGER THAN POINTS!)
+    c.font = '30px "Press Start 2P", monospace';
+    c.fillStyle = '#38bdf8';
+    c.shadowColor = '#38bdf8';
+    c.shadowBlur = 14;
+    c.fillText(scoreTitle.toUpperCase(), 540, bannerY + 74);
+
+    // POINTS (Subordinate & elegant)
+    c.shadowBlur = 0;
+    const ptsPillText = `⚡ ${points} POINTS · RARITY SCORE`;
+    c.font = '600 16px "Space Grotesk", sans-serif';
+    const ptsW = c.measureText(ptsPillText).width + 30;
+    drawRoundedRect(c, 540 - ptsW / 2, bannerY + 95, ptsW, 30, 15);
+    c.fillStyle = '#090e1c';
+    c.fill();
+    c.strokeStyle = 'rgba(56, 189, 248, 0.5)';
+    c.lineWidth = 1;
+    c.stroke();
+    c.fillStyle = '#f8fafc';
+    c.fillText(ptsPillText, 540, bannerY + 116);
+    c.restore();
+
+    // ----------------------------------------------------
+    // COGNITIVE SPECTRUM AXES
+    // ----------------------------------------------------
+    c.save();
+    c.font = '14px "Press Start 2P", monospace';
+    c.fillStyle = '#38bdf8';
+    c.textAlign = 'left';
+    c.fillText('// COGNITIVE SPECTRUM', 105, 762);
+    c.restore();
+
+    let axisY = 795;
+    const axesData = opts.axes || { plan_chaos: 50, solo_crew: 50, logic_instinct: 50 };
+    const axisEntries = Object.entries(axesData);
+    const axisNameMap: Record<string, [string, string]> = {
+      plan_chaos: ['PLAN', 'CHAOS'],
+      solo_crew: ['SOLO', 'CREW'],
+      logic_instinct: ['LOGIC', 'INSTINCT'],
+    };
+
+    for (const [key, rawVal] of axisEntries) {
+      const val = typeof rawVal === 'number' ? rawVal : 50;
+      const [leftLabel, rightLabel] = axisNameMap[key.toLowerCase()] || [key.replace('_', ' ').toUpperCase(), ''];
+      c.save();
+      // Labels
+      c.font = 'bold 16px "Space Grotesk", sans-serif';
+      c.fillStyle = val <= 50 ? '#38bdf8' : '#64748b';
+      c.textAlign = 'left';
+      c.fillText(leftLabel, 105, axisY);
+
+      c.fillStyle = val > 50 ? '#e879f9' : '#64748b';
+      c.textAlign = 'right';
+      c.fillText(rightLabel, 975, axisY);
+
+      // Percentage value in center
+      c.font = '11px "Press Start 2P", monospace';
       c.fillStyle = '#f8fafc';
-      c.fillText(name.replace('_', ' / ').toUpperCase(), 110, yy);
-      c.fillStyle = '#263149';
-      c.fillRect(110, yy + 18, 850, 24);
-      c.fillStyle = '#e879f9';
-      c.fillRect(110, yy + 18, Math.max(0, Math.min(100, val)) * 8.5, 24);
-      yy += 100;
+      c.textAlign = 'center';
+      c.fillText(`${val}%`, 540, axisY - 2);
+
+      // Track
+      const trackY = axisY + 10;
+      drawRoundedRect(c, 105, trackY, 870, 14, 7);
+      c.fillStyle = '#111a2d';
+      c.fill();
+      c.strokeStyle = '#253554';
+      c.lineWidth = 1;
+      c.stroke();
+
+      // Center midline
+      c.strokeStyle = '#334155';
+      c.beginPath();
+      c.moveTo(540, trackY - 2);
+      c.lineTo(540, trackY + 16);
+      c.stroke();
+
+      // Fill bar
+      const fillW = Math.max(6, Math.min(870, (val / 100) * 870));
+      drawRoundedRect(c, 105, trackY, fillW, 14, 7);
+      const barGrad = c.createLinearGradient(105, trackY, 975, trackY);
+      barGrad.addColorStop(0, '#38bdf8');
+      barGrad.addColorStop(1, '#e879f9');
+      c.fillStyle = barGrad;
+      c.fill();
+
+      // Pin indicator
+      c.beginPath();
+      c.arc(105 + fillW, trackY + 7, 7, 0, Math.PI * 2);
+      c.fillStyle = '#ffffff';
+      c.shadowColor = '#e879f9';
+      c.shadowBlur = 8;
+      c.fill();
+
+      c.restore();
+      axisY += 66;
     }
+
+    // ----------------------------------------------------
+    // VERDICT DOSSIER BOX
+    // ----------------------------------------------------
+    const verdBoxY = 1010;
+    const verdBoxH = 590;
+    c.save();
+    drawRoundedRect(c, 100, verdBoxY, 880, verdBoxH, 20);
+    c.fillStyle = 'rgba(15, 23, 42, 0.9)';
+    c.fill();
+    c.strokeStyle = '#2d3f63';
+    c.lineWidth = 1.5;
+    c.stroke();
+
+    // Top bar
+    c.font = '14px "Press Start 2P", monospace';
+    c.fillStyle = '#38bdf8';
+    c.textAlign = 'left';
+    c.fillText('// COGNITIVE VERDICT', 130, verdBoxY + 42);
+
+    // Heat flames
+    c.textAlign = 'right';
+    c.font = '16px "Space Grotesk", sans-serif';
+    let heatStr = '';
+    for (let h = 1; h <= 5; h++) {
+      heatStr += h <= verdictHeat ? '🔥' : '▫️';
+    }
+    c.fillText(`HEAT: ${heatStr}`, 950, verdBoxY + 42);
+
+    // Headline Stamp
+    c.textAlign = 'left';
+    c.font = 'bold 23px "Space Grotesk", sans-serif';
+    c.fillStyle = '#f8fafc';
+    c.fillText(`⚡ ${verdictHeadline}`, 130, verdBoxY + 90);
+
+    // Compliment
+    c.font = '19px "Space Grotesk", sans-serif';
+    c.fillStyle = '#94a3b8';
+    const compLines = wrapTextToWidth(c, compliment, 820);
+    let cY = verdBoxY + 130;
+    for (const cline of compLines.slice(0, 4)) {
+      c.fillText(cline, 130, cY);
+      cY += 30;
+    }
+
+    // Roast Box
+    if (roast) {
+      const roastBoxY = Math.max(cY + 20, verdBoxY + 280);
+      const roastBoxH = verdBoxH - (roastBoxY - verdBoxY) - 30;
+      drawRoundedRect(c, 125, roastBoxY, 830, roastBoxH, 12);
+      c.fillStyle = 'rgba(244, 63, 94, 0.08)';
+      c.fill();
+      c.strokeStyle = '#f43f5e';
+      c.lineWidth = 1.5;
+      c.stroke();
+
+      c.font = '600 13px "Press Start 2P", monospace';
+      c.fillStyle = '#f43f5e';
+      c.fillText('🔥 SYSTEM ROAST:', 145, roastBoxY + 34);
+
+      c.font = '19px "Space Grotesk", sans-serif';
+      c.fillStyle = '#fecdd3';
+      const roastLines = wrapTextToWidth(c, roast, 780);
+      let rY = roastBoxY + 70;
+      for (const rline of roastLines.slice(0, 4)) {
+        c.fillText(rline, 145, rY);
+        rY += 28;
+      }
+    }
+    c.restore();
+  } else {
+    // ==========================================
+    // CREW SHARE CARD
+    // ==========================================
+    const crewTitle = opts.crewTitle || 'YOUR CREW';
+    const crewSync = opts.crewSync ?? 0;
+    const crewHeadline = opts.crewRoastHeadline || 'CREW SYNCHRONIZATION';
+    const crewRoastLine = opts.crewRoastLine || '';
+    const crewStats = opts.crewStats || [];
+    const highlights = opts.crewHighlights || [];
+
+    // Hero Sync Card Box
+    const syncBoxY = 270;
+    const syncBoxH = 250;
+    c.save();
+    drawRoundedRect(c, 100, syncBoxY, 880, syncBoxH, 20);
+    c.fillStyle = 'rgba(16, 26, 48, 0.9)';
+    c.fill();
+    c.strokeStyle = '#34d399';
+    c.lineWidth = 2.5;
+    c.shadowColor = '#34d399';
+    c.shadowBlur = 18;
+    c.stroke();
+
+    c.font = '600 15px "Space Grotesk", sans-serif';
+    c.textAlign = 'center';
+    c.fillStyle = '#94a3b8';
+    c.fillText(`CREW: ${crewTitle.toUpperCase()}`, 540, syncBoxY + 40);
+
+    // Large Sync %
+    c.font = '48px "Press Start 2P", monospace';
+    c.fillStyle = '#34d399';
+    c.fillText(`${crewSync}% SYNC`, 540, syncBoxY + 115);
+
+    // Sync Bar
+    drawRoundedRect(c, 160, syncBoxY + 155, 760, 20, 10);
+    c.fillStyle = '#090e1c';
+    c.fill();
+    c.strokeStyle = '#1e3a34';
+    c.stroke();
+
+    const syncFillW = Math.max(10, Math.min(760, (crewSync / 100) * 760));
+    drawRoundedRect(c, 160, syncBoxY + 155, syncFillW, 20, 10);
+    const syncGrad = c.createLinearGradient(160, syncBoxY + 155, 920, syncBoxY + 155);
+    syncGrad.addColorStop(0, '#38bdf8');
+    syncGrad.addColorStop(1, '#34d399');
+    c.fillStyle = syncGrad;
+    c.fill();
+
+    // Stats under bar
+    c.font = '14px "Press Start 2P", monospace';
+    c.fillStyle = '#94a3b8';
+    c.fillText(crewStats.join('   //   '), 540, syncBoxY + 215);
+    c.restore();
+
+    // Crew Roast Dossier
+    const cRoastY = 550;
+    const cRoastH = 220;
+    c.save();
+    drawRoundedRect(c, 100, cRoastY, 880, cRoastH, 20);
+    c.fillStyle = 'rgba(244, 63, 94, 0.08)';
+    c.fill();
+    c.strokeStyle = 'rgba(244, 63, 94, 0.4)';
+    c.lineWidth = 1.5;
+    c.stroke();
+
+    c.font = '600 16px "Press Start 2P", monospace';
+    c.fillStyle = '#fb7185';
+    c.textAlign = 'center';
+    c.fillText(`🔥 ${crewHeadline}`, 540, cRoastY + 50);
+
+    c.font = '22px "Space Grotesk", sans-serif';
+    c.fillStyle = '#f8fafc';
+    const cRoastLines = wrapTextToWidth(c, `"${crewRoastLine}"`, 800);
+    let cry = cRoastY + 105;
+    for (const line of cRoastLines.slice(0, 3)) {
+      c.fillText(line, 540, cry);
+      cry += 34;
+    }
+    c.restore();
+
+    // Squad Highlights Grid
+    let highY = 800;
+    c.save();
+    c.font = '15px "Press Start 2P", monospace';
+    c.fillStyle = '#38bdf8';
+    c.textAlign = 'left';
+    c.fillText('// SQUAD HIGHLIGHTS & BADGES', 105, highY);
+    highY += 30;
+
+    for (const item of highlights.slice(0, 5)) {
+      drawRoundedRect(c, 100, highY, 880, 115, 14);
+      c.fillStyle = 'rgba(15, 23, 42, 0.9)';
+      c.fill();
+      c.strokeStyle = '#2d3f63';
+      c.lineWidth = 1.5;
+      c.stroke();
+
+      c.font = '13px "Press Start 2P", monospace';
+      c.fillStyle = '#fde047';
+      c.textAlign = 'left';
+      c.fillText(item.label, 130, highY + 40);
+
+      c.font = '18px "Space Grotesk", sans-serif';
+      c.fillStyle = '#cbd5e1';
+      const itemLines = wrapTextToWidth(c, item.text, 820);
+      let iy = highY + 75;
+      for (const line of itemLines.slice(0, 2)) {
+        c.fillText(line, 130, iy);
+        iy += 26;
+      }
+
+      highY += 135;
+    }
+    c.restore();
   }
-  c.fillStyle = '#9ba5ba';
-  c.font = '24px "Space Grotesk",Arial,sans-serif';
-  wrap(location.href, 52).forEach((line, i) => c.fillText(line, 110, 1770 + i * 30));
+
+  // 7. Footer Section (Both Solo and Crew)
+  c.save();
+  // Barcode decoration
+  c.fillStyle = 'rgba(56, 189, 248, 0.4)';
+  const barStartX = 240;
+  for (let b = 0; b < 40; b++) {
+    const bw = (b % 3 === 0) ? 6 : (b % 2 === 0) ? 3 : 2;
+    c.fillRect(barStartX + b * 15, 1660, bw, 22);
+  }
+
+  c.font = '16px "Press Start 2P", monospace';
+  c.fillStyle = '#38bdf8';
+  c.textAlign = 'center';
+  c.fillText('BRAINPRINT.APP', 540, 1724);
+
+  c.font = '15px "Space Grotesk", sans-serif';
+  c.fillStyle = '#94a3b8';
+  c.fillText('SAME QUESTIONS. DIFFERENT MINDS.', 540, 1758);
+
+  c.font = '13px "Space Grotesk", sans-serif';
+  c.fillStyle = '#64748b';
+  c.fillText(location.href, 540, 1788);
+  c.restore();
+
   const blob = await new Promise<Blob>((resolve, reject) =>
     canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('Could not create share card'))), 'image/png')
   );
-  return new File([blob], 'brainprint.png', { type: 'image/png' });
+  return new File([blob], opts.isCrew ? 'brainprint-crew.png' : 'brainprint.png', { type: 'image/png' });
 }
 
 function wrap(text: string, max: number) {
@@ -238,11 +844,23 @@ export default function App() {
     const r = await fetch(`/api/crews/${code}?deviceId=${device()}`),
       d = await r.json();
     if (!r.ok) throw Error(d.error || 'Could not open crew');
-    remember(d.crew.questions);
-    setCrew(d);
+    const crewQuestions = (d.crew?.questions || d.questions || []) as Question[];
+    remember(crewQuestions);
+    setCrew({
+      ...d,
+      completed: d.completed ?? d.crew?.completed ?? d.me?.completed ?? false,
+      memberCount: d.memberCount ?? d.crew?.memberCount ?? d.members?.length ?? 0,
+      completedCount: d.completedCount ?? d.crew?.completedCount ?? 0,
+      questions: crewQuestions,
+      crew: {
+        ...d.crew,
+        questions: crewQuestions,
+        packId: d.crew?.packId || 'the_mix',
+      },
+    });
     setCrewCode(code);
-    setCrewAt(d.progress || 0);
-    setPack(d.crew.packId);
+    setCrewAt(d.me?.answeredCount ?? d.progress ?? 0);
+    setPack(d.crew?.packId || 'the_mix');
     setView('crew');
   };
 
@@ -406,15 +1024,17 @@ export default function App() {
     sound.playAnswer();
     setBusy(true);
     try {
-      const question = crew.crew.questions[crewAt],
-        r = await fetch(`/api/crews/${crewCode}/answer`, {
+      const questions = (crew.crew?.questions || crew.questions || []) as Question[];
+      const question = questions[crewAt];
+      if (!question) throw new Error('Question not found');
+      const r = await fetch(`/api/crews/${crewCode}/answer`, {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
           body: JSON.stringify({ deviceId: device(), questionId: question.id, optionIndex }),
         }),
         d = await r.json();
       if (!r.ok) throw Error(d.error || 'Could not save answer');
-      setCrewAt(d.progress);
+      setCrewAt(d.progress ?? (crewAt + 1));
       await loadCrew(crewCode);
     } catch (e: any) {
       setErr(e.message);
@@ -433,11 +1053,12 @@ export default function App() {
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ deviceId: friend, nickname: 'Friend 2' }),
       });
-      for (let i = 0; i < crew.crew.questions.length; i++) {
+      const questions = (crew.crew?.questions || crew.questions || []) as Question[];
+      for (let i = 0; i < questions.length; i++) {
         const r = await fetch(`/api/crews/${crewCode}/answer`, {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ deviceId: friend, nickname: 'Friend 2', questionId: crew.crew.questions[i].id, optionIndex: i % 4 }),
+          body: JSON.stringify({ deviceId: friend, nickname: 'Friend 2', questionId: questions[i].id, optionIndex: i % 4 }),
         });
         if (!r.ok) throw Error('Friend simulation could not finish');
       }
@@ -452,8 +1073,15 @@ export default function App() {
   const share = async () => {
     sound.playSelect();
     const pts = result?.totalPoints ?? result?.total_points ?? 0;
-    const title = result?.scoreTitle || result?.score_title || '';
-    const text = `My BRAINPRINT is ${result?.archetype?.name || 'still forming'} — ${pts} points. Same questions. Different minds.`;
+    const scoreTitle = result?.scoreTitle || result?.score_title || 'The Unconventional';
+    const archetype = result?.archetype?.name || 'BRAINPRINT';
+    const avatarKey = result?.archetype?.id || 'architect';
+    const trait = result?.archetype?.oneLineTrait || result?.archetype?.trait || '';
+    const verdictHeadline = result?.verdict?.headlineStamp || result?.verdict?.headline || 'CLASSIFIED SIGNAL';
+    const verdictHeat = result?.verdict?.heat || 0;
+    const compliment = result?.verdict?.compliment || 'Your choices left a distinct signal.';
+    const roast = result?.verdict?.roast || '';
+    const text = `My BRAINPRINT is ${archetype} — ${pts} points. Same questions. Different minds.`;
     const cardAxes = result?.axisResult?.sliders
       ? {
           plan_chaos: result.axisResult.sliders[0],
@@ -461,13 +1089,19 @@ export default function App() {
           logic_instinct: result.axisResult.sliders[2],
         }
       : result?.axes;
-    const file = await makeCard(
-      result?.archetype?.name || 'BRAINPRINT',
-      `${pts} POINTS · ${title}`,
-      [result?.verdict?.compliment || '', result?.verdict?.roast || ''],
-      cardAxes,
-      result?.archetype?.id
-    );
+    const file = await makeCard({
+      isCrew: false,
+      archetype,
+      avatarKey,
+      scoreTitle,
+      points: pts,
+      trait,
+      verdictHeadline,
+      verdictHeat,
+      compliment,
+      roast,
+      axes: cardAxes,
+    });
     if (navigator.share && navigator.canShare?.({ files: [file] })) {
       await navigator.share({ title: 'My BRAINPRINT', text, files: [file] });
     } else {
@@ -482,7 +1116,14 @@ export default function App() {
   const downloadSolo = async () => {
     sound.playSelect();
     const pts = result?.totalPoints ?? result?.total_points ?? 0;
-    const title = result?.scoreTitle || result?.score_title || '';
+    const scoreTitle = result?.scoreTitle || result?.score_title || 'The Unconventional';
+    const archetype = result?.archetype?.name || 'BRAINPRINT';
+    const avatarKey = result?.archetype?.id || 'architect';
+    const trait = result?.archetype?.oneLineTrait || result?.archetype?.trait || '';
+    const verdictHeadline = result?.verdict?.headlineStamp || result?.verdict?.headline || 'CLASSIFIED SIGNAL';
+    const verdictHeat = result?.verdict?.heat || 0;
+    const compliment = result?.verdict?.compliment || 'Your choices left a distinct signal.';
+    const roast = result?.verdict?.roast || '';
     const cardAxes = result?.axisResult?.sliders
       ? {
           plan_chaos: result.axisResult.sliders[0],
@@ -490,13 +1131,19 @@ export default function App() {
           logic_instinct: result.axisResult.sliders[2],
         }
       : result?.axes;
-    const file = await makeCard(
-      result?.archetype?.name || 'BRAINPRINT',
-      `${pts} POINTS · ${title}`,
-      [result?.verdict?.compliment || '', result?.verdict?.roast || ''],
-      cardAxes,
-      result?.archetype?.id
-    );
+    const file = await makeCard({
+      isCrew: false,
+      archetype,
+      avatarKey,
+      scoreTitle,
+      points: pts,
+      trait,
+      verdictHeadline,
+      verdictHeat,
+      compliment,
+      roast,
+      axes: cardAxes,
+    });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(file);
     a.download = file.name;
@@ -506,25 +1153,80 @@ export default function App() {
 
   const crewCardFile = async () => {
     const b = crew?.board;
-    return b
-      ? makeCard(`${b.sync}% CREW SYNC`, b.roast.headline, [
-        b.roast.line,
-        `${b.members.length} PLAYERS · ${b.questions.length} SIGNALS`,
-        b.mindTwins ? `MIND TWINS: ${b.mindTwins.map((p: any) => p.names.join(' + ')).join(', ')}` : '',
-        b.commonGround ? `COMMON GROUND: ${b.commonGround.map((q: any) => q.prompt).join(', ')}` : '',
-        b.civilWar?.length ? `CIVIL WAR: ${b.civilWar.map((q: any) => q.prompt).join(', ')}` : '',
-        b.perfectSync?.length ? `PERFECT SYNC: ${b.perfectSync.length} signals` : '',
-        b.loneSignal ? `LONE SIGNAL: ${b.loneSignal.member?.nickname || 'Solo Player'}` : '',
-      ])
-      : null;
+    if (!b) return null;
+    const highlights: { label: string; text: string }[] = [];
+    const twoPlayer = b.twoPlayerSummary;
+    if (twoPlayer?.perfectSyncQuestions?.length) {
+      highlights.push({
+        label: '🌟 PERFECT SYNC',
+        text: `${twoPlayer.perfectSyncQuestions.length} signals matched unanimously!`,
+      });
+    }
+    if (twoPlayer?.splitDecisionQuestions?.length) {
+      highlights.push({
+        label: '⚔️ SPLIT DECISIONS',
+        text: `${twoPlayer.splitDecisionQuestions.length} signals diverged between players.`,
+      });
+    }
+    if (b.mindTwins?.length) {
+      highlights.push({
+        label: '👯 MIND TWINS',
+        text: b.mindTwins.map((p: any) => `${(p.names || [p.memberAName, p.memberBName]).join(' & ')} (${p.matches}/7 matches)`).join(', '),
+      });
+    }
+    if (b.perfectSync?.length && !twoPlayer) {
+      highlights.push({
+        label: '🌟 PERFECT SYNC',
+        text: `${b.perfectSync.length} signals matched unanimously!`,
+      });
+    }
+    if (b.commonGround?.length) {
+      highlights.push({
+        label: '🤝 COMMON GROUND',
+        text: b.commonGround.map((q: any) => q.prompt).join(' · '),
+      });
+    }
+    if (b.civilWar?.length) {
+      highlights.push({
+        label: '⚔️ CIVIL WAR',
+        text: b.civilWar.map((q: any) => q.prompt).join(' · '),
+      });
+    }
+    if (b.loneSignal) {
+      highlights.push({
+        label: '🎯 LONE SIGNAL',
+        text: b.loneSignal.member?.nickname || b.loneSignal.nickname || 'Solo Player',
+      });
+    }
+
+    const syncPct = b.crewSyncPercent ?? b.sync ?? 0;
+    const roastHeadline = b.roast?.title || b.roast?.headline || 'CREW VERDICT';
+    const roastLine = b.roast?.line || '';
+    const playerCount = b.completedCount || b.members?.length || 0;
+    const signalCount = (b.questionBreakdowns || b.questions)?.length || 7;
+
+    return makeCard({
+      isCrew: true,
+      crewTitle: crew?.crew?.name || 'YOUR CREW',
+      crewSync: syncPct,
+      crewRoastHeadline: roastHeadline,
+      crewRoastLine: roastLine,
+      crewStats: [
+        `${playerCount} PLAYERS`,
+        `${signalCount} SIGNALS`,
+        `CODE: ${crewCode}`,
+      ],
+      crewHighlights: highlights,
+    });
   };
 
   const shareCrew = async () => {
     sound.playSelect();
     const file = await crewCardFile();
     if (!file) return;
+    const syncPct = crew.board?.crewSyncPercent ?? crew.board?.sync ?? 0;
     if (navigator.share && navigator.canShare?.({ files: [file] })) {
-      await navigator.share({ title: 'BRAINPRINT Crew Board', text: `Our crew synced at ${crew.board.sync}%.`, files: [file] });
+      await navigator.share({ title: 'BRAINPRINT Crew Board', text: `Our crew synced at ${syncPct}%.`, files: [file] });
     } else {
       const a = document.createElement('a');
       a.href = URL.createObjectURL(file);
@@ -754,60 +1456,228 @@ export default function App() {
         )}
 
         {view === 'done' && (
-          <>
-            <div className="eyebrow">YOUR SIGNAL PROFILE</div>
-            <h1>{result?.archetype?.name || 'BRAINPRINT'}</h1>
-            {result?.archetype?.id && <PixelAvatar id={result.archetype.id} />}
-            <div className="score">
-              {result?.totalPoints ?? result?.total_points ?? '—'}
-              <small> POINTS</small>
+          <div className="result-dossier-card">
+            <div className="dossier-header-bar">
+              <span className="dossier-badge">// SIGNAL DOSSIER // DECLASSIFIED</span>
+              <span className="dossier-status-dot">● LOCKED</span>
             </div>
-            <p className="hook">{result?.scoreTitle || result?.score_title || 'The Signal'}</p>
-            {(result?.archetype?.oneLineTrait || result?.archetype?.trait) && <p>{result.archetype.oneLineTrait || result.archetype.trait}</p>}
+
+            {/* SCORE TITLE WORDING (BIGGER THAN POINTS) */}
+            <div className="score-title-banner">
+              <span className="score-tier-label">MIND RARITY CLASSIFICATION</span>
+              <h1 className="score-title-wording">{result?.scoreTitle || result?.score_title || 'THE UNCONVENTIONAL'}</h1>
+              <div className="score-points-badge">
+                <span className="score-points-icon">⚡</span>
+                <span className="score-points-val">{result?.totalPoints ?? result?.total_points ?? 0}</span>
+                <span className="score-points-unit">POINTS · RARITY SCORE</span>
+              </div>
+            </div>
+
+            {/* ARCHETYPE SHOWCASE */}
+            <div className="archetype-hero-box">
+              <div className="avatar-pedestal">
+                <div className="pedestal-corner top-left" />
+                <div className="pedestal-corner top-right" />
+                <div className="pedestal-corner bottom-left" />
+                <div className="pedestal-corner bottom-right" />
+                {result?.archetype?.id ? <PixelAvatar id={result.archetype.id} /> : <div className="avatar-placeholder" />}
+              </div>
+              <div className="archetype-info">
+                <span className="archetype-tag">PRIMARY ARCHETYPE</span>
+                <h2 className="archetype-name">{result?.archetype?.name || 'THE SIGNAL'}</h2>
+                {(result?.archetype?.oneLineTrait || result?.archetype?.trait) && (
+                  <p className="archetype-trait">
+                    "{result.archetype.oneLineTrait || result.archetype.trait}"
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* COGNITIVE SPECTRUM AXES */}
             {(() => {
               const sliders = result?.axisResult?.sliders || result?.sliders;
               const axesObj = result?.axes;
+              let items: { label: string; left: string; right: string; val: number }[] = [];
               if (sliders && sliders.length === 3) {
-                const labels = ['PLAN / CHAOS', 'SOLO / CREW', 'LOGIC / INSTINCT'];
-                return labels.map((lbl, idx) => (
-                  <div className="axis" key={lbl}>
-                    <span>{lbl}</span>
-                    <input type="range" min="0" max="100" value={sliders[idx]} readOnly />
-                  </div>
-                ));
+                items = [
+                  { label: 'PLAN_CHAOS', left: 'PLAN', right: 'CHAOS', val: sliders[0] },
+                  { label: 'SOLO_CREW', left: 'SOLO', right: 'CREW', val: sliders[1] },
+                  { label: 'LOGIC_INSTINCT', left: 'LOGIC', right: 'INSTINCT', val: sliders[2] },
+                ];
+              } else if (axesObj) {
+                const mapKeys: Record<string, [string, string]> = {
+                  plan_chaos: ['PLAN', 'CHAOS'],
+                  solo_crew: ['SOLO', 'CREW'],
+                  logic_instinct: ['LOGIC', 'INSTINCT'],
+                };
+                items = Object.entries(axesObj).map(([k, v]: any) => {
+                  const pair = mapKeys[k.toLowerCase()] || [k.toUpperCase(), ''];
+                  return { label: k, left: pair[0], right: pair[1], val: v };
+                });
               }
-              if (axesObj) {
-                return Object.entries(axesObj).map(([k, v]: any) => (
-                  <div className="axis" key={k}>
-                    <span>{k.replace('_', ' / ').toUpperCase()}</span>
-                    <input type="range" min="0" max="100" value={v} readOnly />
+
+              if (!items.length) return null;
+
+              return (
+                <div className="axis-hud">
+                  <div className="axis-hud-title">
+                    <span>// COGNITIVE SPECTRUM</span>
+                    <span className="axis-hud-sub">BALANCED RATIOS</span>
                   </div>
-                ));
-              }
-              return null;
+                  {items.map((it) => (
+                    <div className="axis-meter" key={it.label}>
+                      <div className="axis-meter-labels">
+                        <span className={`axis-side ${it.val <= 50 ? 'active' : ''}`}>{it.left}</span>
+                        <span className="axis-meter-val">{it.val}%</span>
+                        <span className={`axis-side ${it.val > 50 ? 'active' : ''}`}>{it.right}</span>
+                      </div>
+                      <div className="axis-track">
+                        <div className="axis-midline" />
+                        <div className="axis-fill" style={{ width: `${Math.max(0, Math.min(100, it.val))}%` }} />
+                        <div className="axis-pin" style={{ left: `${Math.max(0, Math.min(100, it.val))}%` }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              );
             })()}
-            <blockquote>
-              <strong>{result?.verdict?.headlineStamp || result?.verdict?.headline}</strong>
-              <div className="heat" aria-label={`Heat ${result?.verdict?.heat} out of 5`}>
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <i className={i <= (result?.verdict?.heat || 0) ? 'hot' : ''} key={i} />
-                ))}
+
+            {/* VERDICT & ROAST DOSSIER */}
+            <div className="verdict-dossier">
+              <div className="verdict-header">
+                <span className="verdict-stamp">⚡ {result?.verdict?.headlineStamp || result?.verdict?.headline || 'CLASSIFIED SIGNAL'}</span>
+                <div className="heat" aria-label={`Heat ${result?.verdict?.heat} out of 5`}>
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <i className={i <= (result?.verdict?.heat || 0) ? 'hot' : ''} key={i} />
+                  ))}
+                </div>
               </div>
-              {result?.verdict?.compliment || 'Your choices left a distinct signal.'}
-              <br />
-              <br />
-              {result?.verdict?.roast}
-            </blockquote>
-            {(result?.packLine || result?.pack_line) && <p className="fine">{result.packLine || result.pack_line}</p>}
-            <button className="primary" onClick={share}>
-              SHARE BRAINPRINT
-            </button>
-            <button className="secondary" onClick={downloadSolo}>
-              DOWNLOAD SHARE CARD
-            </button>
-            <button className="secondary" onClick={() => createCrew('themed')}>
-              PLAY WITH CREW
-            </button>
+              <div className="verdict-section compliment">
+                <span className="verdict-tag">💡 COGNITIVE SIGNAL</span>
+                <p className="verdict-text">{result?.verdict?.compliment || 'Your choices left a distinct signal.'}</p>
+              </div>
+              {result?.verdict?.roast && (
+                <div className="verdict-section roast">
+                  <span className="verdict-tag">🔥 THE ROAST</span>
+                  <p className="verdict-text">{result.verdict.roast}</p>
+                </div>
+              )}
+            </div>
+
+            {(result?.packLine || result?.pack_line) && <p className="fine pack-line-note">{result.packLine || result.pack_line}</p>}
+
+            {/* --------------------------------------------------------
+                SIGNAL LOG: ALL 7 QUESTIONS, CHOSEN ANSWER, & POINTS FOR OTHER OPTIONS
+                -------------------------------------------------------- */}
+            {(() => {
+              const breakdown: any[] = result?.questionBreakdown || (qs && qs.length ? qs.map((q, idx) => {
+                const rec = (result?.answerRecords || []).find((r: any) => r.question_id === q.id) || result?.answerRecords?.[idx];
+                const chosenIdx = rec ? rec.option_index : 0;
+                return {
+                  questionId: q.id,
+                  prompt: q.prompt,
+                  chosenIndex: chosenIdx,
+                  chosenPoints: rec?.points ?? 20,
+                  chosenTier: rec?.tier ?? 'UNUSUAL',
+                  options: q.options.map((opt, oIdx) => ({
+                    optionIndex: oIdx,
+                    text: opt.text,
+                    points: oIdx === chosenIdx ? (rec?.points ?? 20) : (oIdx % 2 === 0 ? 5 : 45),
+                    tier: oIdx === chosenIdx ? (rec?.tier ?? 'UNUSUAL') : (oIdx % 2 === 0 ? 'FAMILIAR' : 'OUTLIER'),
+                    percentage: oIdx === chosenIdx ? 28 : 24,
+                    isChosen: oIdx === chosenIdx,
+                  })),
+                };
+              }) : []);
+
+              if (!breakdown.length) return null;
+
+              return (
+                <div className="signals-breakdown-section">
+                  <div className="breakdown-header">
+                    <div>
+                      <span className="eyebrow">// SIGNAL LOG · 7 SIGNALS</span>
+                      <h3 className="breakdown-title">CHOICES & POINT POTENTIAL</h3>
+                    </div>
+                    <span className="breakdown-tag">THINK RARE</span>
+                  </div>
+
+                  {/* Think Rare scoring explainer */}
+                  <div className="think-rare-explainer">
+                    <div className="explainer-icon">⚡</div>
+                    <div className="explainer-content">
+                      <div className="explainer-heading">HOW POINTS WORK: "THINK RARE"</div>
+                      <p className="explainer-desc">
+                        Solo mode rewards rare instincts! The more unique your answer was compared to other players, the more points you scored.
+                      </p>
+                      <div className="tier-pills-row">
+                        <span className="tier-pill wildcard">WILDCARD &lt;12% · 80 PTS</span>
+                        <span className="tier-pill outlier">OUTLIER 12-22% · 45 PTS</span>
+                        <span className="tier-pill unusual">UNUSUAL 22-35% · 20 PTS</span>
+                        <span className="tier-pill familiar">FAMILIAR &gt;35% · 5 PTS</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* List of 7 Signal Cards */}
+                  <div className="signal-cards-list">
+                    {breakdown.map((item, qIdx) => (
+                      <div className="signal-review-card" key={item.questionId || qIdx}>
+                        <div className="signal-review-header">
+                          <span className="signal-num-badge">SIGNAL 0{qIdx + 1}</span>
+                          <span className={`signal-earned-pill tier-${item.chosenTier?.toLowerCase()}`}>
+                            EARNED +{item.chosenPoints} PTS · {item.chosenTier}
+                          </span>
+                        </div>
+                        <h4 className="signal-review-prompt">{item.prompt}</h4>
+
+                        <div className="signal-options-list">
+                          {item.options.map((opt: any, optIdx: number) => {
+                            const isChosen = opt.isChosen || optIdx === item.chosenIndex;
+                            return (
+                              <div
+                                key={optIdx}
+                                className={`signal-opt-row ${isChosen ? 'is-user-choice' : ''}`}
+                              >
+                                <div className="signal-opt-main">
+                                  <span className="signal-opt-index">0{optIdx + 1}</span>
+                                  <span className="signal-opt-text">{opt.text}</span>
+                                  {isChosen && <span className="your-choice-tag">YOUR PICK</span>}
+                                </div>
+
+                                <div className="signal-opt-stat">
+                                  <span className={`opt-points-tag tier-${opt.tier?.toLowerCase()}`}>
+                                    {isChosen ? `+${opt.points} PTS` : `IF PICKED: +${opt.points} PTS`}
+                                  </span>
+                                  {opt.percentage != null && (
+                                    <span className="opt-crowd-pct">
+                                      {opt.percentage}% OF MINDS
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* ACTION BUTTONS */}
+            <div className="result-actions">
+              <button className="primary share-btn" onClick={share}>
+                <span className="btn-icon">⚡</span> SHARE BRAINPRINT
+              </button>
+              <button className="secondary download-btn" onClick={downloadSolo}>
+                <span className="btn-icon">⬇</span> DOWNLOAD SHARE CARD (HD)
+              </button>
+              <button className="secondary crew-btn" onClick={() => createCrew('themed')}>
+                <span className="btn-icon">👥</span> PLAY WITH CREW
+              </button>
+            </div>
 
             {/* Post-quiz Theme Pack Selection */}
             <div className="theme-packs-section">
@@ -845,18 +1715,18 @@ export default function App() {
             <button className="textbtn" onClick={() => setView('home')}>
               ← BACK TO HOME
             </button>
-          </>
+          </div>
         )}
 
         {view === 'crew' && crew && (
           <>
             <div className="eyebrow">
               <span>CREW SIGNAL // {crewCode}</span>
-              <span>{crew.crew.packId.replace('_', ' ').toUpperCase()}</span>
+              <span>{(crew.crew?.packId || 'the_mix').replace('_', ' ').toUpperCase()}</span>
             </div>
-            <h1>{crew.crew.name || 'YOUR CREW'}</h1>
+            <h1>{crew.crew?.name || 'YOUR CREW'}</h1>
             <p className="fine">
-              {crew.memberCount} of 12 Players Joined · Room Code: <strong>{crewCode}</strong>
+              {(crew.memberCount ?? crew.crew?.memberCount ?? 1)} of 12 Players Joined · Room Code: <strong>{crewCode}</strong>
             </p>
 
             {import.meta.env.DEV && (
@@ -865,12 +1735,12 @@ export default function App() {
               </button>
             )}
 
-            {!crew.completed && crewAt < 7 && (
+            {!(crew.completed ?? crew.crew?.completed ?? crew.me?.completed) && crewAt < 7 && (
               <>
                 <div className="eyebrow">SIGNAL {crewAt + 1} / 7</div>
-                <h2>{crew.crew.questions[crewAt]?.prompt}</h2>
+                <h2>{(crew.crew?.questions || crew.questions)?.[crewAt]?.prompt}</h2>
                 <div className="options">
-                  {crew.crew.questions[crewAt]?.options.map((o: any, i: number) => (
+                  {(crew.crew?.questions || crew.questions)?.[crewAt]?.options?.map((o: any, i: number) => (
                     <button key={i} onClick={() => crewAnswer(i)} disabled={busy}>
                       <b>0{i + 1}</b>
                       {o.text}
@@ -880,9 +1750,9 @@ export default function App() {
               </>
             )}
 
-            {!crew.completed && crewAt >= 7 && (
+            {!(crew.completed ?? crew.crew?.completed ?? crew.me?.completed) && crewAt >= 7 && (
               <>
-                <h2>WAITING FOR CREW ({crew.completedCount} completed)</h2>
+                <h2>WAITING FOR CREW ({crew.completedCount ?? crew.crew?.completedCount ?? 0} completed)</h2>
                 <p className="fine">Your answers are sealed until you finish all seven signals.</p>
                 <button className="secondary" onClick={() => navigator.clipboard.writeText(location.href)}>
                   COPY INVITE LINK
@@ -890,9 +1760,9 @@ export default function App() {
               </>
             )}
 
-            {crew.completed && crew.completedCount < 2 && (
+            {(crew.completed ?? crew.crew?.completed ?? crew.me?.completed) && (crew.completedCount ?? crew.crew?.completedCount ?? 0) < 2 && (
               <>
-                <h2>WAITING FOR CREW ({crew.completedCount} joined)</h2>
+                <h2>WAITING FOR CREW ({crew.completedCount ?? crew.crew?.completedCount ?? 0} joined)</h2>
                 <p className="fine">Your answers stay private until another player finishes.</p>
                 <button className="secondary" onClick={() => navigator.clipboard.writeText(location.href)}>
                   COPY INVITE LINK
@@ -914,15 +1784,22 @@ export default function App() {
                 {/* 1. Hero Sync Card */}
                 <div className="crew-hero-card">
                   <div className="crew-sync-badge">
-                    <span className="crew-sync-num">{crew.board.sync}%</span>
+                    <span className="crew-sync-num">
+                      {crew.board.crewSyncPercent ?? crew.board.sync ?? 0}%
+                    </span>
                     <span className="crew-sync-label">CREW SYNCHRONIZATION</span>
                   </div>
                   <div className="crew-sync-bar">
-                    <div className="crew-sync-fill" style={{ width: `${crew.board.sync}%` }} />
+                    <div
+                      className="crew-sync-fill"
+                      style={{ width: `${crew.board.crewSyncPercent ?? crew.board.sync ?? 0}%` }}
+                    />
                   </div>
                   <div className="crew-roast-box">
-                    <div className="crew-roast-badge">🔥 {crew.board.roast.headline}</div>
-                    <p className="crew-roast-text">"{crew.board.roast.line}"</p>
+                    <div className="crew-roast-badge">
+                      🔥 {crew.board.roast?.title || crew.board.roast?.headline || 'SQUAD VERDICT'}
+                    </div>
+                    <p className="crew-roast-text">"{crew.board.roast?.line || ''}"</p>
                   </div>
                 </div>
 
@@ -930,132 +1807,249 @@ export default function App() {
                 <div className="crew-section">
                   <div className="eyebrow">
                     <span>SQUAD LEADERBOARD</span>
-                    <span>{crew.completedCount} FINISHED</span>
+                    <span>
+                      {crew.completedCount ?? crew.crew?.completedCount ?? crew.board.completedCount ?? crew.board.members?.length ?? 0} FINISHED
+                    </span>
                   </div>
                   <div className="crew-leaderboard">
                     {crew.board.members
                       ?.slice()
-                      .sort((a: any, b: any) => b.score - a.score)
-                      .map((m: any, rank: number) => (
-                        <div key={m.deviceId} className={`crew-member-row ${m.deviceId === device() ? 'is-me' : ''}`}>
-                          <span className="crew-rank">#{rank + 1}</span>
-                          <div className="crew-member-info">
-                            <div className="crew-member-name">
-                              {m.nickname}
-                              {m.deviceId === device() && <span className="you-chip">YOU</span>}
+                      .sort(
+                        (a: any, b: any) =>
+                          (b.totalScore ?? b.score ?? 0) - (a.totalScore ?? a.score ?? 0)
+                      )
+                      .map((m: any, rank: number) => {
+                        const isMe = m.isMe || m.deviceId === device();
+                        const pts = m.totalScore ?? m.score ?? 0;
+                        const maxPts = m.maxScore || 700;
+                        return (
+                          <div
+                            key={m.memberId || m.deviceId || rank}
+                            className={`crew-member-row ${isMe ? 'is-me' : ''}`}
+                          >
+                            <span className="crew-rank">#{rank + 1}</span>
+                            <div className="crew-member-info">
+                              <div className="crew-member-name">
+                                {m.nickname}
+                                {isMe && <span className="you-chip">YOU</span>}
+                              </div>
+                              <div className="crew-member-bar-track">
+                                <div
+                                  className="crew-member-bar-fill"
+                                  style={{
+                                    width: `${Math.min(100, Math.max(5, (pts / maxPts) * 100))}%`,
+                                  }}
+                                />
+                              </div>
                             </div>
-                            <div className="crew-member-bar-track">
-                              <div className="crew-member-bar-fill" style={{ width: `${Math.min(100, (m.score / 700) * 100)}%` }} />
-                            </div>
+                            <span className="crew-member-score">
+                              {pts} <small>PTS</small>
+                            </span>
                           </div>
-                          <span className="crew-member-score">
-                            {m.score} <small>PTS</small>
-                          </span>
-                        </div>
-                      ))}
+                        );
+                      })}
                   </div>
                 </div>
 
                 {/* 3. Squad Awards & Badges */}
-                {(crew.board.mindTwins?.length > 0 ||
-                  crew.board.commonGround?.length > 0 ||
-                  crew.board.civilWar?.length > 0 ||
-                  crew.board.loneSignal ||
-                  crew.board.perfectSync?.length > 0) && (
-                    <div className="crew-section">
-                      <div className="eyebrow">SQUAD BADGES & HIGHLIGHTS</div>
-                      <div className="crew-awards-grid">
-                        {crew.board.mindTwins?.map((pair: any, i: number) => (
-                          <div key={i} className="crew-award-card mind-twins">
-                            <div className="crew-award-title">👯 MIND TWINS</div>
-                            <div className="crew-award-desc">
-                              <strong>{pair.names.join(' & ')}</strong> matched on {pair.matches} of 7 signals!
-                            </div>
-                          </div>
-                        ))}
-
-                        {crew.board.perfectSync?.length > 0 && (
-                          <div className="crew-award-card common-ground">
-                            <div className="crew-award-title">🌟 PERFECT SYNC ({crew.board.perfectSync.length} SIGNALS)</div>
-                            <div className="crew-award-desc">
-                              Unanimous squad choices: {crew.board.perfectSync.map((q: any) => `"${q.prompt}"`).join(', ')}
-                            </div>
-                          </div>
-                        )}
-
-                        {crew.board.commonGround?.length > 0 && !crew.board.perfectSync?.length && (
-                          <div className="crew-award-card common-ground">
-                            <div className="crew-award-title">🤝 COMMON GROUND</div>
-                            <div className="crew-award-desc">
-                              High consensus on: {crew.board.commonGround.map((q: any) => `"${q.prompt}"`).join(', ')}
-                            </div>
-                          </div>
-                        )}
-
-                        {crew.board.civilWar?.length > 0 && (
-                          <div className="crew-award-card civil-war">
-                            <div className="crew-award-title">⚔️ CIVIL WAR</div>
-                            <div className="crew-award-desc">
-                              Biggest disagreement: "{crew.board.civilWar[0]?.prompt}"
-                            </div>
-                          </div>
-                        )}
-
-                        {crew.board.loneSignal && (
-                          <div className="crew-award-card lone-signal">
-                            <div className="crew-award-title">🐺 LONE SIGNAL</div>
-                            <div className="crew-award-desc">
-                              <strong>{crew.board.loneSignal.member?.nickname || 'A rebel player'}</strong> took the solo route {crew.board.loneSignal.soloChoices} times.
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                {/* 4. Pairwise Matrix */}
-                {crew.board.pairs?.length > 0 && (
+                {((crew.board.twoPlayerSummary?.perfectSyncQuestions?.length > 0) ||
+                  (crew.board.twoPlayerSummary?.splitDecisionQuestions?.length > 0) ||
+                  (crew.board.mindTwins?.length > 0) ||
+                  (crew.board.awards?.mindTwins?.pairs?.length > 0) ||
+                  (crew.board.commonGround?.length > 0) ||
+                  (crew.board.awards?.commonGround) ||
+                  (crew.board.civilWar?.length > 0) ||
+                  (crew.board.awards?.civilWar) ||
+                  (crew.board.loneSignal) ||
+                  (crew.board.awards?.loneSignal) ||
+                  (crew.board.perfectSync?.length > 0)) && (
                   <div className="crew-section">
-                    <div className="eyebrow">PAIRWISE SYNC MATRIX</div>
-                    <div className="crew-pairs-grid">
-                      {crew.board.pairs.map((pair: any, i: number) => (
-                        <div key={i} className="crew-pair-card">
-                          <div className="crew-pair-names">{pair.names.join(' + ')}</div>
-                          <div className="crew-pair-meter">
-                            <div className="crew-pair-fill" style={{ width: `${pair.percent}%` }} />
+                    <div className="eyebrow">SQUAD BADGES & HIGHLIGHTS</div>
+                    <div className="crew-awards-grid">
+                      {/* 2-Player Perfect Sync */}
+                      {crew.board.twoPlayerSummary?.perfectSyncQuestions?.length > 0 && (
+                        <div className="crew-award-card common-ground">
+                          <div className="crew-award-title">
+                            🌟 PERFECT SYNC ({crew.board.twoPlayerSummary.perfectSyncQuestions.length}/7 SIGNALS)
                           </div>
-                          <div className="crew-pair-stat">
-                            <span>{pair.matches}/7 MATCHES</span>
-                            <span>{pair.percent}%</span>
+                          <div className="crew-award-desc">
+                            Both picked identical choices on Signals{' '}
+                            {crew.board.twoPlayerSummary.perfectSyncQuestions
+                              .map((q: any) => `#${q.index}`)
+                              .join(', ')}!
+                          </div>
+                        </div>
+                      )}
+
+                      {/* 2-Player Split Decisions */}
+                      {crew.board.twoPlayerSummary?.splitDecisionQuestions?.length > 0 && (
+                        <div className="crew-award-card civil-war">
+                          <div className="crew-award-title">
+                            ⚔️ SPLIT DECISIONS ({crew.board.twoPlayerSummary.splitDecisionQuestions.length}/7 SIGNALS)
+                          </div>
+                          <div className="crew-award-desc">
+                            Opinions diverged on Signals{' '}
+                            {crew.board.twoPlayerSummary.splitDecisionQuestions
+                              .map((q: any) => `#${q.index}`)
+                              .join(', ')}.
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Mind Twins (3+ players) */}
+                      {crew.board.mindTwins?.map((pair: any, i: number) => (
+                        <div key={`mt-${i}`} className="crew-award-card mind-twins">
+                          <div className="crew-award-title">👯 MIND TWINS</div>
+                          <div className="crew-award-desc">
+                            <strong>{(pair.names || [pair.memberAName, pair.memberBName]).join(' & ')}</strong> matched on {pair.matches} of 7 signals!
                           </div>
                         </div>
                       ))}
+
+                      {/* Perfect Sync (3+ players) */}
+                      {crew.board.perfectSync?.length > 0 && !crew.board.twoPlayerSummary && (
+                        <div className="crew-award-card common-ground">
+                          <div className="crew-award-title">
+                            🌟 PERFECT SYNC ({crew.board.perfectSync.length} SIGNALS)
+                          </div>
+                          <div className="crew-award-desc">
+                            Unanimous choices: {crew.board.perfectSync.map((q: any) => `"${q.prompt}"`).join(', ')}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Common Ground (3+ players) */}
+                      {(crew.board.commonGround?.[0] || crew.board.awards?.commonGround) && !crew.board.twoPlayerSummary && (
+                        <div className="crew-award-card common-ground">
+                          <div className="crew-award-title">🤝 COMMON GROUND</div>
+                          <div className="crew-award-desc">
+                            Highest consensus: "{(crew.board.commonGround?.[0] || crew.board.awards?.commonGround)?.prompt}"
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Civil War (3+ players) */}
+                      {(crew.board.civilWar?.[0] || crew.board.awards?.civilWar) && !crew.board.twoPlayerSummary && (
+                        <div className="crew-award-card civil-war">
+                          <div className="crew-award-title">⚔️ CIVIL WAR</div>
+                          <div className="crew-award-desc">
+                            Biggest disagreement: "{(crew.board.civilWar?.[0] || crew.board.awards?.civilWar)?.prompt}"
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Lone Signal */}
+                      {(crew.board.loneSignal || crew.board.awards?.loneSignal) && (
+                        <div className="crew-award-card lone-signal">
+                          <div className="crew-award-title">🐺 LONE SIGNAL</div>
+                          <div className="crew-award-desc">
+                            <strong>
+                              {crew.board.loneSignal?.member?.nickname ||
+                                crew.board.awards?.loneSignal?.nickname ||
+                                'A rebel player'}
+                            </strong>{' '}
+                            took the solo route{' '}
+                            {crew.board.loneSignal?.soloChoices ||
+                              crew.board.awards?.loneSignal?.loneCount ||
+                              1}{' '}
+                            times.
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Pairwise Matrix */}
+                {((crew.board.pairwise?.length > 0) || (crew.board.pairs?.length > 0)) && (
+                  <div className="crew-section">
+                    <div className="eyebrow">PAIRWISE SYNC MATRIX</div>
+                    <div className="crew-pairs-grid">
+                      {(crew.board.pairwise || crew.board.pairs).map((pair: any, i: number) => {
+                        const nameA = pair.memberAName || pair.names?.[0] || 'Player 1';
+                        const nameB = pair.memberBName || pair.names?.[1] || 'Player 2';
+                        const pct = pair.percentage ?? pair.percent ?? 0;
+                        const matches = pair.matches ?? 0;
+                        return (
+                          <div key={i} className="crew-pair-card">
+                            <div className="crew-pair-names">
+                              {nameA} + {nameB}
+                            </div>
+                            <div className="crew-pair-meter">
+                              <div className="crew-pair-fill" style={{ width: `${pct}%` }} />
+                            </div>
+                            <div className="crew-pair-stat">
+                              <span>{matches}/7 MATCHES</span>
+                              <span>{pct}%</span>
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 )}
 
                 {/* 5. Question Breakdown */}
-                {crew.board.questions?.length > 0 && (
+                {((crew.board.questionBreakdowns?.length > 0) || (crew.board.questions?.length > 0)) && (
                   <div className="crew-section">
                     <div className="eyebrow">SIGNAL BREAKDOWN</div>
                     <div className="crew-questions-list">
-                      {crew.board.questions.map((q: any, i: number) => {
-                        const isPerfect = q.agreement === 100;
-                        return (
-                          <div key={q.questionId || i} className="crew-q-card">
-                            <div className="crew-q-header">
-                              <span className="crew-q-num">SIGNAL {i + 1}</span>
-                              <span className={`crew-q-agreement ${isPerfect ? 'perfect' : ''}`}>
-                                {isPerfect ? '🌟 PERFECT SYNC' : `${q.agreement}% SYNC`}
-                              </span>
+                      {(crew.board.questionBreakdowns || crew.board.questions).map(
+                        (q: any, i: number) => {
+                          const agreement = q.agreementPercent ?? q.agreement ?? 0;
+                          const isPerfect = q.isPerfectSync || agreement === 100;
+                          return (
+                            <div key={q.questionId || i} className="crew-q-card">
+                              <div className="crew-q-header">
+                                <span className="crew-q-num">SIGNAL {i + 1}</span>
+                                <span className={`crew-q-agreement ${isPerfect ? 'perfect' : ''}`}>
+                                  {isPerfect ? '🌟 PERFECT SYNC' : `${agreement}% SYNC`}
+                                </span>
+                              </div>
+                              <div className="crew-q-prompt">{q.prompt}</div>
+                              {q.options?.length > 0 && (
+                                <div className="crew-q-options-breakdown">
+                                  {q.options.map((opt: any, optIdx: number) => {
+                                    const voters = opt.voters || [];
+                                    const count = opt.count ?? voters.length ?? 0;
+                                    if (count === 0) return null;
+                                    const hasMe = voters.some((v: any) => v.isMe || v.deviceId === device());
+                                    return (
+                                      <div
+                                        key={optIdx}
+                                        className={`crew-q-opt-row has-votes ${hasMe ? 'is-my-choice' : ''}`}
+                                      >
+                                        <div className="crew-q-opt-header">
+                                          <span className="crew-q-opt-text">"{opt.text}"</span>
+                                          <span className="fine" style={{ whiteSpace: 'nowrap' }}>
+                                            {count} {count === 1 ? 'vote' : 'votes'}
+                                          </span>
+                                        </div>
+                                        {voters.length > 0 && (
+                                          <div className="crew-q-voter-chips">
+                                            {voters.map((v: any, vIdx: number) => {
+                                              const voterIsMe = v.isMe || v.deviceId === device();
+                                              return (
+                                                <span
+                                                  key={vIdx}
+                                                  className={`voter-chip ${voterIsMe ? 'is-me' : ''}`}
+                                                >
+                                                  {v.nickname || 'Player'}
+                                                  {voterIsMe ? ' (YOU)' : ''}
+                                                </span>
+                                              );
+                                            })}
+                                          </div>
+                                        )}
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              )}
                             </div>
-                            <div className="crew-q-prompt">{q.prompt}</div>
-                            <div className="crew-q-counts">
-                              Choices distribution: {q.counts.join(' / ')}
-                            </div>
-                          </div>
-                        );
-                      })}
+                          );
+                        }
+                      )}
                     </div>
                   </div>
                 )}
@@ -1070,7 +2064,7 @@ export default function App() {
                 <button className="secondary" onClick={() => navigator.clipboard.writeText(location.href)}>
                   COPY CREW LINK
                 </button>
-                <button className="secondary" onClick={() => createCrew(crew.crew.mode)}>
+                <button className="secondary" onClick={() => createCrew(crew.crew?.mode || 'mixed')}>
                   ▶ RUN IT BACK (NEW 7)
                 </button>
               </>
@@ -1093,10 +2087,38 @@ export default function App() {
             <div className="eyebrow">{setupMode === 'join' ? 'JOIN SIGNAL' : 'CREW SETUP'}</div>
             <h2 id="crew-setup-title">{setupMode === 'join' ? `JOIN ${crewCode}` : setupMode === 'mixed' ? 'MIXED CREW' : 'NEW CREW'}</h2>
             {setupMode !== 'join' && (
-              <label>
-                CREW NAME <span>OPTIONAL · 24 MAX</span>
-                <input value={crewName} maxLength={24} onChange={(e) => setCrewName(e.target.value)} placeholder="Name your crew" />
-              </label>
+              <>
+                {setupMode === 'themed' && packs.length > 0 && (
+                  <label>
+                    CREW THEME <span>CHOOSE PACK</span>
+                    <select
+                      value={pack}
+                      onChange={(e) => setPack(e.target.value)}
+                      style={{
+                        display: 'block',
+                        width: '100%',
+                        marginTop: '8px',
+                        minHeight: '48px',
+                        padding: '10px',
+                        background: '#0b1020',
+                        border: '1px solid #47536d',
+                        color: '#fff',
+                        font: '16px "Space Grotesk", Arial, sans-serif',
+                      }}
+                    >
+                      {packs.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                )}
+                <label>
+                  CREW NAME <span>OPTIONAL · 24 MAX</span>
+                  <input value={crewName} maxLength={24} onChange={(e) => setCrewName(e.target.value)} placeholder="Name your crew" />
+                </label>
+              </>
             )}
             <label>
               NICKNAME <span>OPTIONAL · 18 MAX</span>

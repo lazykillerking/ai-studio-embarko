@@ -3,6 +3,8 @@ import type Database from 'better-sqlite3';
 import { ARCHETYPES, computePersonality } from '../shared/archetypes';
 import {
   SCORING_VERSION,
+  TIER_META,
+  computeSmoothedShare,
   evaluateSoloAnswer,
   getDailyExclusionWindow,
   getRarityBand,
@@ -16,10 +18,13 @@ import type {
   PackId,
   PackSummary,
   PublicQuestion,
+  QuestionBreakdownItem,
+  QuestionBreakdownOption,
   QuestionOption,
   SoloDailyResponse,
   SoloFinalResult,
   StatRevealPayload,
+  TierName,
 } from '../shared/types';
 import { loadVerdicts } from './db';
 
@@ -292,10 +297,13 @@ function buildFinalResultFromRun(
   const questionIds = JSON.parse(run.question_ids) as string[];
   const answerRecords = JSON.parse(run.answer_records) as AnswerRecord[];
   const qRows = fetchQuestionsByIds(db, questionIds);
-  const qMap = new Map(qRows.map((r) => [r.id, JSON.parse(r.options) as QuestionOption[]]));
+  const qRowMap = new Map(qRows.map((r) => [r.id, r]));
+  const recMap = new Map(answerRecords.map((r) => [r.question_id, r]));
 
   const chosenAxes: [number, number, number][] = answerRecords.map((rec) => {
-    const opts = qMap.get(rec.question_id);
+    const qRow = qRowMap.get(rec.question_id);
+    if (!qRow) return [0, 0, 0];
+    const opts = JSON.parse(qRow.options) as QuestionOption[];
     const chosen = opts?.[rec.option_index];
     return chosen ? chosen.axes : [0, 0, 0];
   });
@@ -306,6 +314,57 @@ function buildFinalResultFromRun(
   const band = getRarityBand(run.total_points);
   const verdict = verdicts.soloVerdicts[run.archetype_id][band];
   const packLine = verdicts.packLines[run.pack_id]?.[run.archetype_id] ?? null;
+
+  // Build question breakdown with points potential for all options
+  const questionBreakdown: QuestionBreakdownItem[] = questionIds.map((qid) => {
+    const qRow = qRowMap.get(qid);
+    const rec = recMap.get(qid);
+    const chosenIdx = rec ? rec.option_index : 0;
+    const voteCounts = getVoteCounts(db, qid);
+    const totalVotes = voteCounts[0] + voteCounts[1] + voteCounts[2] + voteCounts[3];
+    const qOptions = qRow ? (JSON.parse(qRow.options) as QuestionOption[]) : [];
+
+    const options: QuestionBreakdownOption[] = qOptions.map((opt, idx) => {
+      const votes = voteCounts[idx] ?? 0;
+      const smoothedP = computeSmoothedShare(votes, totalVotes);
+      let tier: TierName;
+      if (totalVotes < 5) {
+        tier = 'PROVISIONAL';
+      } else if (totalVotes < 15) {
+        if (smoothedP >= 0.35) tier = 'FAMILIAR';
+        else if (smoothedP >= 0.22) tier = 'UNUSUAL';
+        else tier = 'OUTLIER';
+      } else {
+        if (smoothedP >= 0.35) tier = 'FAMILIAR';
+        else if (smoothedP >= 0.22) tier = 'UNUSUAL';
+        else if (smoothedP >= 0.12) tier = 'OUTLIER';
+        else tier = 'WILDCARD';
+      }
+      const meta = TIER_META[tier];
+      const points = (idx === chosenIdx && rec?.points != null) ? rec.points : meta.points;
+      const percentage = totalVotes > 0 ? Math.round((votes / totalVotes) * 100) : null;
+
+      return {
+        optionIndex: idx,
+        text: opt.text,
+        points,
+        tier: (idx === chosenIdx && rec?.tier) ? rec.tier : tier,
+        tierColor: meta.color,
+        percentage,
+        votes,
+        isChosen: idx === chosenIdx,
+      };
+    });
+
+    return {
+      questionId: qid,
+      prompt: qRow ? qRow.prompt : '',
+      chosenIndex: chosenIdx,
+      chosenPoints: rec?.points ?? options[chosenIdx]?.points ?? 0,
+      chosenTier: rec?.tier ?? options[chosenIdx]?.tier ?? 'FAMILIAR',
+      options,
+    };
+  });
 
   return {
     packId: run.pack_id,
@@ -322,6 +381,7 @@ function buildFinalResultFromRun(
     verdict,
     packLine,
     answerRecords,
+    questionBreakdown,
   };
 }
 

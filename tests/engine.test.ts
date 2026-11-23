@@ -143,6 +143,10 @@ describe('2. Sample-size gates (N = 0 to 20), tiers & immutability', () => {
     expect(p1Before?.completed).toBe(true);
     expect(p1Before?.finalResult?.totalPoints).toBe(140);
     expect(p1Before?.finalResult?.scoringVersion).toBe(SCORING_VERSION);
+    expect(p1Before?.finalResult?.questionBreakdown).toHaveLength(7);
+    expect(p1Before?.finalResult?.questionBreakdown?.[0].options).toHaveLength(4);
+    expect(p1Before?.finalResult?.questionBreakdown?.[0].chosenIndex).toBe(0);
+    expect(p1Before?.finalResult?.questionBreakdown?.[0].chosenPoints).toBe(20);
 
     // 20 more players vote option 1 on every question, shifting crowd heavily
     for (let i = 0; i < 20; i++) {
@@ -379,6 +383,12 @@ describe('4. Crew math hand-verified fixtures (k = 2, 3, 5) & blind rule', () =>
     expect(f2MidState?.me.answeredCount).toBe(3);
     expect(f2MidState?.me.completed).toBe(false);
     expect(f2MidState?.board).toBeNull();
+    expect(Array.isArray(f2MidState?.crew.questions)).toBe(true);
+    expect(f2MidState?.crew.questions).toHaveLength(7);
+    expect(Array.isArray(f2MidState?.questions)).toBe(true);
+    expect(f2MidState?.questions).toHaveLength(7);
+    expect(f2MidState?.memberCount).toBe(2);
+    expect(f2MidState?.completedCount).toBe(1);
 
     // Friend 2 finishes remaining 4 -> board unlocks for both!
     for (let i = 3; i < 7; i++) {
@@ -418,6 +428,41 @@ describe('4. Crew math hand-verified fixtures (k = 2, 3, 5) & blind rule', () =>
         nickname: 'Player 13',
       })
     ).toThrow(/full/i);
+
+    db.close();
+  });
+
+  it('creates crew successfully in themed mode with the_mix and themed packs without throwing not enough questions', () => {
+    const db = makeTestDb();
+    const creator = crypto.randomUUID();
+
+    // 1. Crew with the_mix (previously threw 'Not enough published questions available')
+    const mixCrew = createCrew(db, {
+      deviceId: creator,
+      mode: 'themed',
+      packId: 'the_mix',
+      name: 'The Mix Crew',
+    });
+    expect(mixCrew.questionIds).toHaveLength(7);
+    expect(mixCrew.code).toMatch(/^[23456789ABCDEFGHJKLMNPQRSTUVWXYZ]{6}$/);
+
+    // 2. Themed crew with neon_coast
+    const neonCrew = createCrew(db, {
+      deviceId: creator,
+      mode: 'themed',
+      packId: 'neon_coast',
+      name: 'Neon Squad',
+    });
+    expect(neonCrew.questionIds).toHaveLength(7);
+
+    // 3. Themed crew with campus_chaos
+    const campusCrew = createCrew(db, {
+      deviceId: creator,
+      mode: 'themed',
+      packId: 'campus_chaos',
+      name: 'Campus Crew',
+    });
+    expect(campusCrew.questionIds).toHaveLength(7);
 
     db.close();
   });

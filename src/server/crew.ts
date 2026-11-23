@@ -64,7 +64,7 @@ function selectCrewQuestions(
   const recentOrder = excludeQuestionIds.slice(-21);
   const excludeSet = new Set(recentOrder);
 
-  if (mode === 'themed' && packId) {
+  if (mode === 'themed' && packId && packId !== 'the_mix') {
     const rows = db
       .prepare(
         `SELECT id FROM questions WHERE pack_id = ? AND status = 'published' ORDER BY id ASC`
@@ -81,13 +81,23 @@ function selectCrewQuestions(
     // Top up from oldest-seen first
     const seenOldestFirst = recentOrder.filter((id) => allIds.includes(id) && !fresh.includes(id));
     const remaining = allIds.filter((id) => !fresh.includes(id) && !seenOldestFirst.includes(id));
-    return [...fresh, ...seenOldestFirst, ...remaining].slice(0, 7);
+    const themedPicked = [...fresh, ...seenOldestFirst, ...remaining];
+    if (themedPicked.length >= 7) {
+      return themedPicked.slice(0, 7);
+    }
+    // Fallback: if this specific pack has fewer than 7 questions, top up from other published packs
+    const fallbackRows = db
+      .prepare(
+        `SELECT id FROM questions WHERE status = 'published' AND id NOT IN (${themedPicked.map(() => '?').join(',') || "''"}) ORDER BY id ASC`
+      )
+      .all(...themedPicked) as { id: string }[];
+    return [...themedPicked, ...fisherYatesShuffle(fallbackRows.map((r) => r.id), rng)].slice(0, 7);
   }
 
-  // Mixed mode: across all published packs, max 3 from any one pack
+  // Mixed mode OR the_mix: across all published packs, max 3 from any one pack
   const rows = db
     .prepare(
-      `SELECT id, pack_id FROM questions WHERE status = 'published' ORDER BY id ASC`
+      `SELECT id, pack_id FROM questions WHERE status = 'published' AND pack_id != 'the_mix' ORDER BY id ASC`
     )
     .all() as { id: string; pack_id: PackId }[];
 
@@ -249,7 +259,7 @@ export function getCrewState(
   // BLIND RULE ENFORCEMENT (server-side):
   // Never compute or return anyone else's answers, splits, scores, awards, or roast
   // until THIS device has finished all 7 questions AND at least 2 members have finished.
-  let board = null;
+  let board: any = null;
   if (meCompleted && completedMembers.length >= 2) {
     const verdicts = loadVerdicts();
     const scoringInputs = completedMembers.map((m) => {
@@ -261,14 +271,78 @@ export function getCrewState(
         answers: JSON.parse(m.answers) as Record<string, number>,
       };
     });
-    board = computeCrewBoard({
+    const rawBoard = computeCrewBoard({
       questions: publicQuestions,
       completedMembers: scoringInputs,
       squadRoasts: verdicts.squadRoasts,
     });
+
+    const mindTwinsList = rawBoard.awards?.mindTwins
+      ? rawBoard.awards.mindTwins.pairs.map((p) => ({
+          names: [p.memberAName, p.memberBName],
+          matches: rawBoard.awards?.mindTwins?.matches ?? 0,
+          percent: rawBoard.awards?.mindTwins?.percentage ?? 0,
+        }))
+      : [];
+
+    const commonGroundList = rawBoard.awards?.commonGround
+      ? [
+          {
+            prompt: rawBoard.awards.commonGround.prompt,
+            agreement: rawBoard.awards.commonGround.agreementPercent,
+          },
+        ]
+      : [];
+
+    const civilWarList = rawBoard.awards?.civilWar
+      ? [
+          {
+            prompt: rawBoard.awards.civilWar.prompt,
+            agreement: rawBoard.awards.civilWar.agreementPercent,
+          },
+        ]
+      : [];
+
+    const loneSignalObj = rawBoard.awards?.loneSignal
+      ? {
+          member: { nickname: rawBoard.awards.loneSignal.nickname },
+          soloChoices: rawBoard.awards.loneSignal.loneCount,
+        }
+      : null;
+
+    board = {
+      ...rawBoard,
+      sync: rawBoard.crewSyncPercent,
+      roast: {
+        ...rawBoard.roast,
+        headline: rawBoard.roast.title,
+      },
+      members: rawBoard.members.map((m) => ({
+        ...m,
+        score: m.totalScore,
+      })),
+      pairs: rawBoard.pairwise.map((p) => ({
+        ...p,
+        names: [p.memberAName, p.memberBName],
+        percent: p.percentage,
+      })),
+      questions: rawBoard.questionBreakdowns.map((q) => ({
+        ...q,
+        agreement: q.agreementPercent,
+        counts: q.options.map((o) => o.count),
+      })),
+      mindTwins: mindTwinsList,
+      commonGround: commonGroundList,
+      civilWar: civilWarList,
+      loneSignal: loneSignalObj,
+      perfectSync: rawBoard.twoPlayerSummary?.perfectSyncQuestions ?? [],
+    };
   }
 
   return {
+    completed: meCompleted,
+    memberCount: members.length,
+    completedCount: completedMembers.length,
     crew: {
       id: crew.id,
       code: crew.code,
@@ -282,6 +356,8 @@ export function getCrewState(
       isFull: members.length >= crew.max_players && !meRow,
       invitePath: `/crew/${crew.code}`,
       createdAt: crew.created_at,
+      questions: publicQuestions,
+      completed: meCompleted,
     },
     me: {
       joined: Boolean(meRow),

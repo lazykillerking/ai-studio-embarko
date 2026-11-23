@@ -125,6 +125,26 @@ export interface VerdictEntry {
   roast: string;
 }
 
+export interface QuestionBreakdownOption {
+  optionIndex: number;
+  text: string;
+  points: number;
+  tier: TierName;
+  tierColor: string;
+  percentage: number | null;
+  votes: number;
+  isChosen: boolean;
+}
+
+export interface QuestionBreakdownItem {
+  questionId: string;
+  prompt: string;
+  chosenIndex: number;
+  chosenPoints: number;
+  chosenTier: TierName;
+  options: QuestionBreakdownOption[];
+}
+
 export interface SoloFinalResult {
   packId: PackId;
   challengeDate: string;
@@ -140,6 +160,7 @@ export interface SoloFinalResult {
   verdict: VerdictEntry;
   packLine: string | null;
   answerRecords: AnswerRecord[];
+  questionBreakdown?: QuestionBreakdownItem[];
 }
 
 export interface SoloDailyResponse {
@@ -254,7 +275,12 @@ export interface CrewStateResponse {
     isFull: boolean;
     invitePath: string;
     createdAt: string;
+    questions?: PublicQuestion[];
+    completed?: boolean;
   };
+  completed?: boolean;
+  memberCount?: number;
+  completedCount?: number;
   me: {
     joined: boolean;
     nickname: string;
