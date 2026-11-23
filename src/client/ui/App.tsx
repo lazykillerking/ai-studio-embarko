@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { sound } from './audio';
 import { CrewVerdictView } from './CrewVerdictView';
+import { VideoControls } from './VideoControls';
+import { NameCardOverlay, EmbarkoPromptStepOverlay, EmbarkoDeployStepOverlay, EndCardOverlay } from './VideoOverlays';
+import { MOCK_SCRIPT_CREW_VERDICT } from './demoPresets';
 
 type Pack = { id: string; name: string };
 type Question = { id: string; prompt: string; options: { text: string }[] };
@@ -817,6 +820,15 @@ export default function App() {
   const [musicMuted, setMusicMuted] = useState(sound.getMusicMuted());
   const [sfxMuted, setSfxMuted] = useState(sound.getSfxMuted());
 
+  // Video script director & demo overlays
+  const [currentVideoScene, setCurrentVideoScene] = useState<string>('home');
+  const [showLiveBadge, setShowLiveBadge] = useState<boolean>(true);
+  const [nameCardVisible, setNameCardVisible] = useState<boolean>(false);
+  const [promptStepVisible, setPromptStepVisible] = useState<boolean>(false);
+  const [deployStepVisible, setDeployStepVisible] = useState<boolean>(false);
+  const [endCardVisible, setEndCardVisible] = useState<boolean>(false);
+  const [crewVerdictTabOverride, setCrewVerdictTabOverride] = useState<'overview' | 'roster' | 'chemistry' | 'awards'>('overview');
+
   // Initialize audio on first user gesture
   useEffect(() => {
     const handleFirstGesture = () => {
@@ -957,6 +969,137 @@ export default function App() {
   const startDaily = () => {
     setPack('the_mix');
     startWithPack('the_mix');
+  };
+
+  const jumpToVideoScene = (sceneId: string) => {
+    setCurrentVideoScene(sceneId);
+    setNameCardVisible(false);
+    setPromptStepVisible(false);
+    setDeployStepVisible(false);
+    setEndCardVisible(false);
+
+    if (sceneId === 'hook') {
+      // 0:00 - Awards screen flashing WALKING RED FLAG: PETER
+      setCrew({
+        crew: { name: 'GRIFFIN SQUAD', mode: 'mixed', packId: 'the_mix', memberCount: 3 },
+        board: {
+          verdict: MOCK_SCRIPT_CREW_VERDICT,
+          crewSyncPercent: 42,
+          questions: [],
+        },
+        me: { nickname: 'Peter' },
+      });
+      setCrewCode('PETER6');
+      setCrewVerdictTabOverride('awards');
+      setView('crew');
+    } else if (sceneId === 'part1') {
+      // 0:05 - Name card Swastik Arora then cut to home screen
+      setView('home');
+      setNameCardVisible(true);
+    } else if (sceneId === 'part2_play') {
+      // 0:11 - Rapid-fire questions + 30-sec shot clock
+      setQs([
+        {
+          id: 'demo_q1',
+          prompt: 'You see a red button that says "DO NOT PRESS UNDER ANY CIRCUMSTANCES". What do you do?',
+          options: [
+            { text: 'Read the warning label carefully and walk away' },
+            { text: 'Immediately press it with both hands just to see what happens' },
+            { text: 'Convince someone else to press it while you film' },
+            { text: 'Calculate the probability of an explosion first' },
+          ],
+        },
+      ]);
+      setAt(0);
+      setSeconds(30);
+      setView('play');
+    } else if (sceneId === 'part2_reveal') {
+      // 0:14 - Crowd % reveal
+      const demoQ = {
+        id: 'demo_q1',
+        prompt: 'You see a red button that says "DO NOT PRESS UNDER ANY CIRCUMSTANCES". What do you do?',
+        options: [
+          { text: 'Read the warning label carefully and walk away' },
+          { text: 'Immediately press it with both hands just to see what happens' },
+          { text: 'Convince someone else to press it while you film' },
+          { text: 'Calculate the probability of an explosion first' },
+        ],
+      };
+      setLastAnsweredQ(demoQ);
+      setLastChosenIndex(1);
+      setInspectedOptionIndex(1);
+      setReveal({
+        tier: 'CHAOTIC OUTLIER',
+        points: 45,
+        overthinker: false,
+        sampleSize: 1420,
+        distribution: [18, 64, 12, 6],
+        bars: [{ votes: 255 }, { votes: 908 }, { votes: 170 }, { votes: 87 }],
+        verdict: 'You chose pure instinct over self-preservation.',
+      });
+      setView('reveal');
+    } else if (sceneId === 'part2_spark') {
+      // 0:17 - The Spark slamming in with axis sliders
+      setResult({
+        totalPoints: 245,
+        scoreTitle: 'UNHINGED PROVOCATEUR',
+        archetype: {
+          id: 'the_spark',
+          name: 'THE SPARK',
+          oneLineTrait: 'First to say "trust me" before an iconic bad decision',
+        },
+        sliders: [86, 64, 92],
+        axes: {
+          plan_chaos: 86,
+          solo_crew: 64,
+          logic_instinct: 92,
+        },
+        verdict: {
+          headlineStamp: 'REWARDED YOUR CHAOS',
+          heat: 5,
+          compliment: 'You literally clicked the dumbest answers on purpose, and the algorithm crowned you for it.',
+          roast: 'Your decision-making process belongs in an aviation disaster report.',
+        },
+      });
+      setView('done');
+    } else if (sceneId === 'part3') {
+      // 0:20 - Step 1: Get Embarko prompt
+      setPromptStepVisible(true);
+    } else if (sceneId === 'part4') {
+      // 0:26 - Going Live: Paste. Wait. Live.
+      setDeployStepVisible(true);
+    } else if (sceneId === 'part5_matrix') {
+      // 0:33 - Crew Chemistry Matrix
+      setCrew({
+        crew: { name: 'GRIFFIN SQUAD', mode: 'mixed', packId: 'the_mix', memberCount: 3 },
+        board: {
+          verdict: MOCK_SCRIPT_CREW_VERDICT,
+          crewSyncPercent: 42,
+          questions: [],
+        },
+        me: { nickname: 'Peter' },
+      });
+      setCrewCode('PETER6');
+      setCrewVerdictTabOverride('chemistry');
+      setView('crew');
+    } else if (sceneId === 'part5_awards') {
+      // 0:37 - Snap zoom onto Walking Red Flag: Peter
+      setCrew({
+        crew: { name: 'GRIFFIN SQUAD', mode: 'mixed', packId: 'the_mix', memberCount: 3 },
+        board: {
+          verdict: MOCK_SCRIPT_CREW_VERDICT,
+          crewSyncPercent: 42,
+          questions: [],
+        },
+        me: { nickname: 'Peter' },
+      });
+      setCrewCode('PETER6');
+      setCrewVerdictTabOverride('awards');
+      setView('crew');
+    } else if (sceneId === 'part6') {
+      // 0:41 - End Card CTA
+      setEndCardVisible(true);
+    }
   };
 
   const answer = async (optionIndex: number) => {
@@ -1297,6 +1440,73 @@ export default function App() {
 
   return (
     <main data-theme={pack}>
+      {/* Corner badge for script: Live on Embarko */}
+      {showLiveBadge && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '12px',
+            right: '12px',
+            zIndex: 8000,
+            background: 'rgba(52, 211, 153, 0.15)',
+            border: '1px solid #34d399',
+            borderRadius: '20px',
+            padding: '4px 10px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            boxShadow: '0 0 15px rgba(52, 211, 153, 0.3)',
+            backdropFilter: 'blur(6px)',
+          }}
+        >
+          <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#34d399', display: 'inline-block' }} />
+          <span style={{ font: "9px 'Press Start 2P', monospace", color: '#34d399', letterSpacing: '0.5px' }}>
+            LIVE ON EMBARKO
+          </span>
+        </div>
+      )}
+
+      {/* Script Video Overlays */}
+      {nameCardVisible && <NameCardOverlay onClose={() => setNameCardVisible(false)} />}
+      {promptStepVisible && (
+        <EmbarkoPromptStepOverlay
+          onClose={() => setPromptStepVisible(false)}
+          onNext={() => {
+            setPromptStepVisible(false);
+            setDeployStepVisible(true);
+          }}
+        />
+      )}
+      {deployStepVisible && (
+        <EmbarkoDeployStepOverlay
+          onClose={() => setDeployStepVisible(false)}
+          onNext={() => {
+            setDeployStepVisible(false);
+            jumpToVideoScene('part5_matrix');
+          }}
+        />
+      )}
+      {endCardVisible && <EndCardOverlay onClose={() => setEndCardVisible(false)} />}
+
+      {/* Video Director Floater */}
+      <VideoControls
+        currentScene={currentVideoScene}
+        onSelectScene={jumpToVideoScene}
+        showLiveBadge={showLiveBadge}
+        setShowLiveBadge={setShowLiveBadge}
+        nameCardVisible={nameCardVisible}
+        setNameCardVisible={setNameCardVisible}
+        endCardVisible={endCardVisible}
+        setEndCardVisible={setEndCardVisible}
+        onReset={() => {
+          setView('home');
+          setNameCardVisible(false);
+          setPromptStepVisible(false);
+          setDeployStepVisible(false);
+          setEndCardVisible(false);
+        }}
+      />
+
       <div className="scene" aria-hidden="true">
         <div className="sun" />
         <div className="grid" />
@@ -1847,6 +2057,7 @@ export default function App() {
                     verdict={crew.board.verdict}
                     myNickname={crew.me?.nickname}
                     myDeviceId={device()}
+                    tabOverride={crewVerdictTabOverride}
                     onShare={shareCrew}
                     onDownload={downloadCrew}
                     onCopyLink={() => {
