@@ -180,7 +180,7 @@
       "prompt": "You wake up inside the world of Money Heist.",
       "options": [
         { "text": "Become the Professor", "axes": [-2, 2, -2] },
-        { "text": "Be Tokyo. No hesitation.", "axes": [2, -2, 2] },
+        { "text": "Be Tokyo. Full speed ahead.", "axes": [2, -2, 2] },
         { "text": "Handle the technical side", "axes": [-2, -1, -2] },
         { "text": "Keep the team together", "axes": [-1, 2, 2] }
       ],
@@ -525,7 +525,7 @@
       "prompt": "You wake up as the main character of a Netflix series.",
       "options": [
         { "text": "Figure out the entire plot", "axes": [-2, -1, -2] },
-        { "text": "Make every episode unpredictable", "axes": [2, 2, 2] },
+        { "text": "Keep every episode full of twists", "axes": [2, 2, 2] },
         { "text": "Build relationships with everyone", "axes": [-1, 2, 1] },
         { "text": "Find a way to escape the series", "axes": [2, -2, -1] }
       ],
@@ -541,7 +541,7 @@
       "options": [
         { "text": "Build a proper content strategy", "axes": [-2, -1, -2] },
         { "text": "Post whatever feels fun", "axes": [2, -1, 2] },
-        { "text": "Start collaborating with everyone", "axes": [1, 2, 1] },
+        { "text": "Team up with other creators", "axes": [1, 2, 1] },
         { "text": "Disappear and enjoy the money", "axes": [-1, -2, -1] }
       ],
       "difficulty": "easy",
@@ -702,7 +702,7 @@
     {
       "id": "pc_047",
       "pack_id": "pop_culture",
-      "prompt": "You can delete one annoying internet phenomenon.",
+      "prompt": "You can delete one annoying online trend.",
       "options": [
         { "text": "Fake giveaways and scams", "axes": [-2, 1, -2] },
         { "text": "Spoilers in comment sections", "axes": [-1, -2, 1] },

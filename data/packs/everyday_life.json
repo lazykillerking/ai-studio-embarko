@@ -334,7 +334,7 @@
     {
       "id": "tm_008",
       "pack_id": "everyday_life",
-      "prompt": "You have one completely free Sunday with zero obligations. How does it unfold?",
+      "prompt": "You have one completely free Sunday with zero chores or plans. How does it unfold?",
       "options": [
         {
           "text": "Time-block errands, reading and reset",

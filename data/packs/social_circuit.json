@@ -153,7 +153,7 @@
     {
       "id": "lv_079",
       "pack_id": "social_circuit",
-      "prompt": "You realise you're always the one initiating conversations.",
+      "prompt": "You realise you're always the one starting the conversation.",
       "options": [
         {
           "text": "Stop texting and see what happens",
@@ -532,7 +532,7 @@
       "prompt": "Your partner wants access to your phone.",
       "options": [
         {
-          "text": "Hand it over without hesitation",
+          "text": "Hand it over right away",
           "axes": [
             1,
             2,
@@ -924,7 +924,7 @@
           ]
         },
         {
-          "text": "Confront them privately",
+          "text": "Talk to them privately",
           "axes": [
             -1,
             1,
@@ -1300,7 +1300,7 @@
           ]
         },
         {
-          "text": "Talk them through the consequences",
+          "text": "Talk them out of it calmly",
           "axes": [
             -2,
             2,
@@ -1378,7 +1378,7 @@
       "prompt": "You find out someone has been talking behind your back.",
       "options": [
         {
-          "text": "Confront them face to face",
+          "text": "Talk to them face to face",
           "axes": [
             2,
             2,

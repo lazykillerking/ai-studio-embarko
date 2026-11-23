@@ -15,7 +15,7 @@
       "prompt": "Your best friend confesses to a serious crime. Nobody knows.",
       "options": [
         {
-          "text": "Help them face the consequences",
+          "text": "Help them face what comes next",
           "axes": [
             -2,
             2,
@@ -156,7 +156,7 @@
       "prompt": "A stranger offers you ₹1 crore to betray your closest friend.",
       "options": [
         {
-          "text": "Reject it without hesitation",
+          "text": "Say no right away",
           "axes": [
             -1,
             2,
@@ -360,7 +360,7 @@
           ]
         },
         {
-          "text": "Let them face the consequences",
+          "text": "Let them face what comes next",
           "axes": [
             -1,
             -2,
@@ -399,7 +399,7 @@
           ]
         },
         {
-          "text": "Confront them privately",
+          "text": "Talk to them privately",
           "axes": [
             -2,
             2,
@@ -579,7 +579,7 @@
       "prompt": "You discover a close friend has been spreading rumours about you.",
       "options": [
         {
-          "text": "Confront them in front of everyone",
+          "text": "Call them out in front of all",
           "axes": [
             2,
             2,
@@ -791,7 +791,7 @@
           ]
         },
         {
-          "text": "Accept the consequences and proceed",
+          "text": "Accept what comes and go ahead",
           "axes": [
             1,
             1,
@@ -1657,7 +1657,7 @@
     {
       "id": "mm_036",
       "pack_id": "moral_mayhem",
-      "prompt": "You discover your role model has done something unforgivable.",
+      "prompt": "You discover your role model has done something terrible.",
       "options": [
         {
           "text": "Stop supporting them immediately",
@@ -1801,7 +1801,7 @@
       "prompt": "You can guarantee your family a perfect future by leaving yours behind.",
       "options": [
         {
-          "text": "Do it without hesitation",
+          "text": "Do it right away",
           "axes": [
             1,
             2,
@@ -2060,7 +2060,7 @@
           ]
         },
         {
-          "text": "Remove all restrictions",
+          "text": "Remove all rules",
           "axes": [
             2,
             -1,
@@ -2221,10 +2221,10 @@
     {
       "id": "mm_048",
       "pack_id": "moral_mayhem",
-      "prompt": "You can stop all conflict, but nobody can disagree anymore.",
+      "prompt": "You can stop all conflict, but nobody can argue anymore.",
       "options": [
         {
-          "text": "No. Disagreement matters.",
+          "text": "No. Different views matter.",
           "axes": [
             -1,
             -2,
@@ -2240,7 +2240,7 @@
           ]
         },
         {
-          "text": "Allow disagreement with boundaries",
+          "text": "Allow debates within limits",
           "axes": [
             -2,
             2,

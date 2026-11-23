@@ -285,11 +285,15 @@ export default function App() {
       const d = await r.json();
       if (!r.ok) throw Error(d.error || 'Could not start');
       setQs(d.questions);
-      setAt(d.resume?.answer_records?.length || 0);
-      setView(d.resume?.completed_at ? 'done' : 'play');
-      if (d.resume?.completed_at) {
-        setResult(d.result);
+      const isDone = Boolean(d.completed || d.resume?.completed_at);
+      const resData = d.finalResult || d.result || null;
+      setAt(d.answerRecords?.length || d.resume?.answer_records?.length || 0);
+      if (isDone && resData) {
+        setResult(resData);
+        setView('done');
         sound.playFanfare();
+      } else {
+        setView('play');
       }
     } catch (e: any) {
       setErr(e.message);
@@ -329,15 +333,13 @@ export default function App() {
       });
       const d = await r.json();
       if (!r.ok) throw Error(d.error || 'Could not save answer');
-      setReveal(d);
-      setResult(d.result || null);
-      if (d.finished) {
-        setView('done');
-        sound.playFanfare();
-      } else {
-        setView('reveal');
-        sound.playReveal();
+      const revealPayload = d.reveal || d;
+      setReveal(revealPayload);
+      if (d.finalResult || d.result) {
+        setResult(d.finalResult || d.result);
       }
+      setView('reveal');
+      sound.playReveal();
     } catch (e: any) {
       setErr(e.message);
     } finally {
@@ -348,8 +350,13 @@ export default function App() {
   const next = () => {
     sound.playSelect();
     setInspectedOptionIndex(null);
-    setAt((i) => i + 1);
-    setView('play');
+    if (at >= 6 || (reveal && (reveal.completed || result))) {
+      setView('done');
+      sound.playFanfare();
+    } else {
+      setAt((i) => i + 1);
+      setView('play');
+    }
   };
 
   const createCrew = (mode: 'themed' | 'mixed' = 'themed') => {
@@ -444,12 +451,21 @@ export default function App() {
 
   const share = async () => {
     sound.playSelect();
-    const text = `My BRAINPRINT is ${result?.archetype?.name || 'still forming'} — ${result?.total_points || 0} points. Same questions. Different minds.`;
+    const pts = result?.totalPoints ?? result?.total_points ?? 0;
+    const title = result?.scoreTitle || result?.score_title || '';
+    const text = `My BRAINPRINT is ${result?.archetype?.name || 'still forming'} — ${pts} points. Same questions. Different minds.`;
+    const cardAxes = result?.axisResult?.sliders
+      ? {
+          plan_chaos: result.axisResult.sliders[0],
+          solo_crew: result.axisResult.sliders[1],
+          logic_instinct: result.axisResult.sliders[2],
+        }
+      : result?.axes;
     const file = await makeCard(
       result?.archetype?.name || 'BRAINPRINT',
-      `${result?.total_points || 0} POINTS · ${result?.score_title || ''}`,
+      `${pts} POINTS · ${title}`,
       [result?.verdict?.compliment || '', result?.verdict?.roast || ''],
-      result?.axes,
+      cardAxes,
       result?.archetype?.id
     );
     if (navigator.share && navigator.canShare?.({ files: [file] })) {
@@ -465,11 +481,20 @@ export default function App() {
 
   const downloadSolo = async () => {
     sound.playSelect();
+    const pts = result?.totalPoints ?? result?.total_points ?? 0;
+    const title = result?.scoreTitle || result?.score_title || '';
+    const cardAxes = result?.axisResult?.sliders
+      ? {
+          plan_chaos: result.axisResult.sliders[0],
+          solo_crew: result.axisResult.sliders[1],
+          logic_instinct: result.axisResult.sliders[2],
+        }
+      : result?.axes;
     const file = await makeCard(
       result?.archetype?.name || 'BRAINPRINT',
-      `${result?.total_points || 0} POINTS · ${result?.score_title || ''}`,
+      `${pts} POINTS · ${title}`,
       [result?.verdict?.compliment || '', result?.verdict?.roast || ''],
-      result?.axes,
+      cardAxes,
       result?.archetype?.id
     );
     const a = document.createElement('a');
@@ -618,7 +643,7 @@ export default function App() {
                 </button>
               ))}
             </div>
-            <p className="fine">Your choice is saved as soon as you tap.</p>
+
           </>
         )}
 
@@ -658,7 +683,10 @@ export default function App() {
 
             <div className="reveal-options-list">
               {currentRevealQ?.options.map((opt, i) => {
+                const bar = reveal.bars?.[i];
+                const rawVotes = bar ? bar.votes : (reveal.voteCounts?.[i] ?? (i === lastChosenIndex ? 1 : 0));
                 const totalVotes =
+                  (reveal.bars?.reduce((sum: number, b: any) => sum + (b.votes || 0), 0)) ||
                   (reveal.voteCounts?.[0] || 0) +
                   (reveal.voteCounts?.[1] || 0) +
                   (reveal.voteCounts?.[2] || 0) +
@@ -668,11 +696,11 @@ export default function App() {
                 const pct =
                   reveal.distribution?.[i] !== undefined
                     ? reveal.distribution[i]
-                    : Math.round(((reveal.voteCounts?.[i] || 0) / totalVotes) * 100);
+                    : Math.round((rawVotes / Math.max(1, totalVotes)) * 100);
 
                 const isChosen = i === lastChosenIndex;
                 const isInspected = i === inspectedOptionIndex;
-                const votesCount = reveal.voteCounts?.[i] ?? 0;
+                const votesCount = bar ? bar.votes : (reveal.voteCounts?.[i] ?? (i === lastChosenIndex ? 1 : 0));
 
                 return (
                   <button
@@ -731,20 +759,35 @@ export default function App() {
             <h1>{result?.archetype?.name || 'BRAINPRINT'}</h1>
             {result?.archetype?.id && <PixelAvatar id={result.archetype.id} />}
             <div className="score">
-              {result?.total_points ?? '—'}
+              {result?.totalPoints ?? result?.total_points ?? '—'}
               <small> POINTS</small>
             </div>
-            <p className="hook">{result?.score_title || 'The Signal'}</p>
-            {result?.archetype?.trait && <p>{result.archetype.trait}</p>}
-            {result?.axes &&
-              Object.entries(result.axes).map(([k, v]: any) => (
-                <div className="axis" key={k}>
-                  <span>{k.replace('_', ' / ').toUpperCase()}</span>
-                  <input type="range" min="0" max="100" value={v} readOnly />
-                </div>
-              ))}
+            <p className="hook">{result?.scoreTitle || result?.score_title || 'The Signal'}</p>
+            {(result?.archetype?.oneLineTrait || result?.archetype?.trait) && <p>{result.archetype.oneLineTrait || result.archetype.trait}</p>}
+            {(() => {
+              const sliders = result?.axisResult?.sliders || result?.sliders;
+              const axesObj = result?.axes;
+              if (sliders && sliders.length === 3) {
+                const labels = ['PLAN / CHAOS', 'SOLO / CREW', 'LOGIC / INSTINCT'];
+                return labels.map((lbl, idx) => (
+                  <div className="axis" key={lbl}>
+                    <span>{lbl}</span>
+                    <input type="range" min="0" max="100" value={sliders[idx]} readOnly />
+                  </div>
+                ));
+              }
+              if (axesObj) {
+                return Object.entries(axesObj).map(([k, v]: any) => (
+                  <div className="axis" key={k}>
+                    <span>{k.replace('_', ' / ').toUpperCase()}</span>
+                    <input type="range" min="0" max="100" value={v} readOnly />
+                  </div>
+                ));
+              }
+              return null;
+            })()}
             <blockquote>
-              <strong>{result?.verdict?.headline}</strong>
+              <strong>{result?.verdict?.headlineStamp || result?.verdict?.headline}</strong>
               <div className="heat" aria-label={`Heat ${result?.verdict?.heat} out of 5`}>
                 {[1, 2, 3, 4, 5].map((i) => (
                   <i className={i <= (result?.verdict?.heat || 0) ? 'hot' : ''} key={i} />
@@ -755,7 +798,7 @@ export default function App() {
               <br />
               {result?.verdict?.roast}
             </blockquote>
-            {result?.pack_line && <p className="fine">{result.pack_line}</p>}
+            {(result?.packLine || result?.pack_line) && <p className="fine">{result.packLine || result.pack_line}</p>}
             <button className="primary" onClick={share}>
               SHARE BRAINPRINT
             </button>
