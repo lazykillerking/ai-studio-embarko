@@ -1,0 +1,763 @@
+{
+  "pack": {
+    "id": "pop_culture",
+    "slug": "pop-culture",
+    "name": "POP CULTURE",
+    "description": "Gaming, movies, internet culture, cricket and global crossovers",
+    "visual_theme": "pop_culture",
+    "status": "published",
+    "sort_order": 5
+  },
+  "questions": [
+    {
+      "id": "pc_001",
+      "pack_id": "pop_culture",
+      "prompt": "You get to join one Avengers mission. What's your role?",
+      "options": [
+        { "text": "Plan the entire operation", "axes": [-2, 1, -2] },
+        { "text": "Charge in with Iron Man", "axes": [2, 1, 2] },
+        { "text": "Work alone like Black Widow", "axes": [-1, -2, 1] },
+        { "text": "Improvise like Spider-Man", "axes": [2, 2, 2] }
+      ],
+      "difficulty": "easy",
+      "tags": ["marvel", "superheroes", "teamwork"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_002",
+      "pack_id": "pop_culture",
+      "prompt": "You discover you have Batman's resources for one night.",
+      "options": [
+        { "text": "Investigate a major conspiracy", "axes": [-2, -2, -2] },
+        { "text": "Build the ultimate Batmobile", "axes": [1, -2, 1] },
+        { "text": "Assemble a team of heroes", "axes": [-1, 2, -2] },
+        { "text": "Become Gotham's night problem", "axes": [2, 1, 2] }
+      ],
+      "difficulty": "medium",
+      "tags": ["dc", "batman", "superheroes"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_003",
+      "pack_id": "pop_culture",
+      "prompt": "Thanos gives you one chance to change his plan.",
+      "options": [
+        { "text": "Propose a logical alternative", "axes": [-2, 1, -2] },
+        { "text": "Challenge him immediately", "axes": [2, 2, 2] },
+        { "text": "Secretly work against him", "axes": [-2, -2, -1] },
+        { "text": "Join him and change things later", "axes": [1, -1, 2] }
+      ],
+      "difficulty": "hard",
+      "tags": ["marvel", "thanos", "moral-dilemma"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_004",
+      "pack_id": "pop_culture",
+      "prompt": "You get to live in one fictional universe.",
+      "options": [
+        { "text": "Harry Potter's wizarding world", "axes": [-1, 2, 2] },
+        { "text": "Marvel's superhero universe", "axes": [2, 2, 1] },
+        { "text": "The world of open-world street games", "axes": [2, -2, 2] },
+        { "text": "Minecraft's endless world", "axes": [-1, -2, -1] }
+      ],
+      "difficulty": "easy",
+      "tags": ["fiction", "gaming", "movies"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_005",
+      "pack_id": "pop_culture",
+      "prompt": "The Joker offers you a deal. What's your first reaction?",
+      "options": [
+        { "text": "Find out what he really wants", "axes": [-2, -1, -2] },
+        { "text": "Hear him out. Could be fun.", "axes": [2, -1, 2] },
+        { "text": "Call Batman immediately", "axes": [-1, 2, -2] },
+        { "text": "Make him an offer of my own", "axes": [2, 2, -1] }
+      ],
+      "difficulty": "medium",
+      "tags": ["dc", "joker", "strategy"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_006",
+      "pack_id": "pop_culture",
+      "prompt": "You're transported into Naruto's world. What's your path?",
+      "options": [
+        { "text": "Master every technique", "axes": [-2, -1, -2] },
+        { "text": "Build an unbeatable squad", "axes": [-1, 2, -2] },
+        { "text": "Follow my own ninja way", "axes": [2, -2, 2] },
+        { "text": "Become Hokage at any cost", "axes": [2, 2, 1] }
+      ],
+      "difficulty": "medium",
+      "tags": ["anime", "naruto", "ambition"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_007",
+      "pack_id": "pop_culture",
+      "prompt": "Luffy invites you to join his pirate crew.",
+      "options": [
+        { "text": "Join without asking questions", "axes": [2, 2, 2] },
+        { "text": "Ask about the destination first", "axes": [-2, 2, -2] },
+        { "text": "Become a solo pirate instead", "axes": [2, -2, 1] },
+        { "text": "Negotiate my role in the crew", "axes": [-1, 2, -1] }
+      ],
+      "difficulty": "easy",
+      "tags": ["anime", "one-piece", "adventure"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_008",
+      "pack_id": "pop_culture",
+      "prompt": "Goku challenges you to a fight. What do you do?",
+      "options": [
+        { "text": "Train for six months first", "axes": [-2, -1, -2] },
+        { "text": "Accept. This is legendary.", "axes": [2, 2, 2] },
+        { "text": "Find a clever way to win", "axes": [-2, -1, -1] },
+        { "text": "Bring my strongest friends", "axes": [1, 2, 1] }
+      ],
+      "difficulty": "easy",
+      "tags": ["anime", "dragon-ball", "competition"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_009",
+      "pack_id": "pop_culture",
+      "prompt": "You receive a Death Note with one rule: no one knows.",
+      "options": [
+        { "text": "Study its rules first", "axes": [-2, -2, -2] },
+        { "text": "Test it immediately", "axes": [2, -2, 2] },
+        { "text": "Destroy it. Too dangerous.", "axes": [-1, 1, -1] },
+        { "text": "Find someone trustworthy to help", "axes": [-1, 2, -1] }
+      ],
+      "difficulty": "hard",
+      "tags": ["anime", "death-note", "ethics"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_010",
+      "pack_id": "pop_culture",
+      "prompt": "You're offered a place in the Squid Game.",
+      "options": [
+        { "text": "Study every game and its rules", "axes": [-2, -1, -2] },
+        { "text": "Find allies immediately", "axes": [1, 2, 1] },
+        { "text": "Trust my instincts completely", "axes": [2, -2, 2] },
+        { "text": "Look for a way to escape", "axes": [-1, -1, -1] }
+      ],
+      "difficulty": "medium",
+      "tags": ["netflix", "squid-game", "survival"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_011",
+      "pack_id": "pop_culture",
+      "prompt": "You get one day inside the world of Harry Potter.",
+      "options": [
+        { "text": "Explore the Hogwarts library", "axes": [-2, -1, -2] },
+        { "text": "Play Quidditch with everyone", "axes": [2, 2, 2] },
+        { "text": "Sneak into the Forbidden Forest", "axes": [2, -2, 2] },
+        { "text": "Explore the castle with friends", "axes": [-1, 2, 1] }
+      ],
+      "difficulty": "easy",
+      "tags": ["harry-potter", "fantasy", "adventure"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_012",
+      "pack_id": "pop_culture",
+      "prompt": "You wake up inside the world of Money Heist.",
+      "options": [
+        { "text": "Become the Professor", "axes": [-2, 2, -2] },
+        { "text": "Be Tokyo. No hesitation.", "axes": [2, -2, 2] },
+        { "text": "Handle the technical side", "axes": [-2, -1, -2] },
+        { "text": "Keep the team together", "axes": [-1, 2, 2] }
+      ],
+      "difficulty": "medium",
+      "tags": ["netflix", "money-heist", "strategy"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_013",
+      "pack_id": "pop_culture",
+      "prompt": "You get to direct the next big Bollywood blockbuster.",
+      "options": [
+        { "text": "A massive action spectacle", "axes": [2, 2, 1] },
+        { "text": "A mind-bending thriller", "axes": [-2, -1, -2] },
+        { "text": "A chaotic comedy", "axes": [2, 2, 2] },
+        { "text": "An emotional love story", "axes": [-1, 2, 2] }
+      ],
+      "difficulty": "easy",
+      "tags": ["bollywood", "movies", "creativity"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_014",
+      "pack_id": "pop_culture",
+      "prompt": "You get a chance to star opposite Shah Rukh Khan.",
+      "options": [
+        { "text": "Prepare every scene perfectly", "axes": [-2, 1, -2] },
+        { "text": "Improvise and steal the show", "axes": [2, 2, 2] },
+        { "text": "Let him take the spotlight", "axes": [-1, 2, 1] },
+        { "text": "Make the role completely mine", "axes": [1, -2, 2] }
+      ],
+      "difficulty": "easy",
+      "tags": ["bollywood", "shah-rukh-khan", "celebrity"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_015",
+      "pack_id": "pop_culture",
+      "prompt": "You're invited to the Ambani wedding. What's your move?",
+      "options": [
+        { "text": "Network with influential people", "axes": [-2, 2, -2] },
+        { "text": "Enjoy the food and spectacle", "axes": [2, 2, 2] },
+        { "text": "Observe everything quietly", "axes": [-2, -2, -2] },
+        { "text": "Become the unexpected main character", "axes": [2, -1, 2] }
+      ],
+      "difficulty": "easy",
+      "tags": ["india", "celebrity", "social"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_016",
+      "pack_id": "pop_culture",
+      "prompt": "You get to swap lives with one Bollywood character.",
+      "options": [
+        { "text": "Rancho from 3 Idiots", "axes": [-1, 2, -2] },
+        { "text": "Kabir Singh", "axes": [2, -2, 2] },
+        { "text": "Mogambo from Mr. India", "axes": [-2, -2, -1] },
+        { "text": "Circuit from Munna Bhai", "axes": [2, 2, 2] }
+      ],
+      "difficulty": "easy",
+      "tags": ["bollywood", "3-idiots", "munna-bhai"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_017",
+      "pack_id": "pop_culture",
+      "prompt": "Your life becomes a Bollywood movie. Pick its soundtrack.",
+      "options": [
+        { "text": "Arijit Singh heartbreak songs", "axes": [-1, 2, 2] },
+        { "text": "Yo Yo Honey Singh party hits", "axes": [2, 2, 2] },
+        { "text": "A.R. Rahman cinematic music", "axes": [-2, -1, -2] },
+        { "text": "Punjabi beats at full volume", "axes": [2, 1, 1] }
+      ],
+      "difficulty": "easy",
+      "tags": ["music", "bollywood", "punjabi-music"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_018",
+      "pack_id": "pop_culture",
+      "prompt": "You can attend one legendary concert.",
+      "options": [
+        { "text": "Taylor Swift's Eras Tour", "axes": [1, 2, 2] },
+        { "text": "A Coldplay stadium show", "axes": [2, 2, 1] },
+        { "text": "A Diljit Dosanjh concert", "axes": [2, 2, 2] },
+        { "text": "An Eminem live performance", "axes": [1, -1, 2] }
+      ],
+      "difficulty": "easy",
+      "tags": ["music", "concerts", "global-pop"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_019",
+      "pack_id": "pop_culture",
+      "prompt": "You get to manage the Indian cricket team for one match.",
+      "options": [
+        { "text": "Analyse the opposition first", "axes": [-2, 2, -2] },
+        { "text": "Back the most aggressive XI", "axes": [2, 2, 2] },
+        { "text": "Trust experienced players", "axes": [-1, 2, 1] },
+        { "text": "Make one unexpected selection", "axes": [2, 1, 1] }
+      ],
+      "difficulty": "easy",
+      "tags": ["cricket", "india", "sports"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_020",
+      "pack_id": "pop_culture",
+      "prompt": "India needs six runs off the final ball. You're at the crease.",
+      "options": [
+        { "text": "Stick to the planned shot", "axes": [-2, -1, -2] },
+        { "text": "Go for the biggest six", "axes": [2, 1, 2] },
+        { "text": "Trust my strongest instinct", "axes": [2, -1, 2] },
+        { "text": "Look for a clever boundary", "axes": [-1, 2, -2] }
+      ],
+      "difficulty": "easy",
+      "tags": ["cricket", "india", "pressure"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_021",
+      "pack_id": "pop_culture",
+      "prompt": "You become captain of an IPL franchise.",
+      "options": [
+        { "text": "Build a balanced playing XI", "axes": [-2, 2, -2] },
+        { "text": "Back the biggest match-winners", "axes": [2, 2, 1] },
+        { "text": "Trust my gut during auctions", "axes": [2, -1, 2] },
+        { "text": "Let the analysts decide", "axes": [-2, -1, -2] }
+      ],
+      "difficulty": "medium",
+      "tags": ["ipl", "cricket", "leadership"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_022",
+      "pack_id": "pop_culture",
+      "prompt": "You get to spend a day with Virat Kohli.",
+      "options": [
+        { "text": "Train together in the gym", "axes": [-2, 1, -2] },
+        { "text": "Talk about his mindset", "axes": [-1, 1, -2] },
+        { "text": "Challenge him to a match", "axes": [2, 1, 2] },
+        { "text": "Explore the city together", "axes": [2, 2, 1] }
+      ],
+      "difficulty": "easy",
+      "tags": ["cricket", "virat-kohli", "india"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_023",
+      "pack_id": "pop_culture",
+      "prompt": "You get one chance to drive in a Formula 1 race.",
+      "options": [
+        { "text": "Study the track and telemetry", "axes": [-2, -1, -2] },
+        { "text": "Attack every corner", "axes": [2, -1, 2] },
+        { "text": "Follow the team's strategy", "axes": [-2, 2, -2] },
+        { "text": "Race like there's no tomorrow", "axes": [2, 2, 2] }
+      ],
+      "difficulty": "easy",
+      "tags": ["f1", "motorsport", "risk"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_024",
+      "pack_id": "pop_culture",
+      "prompt": "You can meet one football legend.",
+      "options": [
+        { "text": "Lionel Messi", "axes": [-1, -1, 2] },
+        { "text": "Cristiano Ronaldo", "axes": [-2, -1, -2] },
+        { "text": "Neymar Jr.", "axes": [2, 2, 2] },
+        { "text": "Zinedine Zidane", "axes": [-2, 2, -2] }
+      ],
+      "difficulty": "easy",
+      "tags": ["football", "sports", "legends"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_025",
+      "pack_id": "pop_culture",
+      "prompt": "Your favourite football club is losing a final.",
+      "options": [
+        { "text": "Keep believing until the end", "axes": [2, 2, 2] },
+        { "text": "Analyse what went wrong", "axes": [-2, -1, -2] },
+        { "text": "Blame the manager online", "axes": [2, 2, 1] },
+        { "text": "Switch off the television", "axes": [-1, -2, -1] }
+      ],
+      "difficulty": "easy",
+      "tags": ["football", "fans", "sports"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_026",
+      "pack_id": "pop_culture",
+      "prompt": "You get to enter one iconic video game.",
+      "options": [
+        { "text": "Vice City and Los Santos", "axes": [2, -2, 2] },
+        { "text": "Minecraft's open world", "axes": [-1, -2, -1] },
+        { "text": "Fortnite's Battle Royale", "axes": [2, 2, 2] },
+        { "text": "Red Dead Redemption 2", "axes": [-2, 1, 1] }
+      ],
+      "difficulty": "easy",
+      "tags": ["gaming", "minecraft", "fortnite"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_027",
+      "pack_id": "pop_culture",
+      "prompt": "Your Minecraft world gets invaded by strangers.",
+      "options": [
+        { "text": "Build an unbeatable fortress", "axes": [-2, -1, -2] },
+        { "text": "Fight them immediately", "axes": [2, 1, 2] },
+        { "text": "Recruit other players", "axes": [-1, 2, 1] },
+        { "text": "Hide everything and disappear", "axes": [1, -2, -1] }
+      ],
+      "difficulty": "easy",
+      "tags": ["minecraft", "gaming", "survival"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_028",
+      "pack_id": "pop_culture",
+      "prompt": "You're the last player alive in a BGMI squad match.",
+      "options": [
+        { "text": "Play for the chicken dinner", "axes": [-2, -1, -2] },
+        { "text": "Rush the entire enemy squad", "axes": [2, 2, 2] },
+        { "text": "Revive the squad if possible", "axes": [1, 2, 1] },
+        { "text": "Flank them and surprise everyone", "axes": [2, -1, -2] }
+      ],
+      "difficulty": "easy",
+      "tags": ["bgmi", "gaming", "battle-royale"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_029",
+      "pack_id": "pop_culture",
+      "prompt": "You get one wish from an open-world cheat-code universe.",
+      "options": [
+        { "text": "Infinite money", "axes": [-2, -2, -2] },
+        { "text": "All weapons unlocked", "axes": [2, -1, 2] },
+        { "text": "A loyal crew for every mission", "axes": [-1, 2, 1] },
+        { "text": "Maximum chaos everywhere", "axes": [2, 2, 2] }
+      ],
+      "difficulty": "easy",
+      "tags": ["open-world", "gaming", "humour"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_030",
+      "pack_id": "pop_culture",
+      "prompt": "Your squad wants to play one more game at 3 AM.",
+      "options": [
+        { "text": "One more. Then actually sleep.", "axes": [-2, 2, -1] },
+        { "text": "I'm not leaving until we win", "axes": [2, 2, 2] },
+        { "text": "Play solo. I'm done carrying.", "axes": [1, -2, 1] },
+        { "text": "Suggest a completely different game", "axes": [2, 2, 1] }
+      ],
+      "difficulty": "easy",
+      "tags": ["gaming", "friends", "late-night"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_031",
+      "pack_id": "pop_culture",
+      "prompt": "Netflix asks you to choose the next show everyone watches.",
+      "options": [
+        { "text": "A psychological thriller", "axes": [-2, -1, -2] },
+        { "text": "A chaotic comedy", "axes": [2, 2, 2] },
+        { "text": "A crime series", "axes": [-1, 2, -1] },
+        { "text": "Something nobody has heard of", "axes": [2, -2, 1] }
+      ],
+      "difficulty": "easy",
+      "tags": ["netflix", "movies", "entertainment"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_032",
+      "pack_id": "pop_culture",
+      "prompt": "You can erase one movie spoiler from your memory.",
+      "options": [
+        { "text": "Avengers: Endgame", "axes": [-1, 2, 2] },
+        { "text": "Game of Thrones", "axes": [-2, -1, -2] },
+        { "text": "The Sixth Sense", "axes": [1, -2, 2] },
+        { "text": "Fight Club", "axes": [2, -1, 1] }
+      ],
+      "difficulty": "easy",
+      "tags": ["movies", "spoilers", "pop-culture"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_033",
+      "pack_id": "pop_culture",
+      "prompt": "You can watch one movie for the first time again.",
+      "options": [
+        { "text": "Interstellar", "axes": [-2, -1, -2] },
+        { "text": "3 Idiots", "axes": [-1, 2, 2] },
+        { "text": "Avengers: Endgame", "axes": [2, 2, 2] },
+        { "text": "The Dark Knight", "axes": [1, -2, -2] }
+      ],
+      "difficulty": "easy",
+      "tags": ["movies", "bollywood", "hollywood"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_034",
+      "pack_id": "pop_culture",
+      "prompt": "A famous director offers you a role with no script.",
+      "options": [
+        { "text": "Demand the full screenplay", "axes": [-2, -1, -2] },
+        { "text": "Say yes. This is cinema.", "axes": [2, 2, 2] },
+        { "text": "Ask the cast what they're doing", "axes": [-1, 2, 1] },
+        { "text": "Create my own character", "axes": [2, -1, 2] }
+      ],
+      "difficulty": "medium",
+      "tags": ["movies", "creativity", "ambition"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_035",
+      "pack_id": "pop_culture",
+      "prompt": "You wake up as the main character of a Netflix series.",
+      "options": [
+        { "text": "Figure out the entire plot", "axes": [-2, -1, -2] },
+        { "text": "Make every episode unpredictable", "axes": [2, 2, 2] },
+        { "text": "Build relationships with everyone", "axes": [-1, 2, 1] },
+        { "text": "Find a way to escape the series", "axes": [2, -2, -1] }
+      ],
+      "difficulty": "easy",
+      "tags": ["netflix", "fiction", "personality"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_036",
+      "pack_id": "pop_culture",
+      "prompt": "You become a globally famous YouTuber overnight.",
+      "options": [
+        { "text": "Build a proper content strategy", "axes": [-2, -1, -2] },
+        { "text": "Post whatever feels fun", "axes": [2, -1, 2] },
+        { "text": "Start collaborating with everyone", "axes": [1, 2, 1] },
+        { "text": "Disappear and enjoy the money", "axes": [-1, -2, -1] }
+      ],
+      "difficulty": "easy",
+      "tags": ["youtube", "internet", "fame"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_037",
+      "pack_id": "pop_culture",
+      "prompt": "A meme about you gets 10 million views.",
+      "options": [
+        { "text": "Turn it into a personal brand", "axes": [-2, 1, -2] },
+        { "text": "Make an even worse sequel", "axes": [2, 2, 2] },
+        { "text": "Delete every social account", "axes": [-1, -2, -1] },
+        { "text": "Own the joke and repost it", "axes": [2, 1, 1] }
+      ],
+      "difficulty": "easy",
+      "tags": ["memes", "internet", "viral"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_038",
+      "pack_id": "pop_culture",
+      "prompt": "You accidentally become the main character on Instagram.",
+      "options": [
+        { "text": "Control the narrative", "axes": [-2, 1, -2] },
+        { "text": "Post a completely unhinged story", "axes": [2, 2, 2] },
+        { "text": "Ignore the entire situation", "axes": [-1, -2, -1] },
+        { "text": "Turn followers into a community", "axes": [1, 2, 1] }
+      ],
+      "difficulty": "easy",
+      "tags": ["instagram", "internet", "social-media"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_039",
+      "pack_id": "pop_culture",
+      "prompt": "Your favourite meme format suddenly becomes outdated.",
+      "options": [
+        { "text": "Find the next big trend", "axes": [-2, -1, -2] },
+        { "text": "Keep using it ironically", "axes": [2, -1, 2] },
+        { "text": "Convince everyone it's still funny", "axes": [2, 2, 1] },
+        { "text": "Move on. Internet never stops.", "axes": [1, -2, -1] }
+      ],
+      "difficulty": "easy",
+      "tags": ["memes", "trends", "internet"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_040",
+      "pack_id": "pop_culture",
+      "prompt": "You get verified on every social media platform.",
+      "options": [
+        { "text": "Build a serious public image", "axes": [-2, 2, -2] },
+        { "text": "Post absolute nonsense", "axes": [2, 2, 2] },
+        { "text": "Keep everything private", "axes": [-1, -2, -1] },
+        { "text": "Use it to launch a business", "axes": [-2, -1, -2] }
+      ],
+      "difficulty": "easy",
+      "tags": ["internet", "influencers", "social-media"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_041",
+      "pack_id": "pop_culture",
+      "prompt": "You get invited to a K-pop group's private afterparty.",
+      "options": [
+        { "text": "Meet everyone and make friends", "axes": [2, 2, 2] },
+        { "text": "Stay low-key and enjoy the music", "axes": [-1, -2, 1] },
+        { "text": "Ask about their creative process", "axes": [-2, 1, -2] },
+        { "text": "Become the unexpected dance star", "axes": [2, 1, 2] }
+      ],
+      "difficulty": "easy",
+      "tags": ["k-pop", "music", "social"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_042",
+      "pack_id": "pop_culture",
+      "prompt": "You can collaborate with one music superstar.",
+      "options": [
+        { "text": "Taylor Swift", "axes": [-2, 2, 1] },
+        { "text": "Drake", "axes": [2, -1, 2] },
+        { "text": "Diljit Dosanjh", "axes": [2, 2, 2] },
+        { "text": "The Weeknd", "axes": [-1, -2, -1] }
+      ],
+      "difficulty": "easy",
+      "tags": ["music", "artists", "collaboration"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_043",
+      "pack_id": "pop_culture",
+      "prompt": "Your playlist becomes public. What's the reaction?",
+      "options": [
+        { "text": "Finally, people get my taste", "axes": [2, 2, 2] },
+        { "text": "Immediately check what's exposed", "axes": [-2, -1, -2] },
+        { "text": "I have several secret playlists", "axes": [-1, -2, 1] },
+        { "text": "Use it to start music debates", "axes": [2, 1, -1] }
+      ],
+      "difficulty": "easy",
+      "tags": ["music", "spotify", "personality"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_044",
+      "pack_id": "pop_culture",
+      "prompt": "Your favourite artist announces a surprise album tonight.",
+      "options": [
+        { "text": "Listen to it from track one", "axes": [-1, -1, -2] },
+        { "text": "Listen with the entire friend group", "axes": [2, 2, 2] },
+        { "text": "Skip straight to the singles", "axes": [1, -2, 1] },
+        { "text": "Read reviews before listening", "axes": [-2, -1, -2] }
+      ],
+      "difficulty": "easy",
+      "tags": ["music", "albums", "internet"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_045",
+      "pack_id": "pop_culture",
+      "prompt": "A celebrity you admire gets caught in a huge controversy.",
+      "options": [
+        { "text": "Wait for verified information", "axes": [-2, -1, -2] },
+        { "text": "Unfollow immediately", "axes": [2, -2, 1] },
+        { "text": "Hear all sides before deciding", "axes": [-2, 2, -2] },
+        { "text": "Separate the art from the artist", "axes": [-1, -1, 1] }
+      ],
+      "difficulty": "hard",
+      "tags": ["celebrity", "internet", "judgement"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_046",
+      "pack_id": "pop_culture",
+      "prompt": "You get to choose the next global viral challenge.",
+      "options": [
+        { "text": "A clever brain challenge", "axes": [-2, 1, -2] },
+        { "text": "A ridiculous dance trend", "axes": [2, 2, 2] },
+        { "text": "An extreme physical challenge", "axes": [2, -1, 2] },
+        { "text": "A challenge involving friends", "axes": [-1, 2, 1] }
+      ],
+      "difficulty": "easy",
+      "tags": ["viral", "internet", "trends"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_047",
+      "pack_id": "pop_culture",
+      "prompt": "You can delete one annoying internet phenomenon.",
+      "options": [
+        { "text": "Fake giveaways and scams", "axes": [-2, 1, -2] },
+        { "text": "Spoilers in comment sections", "axes": [-1, -2, 1] },
+        { "text": "Influencer fake lifestyles", "axes": [2, 2, 1] },
+        { "text": "Endless pointless arguments", "axes": [1, -2, -1] }
+      ],
+      "difficulty": "medium",
+      "tags": ["internet", "social-media", "opinions"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_048",
+      "pack_id": "pop_culture",
+      "prompt": "You get one hour with your favourite fictional villain.",
+      "options": [
+        { "text": "Ask how their mind works", "axes": [-2, -1, -2] },
+        { "text": "Challenge their entire worldview", "axes": [2, 2, 2] },
+        { "text": "Learn their biggest secrets", "axes": [-2, -2, -1] },
+        { "text": "Ask them to recruit me", "axes": [2, -1, 2] }
+      ],
+      "difficulty": "medium",
+      "tags": ["fiction", "villains", "psychology"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_049",
+      "pack_id": "pop_culture",
+      "prompt": "Your friend says your favourite movie is overrated.",
+      "options": [
+        { "text": "Prepare a 40-minute defence", "axes": [-2, 2, -2] },
+        { "text": "Agree just to annoy them", "axes": [2, 1, 2] },
+        { "text": "Ask what they think is better", "axes": [-1, 2, -2] },
+        { "text": "Their opinion is their problem", "axes": [-1, -2, 1] }
+      ],
+      "difficulty": "easy",
+      "tags": ["movies", "opinions", "friendship"],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "pc_050",
+      "pack_id": "pop_culture",
+      "prompt": "The entire internet gets to vote on your new identity.",
+      "options": [
+        { "text": "Let the people decide", "axes": [2, 2, 2] },
+        { "text": "Create a strategic voting campaign", "axes": [-2, 2, -2] },
+        { "text": "Reject the entire idea", "axes": [-1, -2, -1] },
+        { "text": "Make the most chaotic option win", "axes": [2, -1, 2] }
+      ],
+      "difficulty": "medium",
+      "tags": ["internet", "identity", "chaos"],
+      "status": "published",
+      "version": 1
+    }
+  ]
+}
