@@ -578,104 +578,6 @@ function computeCrewBoard(params) {
   };
 }
 
-// src/server/security.ts
-import crypto from "crypto";
-var UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-var DEVICE_COOKIE_NAME = "bp_device_id";
-function escapeHtml(input) {
-  return input.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
-}
-function sanitizeUserText(raw, maxLen) {
-  if (!raw) return "";
-  const cleaned = raw.replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200D\uFEFF]/g, "").replace(/[<>]/g, "").replace(/\s+/g, " ").trim();
-  return cleaned.slice(0, maxLen);
-}
-function isValidUuid(value) {
-  return typeof value === "string" && UUID_REGEX.test(value);
-}
-function parseCookies(cookieHeader) {
-  const out = {};
-  if (!cookieHeader) return out;
-  const parts = cookieHeader.split(";");
-  for (const part of parts) {
-    const idx = part.indexOf("=");
-    if (idx === -1) continue;
-    const key = part.slice(0, idx).trim();
-    const val = part.slice(idx + 1).trim();
-    if (key) {
-      try {
-        out[key] = decodeURIComponent(val);
-      } catch {
-        out[key] = val;
-      }
-    }
-  }
-  return out;
-}
-function resolveDeviceId(req, res, explicitDeviceId) {
-  const headerId = typeof req.headers["x-device-id"] === "string" ? req.headers["x-device-id"] : void 0;
-  const cookies = parseCookies(req.headers.cookie);
-  const cookieId = cookies[DEVICE_COOKIE_NAME];
-  const candidate = [explicitDeviceId, headerId, cookieId].find((id) => isValidUuid(id));
-  const deviceId = candidate ?? crypto.randomUUID();
-  if (cookieId !== deviceId) {
-    const isHttps = req.secure || req.headers["x-forwarded-proto"] === "https";
-    res.cookie(DEVICE_COOKIE_NAME, deviceId, {
-      httpOnly: false,
-      sameSite: "lax",
-      secure: isHttps,
-      maxAge: 365 * 24 * 60 * 60 * 1e3,
-      path: "/"
-    });
-  }
-  return deviceId;
-}
-function getClientIp(req) {
-  return req.ip || req.socket.remoteAddress || "unknown";
-}
-var AnswerRateLimiter = class {
-  constructor(limit = 60, windowMs = 6e4) {
-    this.buckets = /* @__PURE__ */ new Map();
-    this.limit = limit;
-    this.windowMs = windowMs;
-  }
-  check(key, now = Date.now()) {
-    const cutoff = now - this.windowMs;
-    let bucket = this.buckets.get(key);
-    if (!bucket) {
-      bucket = { timestamps: [] };
-      this.buckets.set(key, bucket);
-    }
-    while (bucket.timestamps.length > 0 && bucket.timestamps[0] <= cutoff) {
-      bucket.timestamps.shift();
-    }
-    if (bucket.timestamps.length >= this.limit) {
-      const oldest = bucket.timestamps[0];
-      const retryAfterSec = Math.max(1, Math.ceil((oldest + this.windowMs - now) / 1e3));
-      return { allowed: false, remaining: 0, retryAfterSec };
-    }
-    bucket.timestamps.push(now);
-    if (this.buckets.size > 5e3) {
-      for (const [k, b] of this.buckets.entries()) {
-        if (b.timestamps.length === 0 || b.timestamps[b.timestamps.length - 1] <= cutoff) {
-          this.buckets.delete(k);
-        }
-      }
-    }
-    return { allowed: true, remaining: this.limit - bucket.timestamps.length, retryAfterSec: 0 };
-  }
-  checkPair(ip, deviceId, now = Date.now()) {
-    const ipRes = this.check(`ip:${ip}`, now);
-    if (!ipRes.allowed) return { allowed: false, retryAfterSec: ipRes.retryAfterSec };
-    const devRes = this.check(`dev:${deviceId}`, now);
-    if (!devRes.allowed) return { allowed: false, retryAfterSec: devRes.retryAfterSec };
-    return { allowed: true, retryAfterSec: 0 };
-  }
-};
-
-// src/server/solo.ts
-import crypto2 from "crypto";
-
 // src/shared/archetypes.ts
 var ARCHETYPES = {
   the_architect: {
@@ -1030,7 +932,1242 @@ function computePersonality(chosenAxes) {
   };
 }
 
+// src/shared/crewCommentaryBank.ts
+var CREW_SYNC_TIERS = [
+  {
+    id: "hostile_takeover",
+    minSync: 0,
+    maxSync: 24,
+    title: "The Hostile Takeover",
+    shortDesc: "Pure anarchy. Nobody agreed on anything, and that was probably deliberate.",
+    crewDiagnosis: "This is not a crew; this is a witness protection convoy where everyone suspects everyone else. Every single question became a diplomatic incident, and every choice felt like a personal veto. If you attempted an escape room together, the emergency exit would be smashed open within ninety seconds.",
+    tone: "Savage, chaotic",
+    badgeColor: "#EF4444",
+    accentGlow: "rgba(239, 68, 68, 0.4)",
+    verdictLines: [
+      "You didn\u2019t form a squad. You signed an open-ended mutual restraining order.",
+      "A lobby so fractured that even the loading screen is looking for a way out.",
+      "If mutual distrust could generate electricity, you\u2019d power the entire coastline.",
+      "Nobody agreed on anything, yet everyone feels entirely justified.",
+      "Four GPS devices, six destination pins, zero passengers surviving the trip.",
+      "A masterclass in peaceful coexistence failing before question three.",
+      "Scientists study this level of disagreement to understand tectonic fault lines.",
+      "You are all fundamentally distinct human beings who met by tragic coincidence.",
+      "Not a single shared frequency in the room. Just pure, unadulterated static.",
+      "This friendship is held together exclusively by screenshots and spite."
+    ]
+  },
+  {
+    id: "different_planets",
+    minSync: 25,
+    maxSync: 39,
+    title: "Different Planets",
+    shortDesc: "You share a group chat, but your brains live in different solar systems.",
+    crewDiagnosis: "You occasionally wander onto the same wavelength by pure statistical accident before scattering to opposite corners of the map. Conversations require three layers of translation, and deciding where to eat probably takes forty-five minutes and an online poll.",
+    tone: "Heavy teasing",
+    badgeColor: "#F97316",
+    accentGlow: "rgba(249, 115, 22, 0.4)",
+    verdictLines: [
+      "You don\u2019t share a braincell; you occasionally wave at each other from different orbits.",
+      "Every choice felt like a coin flip that landed on its side.",
+      "Proof that opposites attract, argue for an hour, and then order completely different takeout.",
+      "You communicate via vibes and misunderstandings, and somehow that\u2019s working for you.",
+      "A crew built on mutual bewilderment and occasional polite nods.",
+      "One of you is living in 2085, one is in the 1990s, and the rest forgot the question.",
+      "You agree just often enough to keep the group chat alive, but never enough to make plans.",
+      "Every plan in this group requires a three-point turn and a written waiver.",
+      "Your synchronisation is like intermittent Bluetooth in an underground car park.",
+      "United by proximity, separated by basically every cognitive function."
+    ]
+  },
+  {
+    id: "somehow_a_crew",
+    minSync: 40,
+    maxSync: 54,
+    title: "Somehow a Crew",
+    shortDesc: "Chaotic equilibrium. Half the room plans, the other half improvise.",
+    crewDiagnosis: "A textbook sitcom ensemble. When you agree, you move fast; when you disagree, the debates are legendary and completely unnecessary. You have just enough common sense to avoid disaster, but enough reckless energy to keep things spicy.",
+    tone: "Playful roasting",
+    badgeColor: "#FBBF24",
+    accentGlow: "rgba(251, 191, 36, 0.4)",
+    verdictLines: [
+      "Somehow functional, completely unhinged, and miraculously intact.",
+      "Half of you packed an emergency kit; the other half brought sunglasses and vibes.",
+      "You survived the quiz the way you survive weekends: with zero consensus and maximum drama.",
+      "A delicately balanced ecosystem of overthinkers and chaos enthusiasts.",
+      "You shouldn\u2019t work as a team on paper, yet here you are defying workplace safety laws.",
+      "Two people are holding the map, and two people are actively setting fire to the compass.",
+      "The group project where one person wrote the bibliography and three gave the presentation.",
+      "If this squad were an aircraft, the warning alarm would be playing lo-fi beats.",
+      "You share enough logic to reach the car, but not enough to agree on the playlist.",
+      "A fragile peace agreement that holds together as long as nobody mentions money or timing."
+    ]
+  },
+  {
+    id: "unlikely_alliance",
+    minSync: 55,
+    maxSync: 69,
+    title: "The Unlikely Alliance",
+    shortDesc: "Solid chemistry with just enough friction to stay interesting.",
+    crewDiagnosis: "A very healthy friend group dynamic. You think alike on the major instincts while maintaining enough individuality to keep conversations from becoming an echo chamber. You could pull off an elaborate road trip with minimal screaming.",
+    tone: "Balanced",
+    badgeColor: "#34D399",
+    accentGlow: "rgba(52, 211, 153, 0.4)",
+    verdictLines: [
+      "Good instincts, healthy disagreements, and zero casualties.",
+      "You understand each other well enough to finish each other\u2019s complaints.",
+      "A dependable squad that knows when to lock in and when to cause minor problems.",
+      "You disagree on the method, but you always arrive at the same conclusion.",
+      "The exact synchronisation sweet spot: compatible without being creepy.",
+      "Capable of pulling off a heist, provided everyone gets their choice of snack.",
+      "Strong co-op energy with occasional friendly fire for character development.",
+      "You read each other\u2019s signals without needing an instructional manual.",
+      "Reliable chemistry that survives bad traffic, missed turns, and split bills.",
+      "Solid wavelength. You know exactly which friend to blame when things go sideways."
+    ]
+  },
+  {
+    id: "one_braincell",
+    minSync: 70,
+    maxSync: 84,
+    title: "One Braincell, Shared",
+    shortDesc: "Dangerous telepathy. You reach the same conclusions before the question finishes.",
+    crewDiagnosis: "High-tier squad harmony. You share an unspoken shorthand that outsiders find mildly alarming. You finish each other\u2019s bad ideas before they can be questioned, and when one person suggests a terrible plan, everyone nods in immediate agreement.",
+    tone: "Mostly compliments",
+    badgeColor: "#38BDF8",
+    accentGlow: "rgba(56, 189, 248, 0.4)",
+    verdictLines: [
+      "One braincell passed around like a shared hot potato.",
+      "You don\u2019t need group meetings; you operate on shared peripheral vision.",
+      "The kind of sync where eye contact across a crowded room counts as a full monologue.",
+      "Alarmingly unified. You probably order the exact same drink without checking.",
+      "A squad that makes questionable decisions together with Olympic-level synchrony.",
+      "When one of you makes a bad call, the rest follow with total loyalty.",
+      "High-bandwidth connection. Zero latency between instinct and execution.",
+      "Outsiders feel like third wheels just standing near your group chat.",
+      "Terrifyingly in tune. You could rob a convenience store on pure body language.",
+      "The group hive mind is functioning at full capacity today."
+    ]
+  },
+  {
+    id: "mind_meld",
+    minSync: 85,
+    maxSync: 94,
+    title: "Mind Meld",
+    shortDesc: "Subconscious cloning. You are practically operating off a single central nervous system.",
+    crewDiagnosis: "Elite synchronisation. There is virtually no daylight between your thought processes. You anticipate each other\u2019s moves, share identical radar for awkward situations, and would easily pass a government interrogation without rehearsing an alibi.",
+    tone: "Strong compliments",
+    badgeColor: "#818CF8",
+    accentGlow: "rgba(129, 140, 248, 0.4)",
+    verdictLines: [
+      "Terrifyingly in sync. You are one matching jacket away from being a syndicate.",
+      "Are you friends, or were you manufactured in the same test tube?",
+      "If you were any more aligned, your phones would start charging each other by contact.",
+      "You could swap seats halfway through the quiz and nobody would spot the difference.",
+      "Zero hesitation, total telepathy, slightly unnerving compatibility.",
+      "The authorities would classify this group as an unregistered distributed computer.",
+      "A frequency lock so clean it makes twin telepathy look amateur.",
+      "You could run a joint bank account and never argue about a single line item.",
+      "Shared wavelength, identical biases, and complete mutual understanding.",
+      "Co-op masterclass. You move through scenarios like choreographed dancers."
+    ]
+  },
+  {
+    id: "literally_same_person",
+    minSync: 95,
+    maxSync: 100,
+    title: "Literally the Same Person",
+    shortDesc: "Statistically suspicious. We suspect multiple tabs or identical DNA.",
+    crewDiagnosis: "This level of synchronisation violates several natural laws. Either you have known each other since infancy and share identical sleep schedules, or one of you is a sentient holographic copy of the other. The algorithm is currently double-checking the database for duplicate submissions.",
+    tone: "Legendary, suspicious",
+    badgeColor: "#EC4899",
+    accentGlow: "rgba(236, 72, 153, 0.4)",
+    verdictLines: [
+      "Statistically suspicious. Are you sure you didn\u2019t just pass one phone around?",
+      "Identical brainwaves. We are checking the server logs for genetic cloning.",
+      "You don\u2019t have a dynamic; you have a mirror and a shared Wi-Fi password.",
+      "Literally zero variance. It\u2019s almost creepy how identical your neural wiring is.",
+      "If you two ever disagree, the space-time continuum will file for unemployment.",
+      "A hundred percent lock. Even your mistakes were made in perfect unison.",
+      "You could take each other\u2019s driving tests and the examiner would suspect nothing.",
+      "The rarest frequency in BRAINPRINT history. Uncanny, illegal, and iconic.",
+      "We ran the numbers twice because nobody expects this level of mutual brain rot.",
+      "One mind, multiple physical containers. A triumph of parallel computing."
+    ]
+  }
+];
+var PAIRWISE_RELATIONSHIP_TIERS = [
+  {
+    id: "natural_enemies",
+    minSync: 0,
+    maxSync: 24,
+    label: "Natural Enemies",
+    lines: [
+      "Please do not put these two in charge of anything that requires consensus.",
+      "Their ideas of a good weekend are mutually exclusive by international law.",
+      "One builds the escape ladder; the other sells it for parts.",
+      "They would split a two-door car right down the middle with an angle grinder.",
+      "If one says north, the other is already packing winter coats for Antarctica.",
+      "A rivalry so pure it could be packaged and sold as pre-workout powder.",
+      "Every conversation is a covert operation to avoid agreeing on anything.",
+      "Proof that two people can share air without sharing a single opinion."
+    ]
+  },
+  {
+    id: "unresolved_tension",
+    minSync: 25,
+    maxSync: 39,
+    label: "Unresolved Tension",
+    lines: [
+      "They agree just often enough to make the next disagreement sting even more.",
+      "One makes a three-point plan; the other quietly deletes step two.",
+      "A polite standoff disguised as teamwork.",
+      "They will smile, nod, and then immediately do the exact opposite behind each other\u2019s backs.",
+      "You can hear the diplomatic sigh from three screens away.",
+      "Coexisting on borrowed patience and very thin ice.",
+      "They communicate through passive-aggressive calendar invites.",
+      "Two different philosophies colliding in slow motion at a junction."
+    ]
+  },
+  {
+    id: "acquaintances_at_best",
+    minSync: 40,
+    maxSync: 54,
+    label: "Acquaintances at Best",
+    lines: [
+      "Friendly enough in group settings, completely unpredictable one-on-one.",
+      "They share about half a braincell, but neither has custody this weekend.",
+      "They will agree on the destination, then fight over which route has fewer potholes.",
+      "Safe, civilized, and capable of sharing an umbrella without incidents.",
+      "Good balance: one provides the brakes, the other provides the accelerator.",
+      "Occasional cognitive overlaps, separated by healthy chasms of common sense.",
+      "They get along best when a third person is buffering the conversation.",
+      "Compatible in small, controlled, well-ventilated doses."
+    ]
+  },
+  {
+    id: "decent_chemistry",
+    minSync: 55,
+    maxSync: 69,
+    label: "Decent Chemistry",
+    lines: [
+      "A reliable duo. They read each other\u2019s playbooks with minimal confusion.",
+      "They disagree on the seasoning, but they both like the meal.",
+      "One starts the joke, the other adds the punchline thirty seconds later.",
+      "They could co-pilot a road trip without throwing the aux cable out the window.",
+      "Solid wavelength. Disagreements are settled with a coin toss and a laugh.",
+      "They back each other up in public and roast each other in private.",
+      "A dependable alliance that survives bad traffic and late arrivals.",
+      "Natural conversational rhythm with plenty of room for banter."
+    ]
+  },
+  {
+    id: "same_wavelength",
+    minSync: 70,
+    maxSync: 84,
+    label: "Same Wavelength",
+    lines: [
+      "Shared braincell. Ownership is disputed, but usage is frequent.",
+      "They reach the punchline before the setup has even finished rendering.",
+      "Dangerous co-op energy. They validate each other\u2019s worst impulses instantly.",
+      "A glance across the table is equivalent to a fifteen-minute voice note.",
+      "They operate on the exact same risk tolerance setting: high and irresponsible.",
+      "When one gets a bad idea, the other is already fetching the props.",
+      "High-bandwidth unspoken communication. Outsiders should be worried.",
+      "They would split the bill to the exact cent without opening a calculator."
+    ]
+  },
+  {
+    id: "shared_braincell",
+    minSync: 85,
+    maxSync: 94,
+    label: "Shared Braincell",
+    lines: [
+      "They understand each other a little too well. It\u2019s starting to concern the lobby.",
+      "Basically operating as a dual-core processor in two separate bodies.",
+      "They finish each other\u2019s snacks and sentences without asking.",
+      "Separated at birth, reunited by an arcade algorithm.",
+      "If you tell one of them a secret, both already know.",
+      "The telepathy is so strong they probably get the same spam calls.",
+      "Zero lag between thought, agreement, and terrible execution.",
+      "They could swap characters mid-game and nobody would notice the playstyle change."
+    ]
+  },
+  {
+    id: "suspicious_connection",
+    minSync: 95,
+    maxSync: 100,
+    label: "Suspicious Connection",
+    lines: [
+      "Statistically alarming. We are filing paperwork to check if they are the same person.",
+      "Two bodies, one identical operating system. Unsettling and magnificent.",
+      "Did you two rehearse this in a private lobby beforehand?",
+      "If one sneezes, the other reaches for a handkerchief instinctively.",
+      "A flawless match. Not a single disagreement detected across the entire run.",
+      "They are legally prohibited from playing against each other in trivia.",
+      "A cosmic glitch where two minds downloaded the exact same save file.",
+      "Suspiciously identical. Even their wild guesses matched down to the millisecond."
+    ]
+  }
+];
+var INDIVIDUAL_LABELS = {
+  crew_glue: {
+    id: "crew_glue",
+    title: "Crew Glue",
+    description: "The social connective tissue holding this volatile mixture together."
+  },
+  the_outsider: {
+    id: "the_outsider",
+    title: "The Outsider",
+    description: "Operating on a private encrypted frequency that nobody else can decode."
+  },
+  the_wildcard: {
+    id: "the_wildcard",
+    title: "The Wildcard",
+    description: "Completely impossible to predict. You keep the squad guessing and sweating."
+  },
+  the_diplomat: {
+    id: "the_diplomat",
+    title: "The Diplomat",
+    description: "Occupying the exact gravitational centre of the group\u2019s collective opinions."
+  },
+  the_chaos_engine: {
+    id: "the_chaos_engine",
+    title: "The Chaos Engine",
+    description: "Every time a consensus starts forming, you hit the red button."
+  },
+  the_human_mirror: {
+    id: "the_human_mirror",
+    title: "The Human Mirror",
+    description: "Adapting to the wavelength of whichever teammate is currently in front of you."
+  },
+  the_voice_of_reason: {
+    id: "the_voice_of_reason",
+    title: "The Voice of Reason",
+    description: "Armed with logic and blueprints in a room full of fireworks."
+  },
+  the_unpredictable_one: {
+    id: "the_unpredictable_one",
+    title: "The Unpredictable One",
+    description: "Never takes the expected route; turns every simple question into a detour."
+  }
+};
+var CREW_AWARDS_BANK = [
+  {
+    id: "the_human_mirror",
+    title: "The Human Mirror",
+    icon: "\u{1FA9E}",
+    tagline: "Highest Pairwise Sync",
+    description: "Achieved the single highest synchronisation percentage with another player.",
+    isShareable: true
+  },
+  {
+    id: "walking_red_flag",
+    title: "Walking Red Flag",
+    icon: "\u{1F6A9}",
+    tagline: "Most Extreme Answers",
+    description: "Picked the most anomalous, high-risk, or rare answer options in the session."
+  },
+  {
+    id: "the_voice_of_reason",
+    title: "The Voice of Reason",
+    icon: "\u{1F9E0}",
+    tagline: "Plan & Logic Focused",
+    description: "The highest combined score on the Plan and Logic poles across the squad."
+  },
+  {
+    id: "the_main_character",
+    title: "The Main Character",
+    icon: "\u{1F451}",
+    tagline: "Most Distinctive Profile",
+    description: "Farthest Euclidean distance from the crew\u2019s average personality vector."
+  },
+  {
+    id: "the_diplomat",
+    title: "The Diplomat",
+    icon: "\u{1F54A}\uFE0F",
+    tagline: "Closest to Crew Mean",
+    description: "Smallest personality distance from the squad\u2019s collective average."
+  },
+  {
+    id: "the_wildcard",
+    title: "The Wildcard",
+    icon: "\u{1F0CF}",
+    tagline: "Most Unpredictable Profile",
+    description: "Most distributed pole balance with high answer variance across the session."
+  },
+  {
+    id: "the_clone",
+    title: "The Clone",
+    icon: "\u{1F9EC}",
+    tagline: "Strongest Similarity",
+    description: "Nearly identical 3-axis slider profile to another teammate.",
+    isShareable: true
+  },
+  {
+    id: "the_contrarian",
+    title: "The Contrarian",
+    icon: "\u26A1",
+    tagline: "Most Disagreements with Majority",
+    description: "Voted against the squad majority option more than anyone else in the room."
+  },
+  {
+    id: "the_therapist",
+    title: "The Therapist",
+    icon: "\u2615",
+    tagline: "Most Balanced Across Axes",
+    description: "Balanced closest to zero across Plan/Chaos, Solo/Crew, and Logic/Instinct."
+  },
+  {
+    id: "the_instigator",
+    title: "The Instigator",
+    icon: "\u{1F9E8}",
+    tagline: "Most Extreme Answer Tendencies",
+    description: "Frequently selected extreme choices on the Chaos and Instinct poles."
+  },
+  {
+    id: "the_lone_wolf",
+    title: "The Lone Wolf",
+    icon: "\u{1F43A}",
+    tagline: "Strongest Solo Tendency",
+    description: "The squad member leaning furthest toward the Solo pole."
+  },
+  {
+    id: "the_glue",
+    title: "The Glue",
+    icon: "\u{1F9F2}",
+    tagline: "High Sync & Crew Focus",
+    description: "High crew-orientation score paired with top-tier average pairwise sync."
+  }
+];
+var INDIVIDUAL_ROASTS = [
+  "The only person here with a functioning plan. Unfortunately, nobody is listening.",
+  "You didn\u2019t join a crew. You joined to make everyone\u2019s decision-making process harder.",
+  "Somehow the only person keeping this group from becoming an investigative documentary.",
+  "You read the terms and conditions before entering an arcade, and it shows.",
+  "Your internal GPS recalculates every four seconds just to keep your anxiety company.",
+  "You treat group chats like an emergency room briefing and wonder why people mute you.",
+  "You make spontaneous decisions with all the speed of an international treaty negotiation.",
+  "Your comfort zone has double-locked doors, emergency exits, and a fire marshal certificate.",
+  "You could overthink a coin toss until the metal oxidises in mid-air.",
+  'You agreed to join a crew, but your body language says "independent contractor with boundaries".',
+  "You bring the energy of someone who brought a packed lunch to a music festival.",
+  "You don\u2019t take shortcuts because shortcuts don\u2019t have laminated progress charts.",
+  "If there were an award for second-guessing yourself in public, you\u2019d wonder if you deserved it.",
+  "You trust your gut, which is terrifying because your gut has zero formal qualifications.",
+  "You are one unverified rumour away from moving off-grid and raising free-range doubts.",
+  "Your strategy was to wing it, miss the wing entirely, and land headfirst in the bushes.",
+  "You treat warning signs as decorative roadside art.",
+  "You pressed your answers with the calm confidence of a cat pushing a glass off a mantelpiece.",
+  "You are the reason this group needs a designated sober thinker at all times.",
+  "Your instinct is legendary. Unfortunately, your instinct was trained on cartoons.",
+  "You don\u2019t need an alibi because even the police wouldn\u2019t believe you planned that.",
+  "You are three bad decisions away from being an urban legend in your hometown.",
+  "You operate with complete disregard for physics, statistics, and basic timetable etiquette.",
+  "You volunteered for chaos and then acted surprised when things caught fire.",
+  "Your logic is airtight, provided we ignore real-world consequences and human emotions.",
+  "You would pause a high-speed chase to correct the getaway driver\u2019s pronunciation.",
+  "You approach friendship like an Excel macro: efficient, unbending, and easily corrupted.",
+  "You would rather be mathematically correct in a ditch than wrong in a warm car.",
+  "You treat social interactions like a board game where only you have read the expansion pack.",
+  "Your idea of compromise is explaining your original point again, but louder and slower.",
+  "You entered this quiz with answers already pre-computed from last Tuesday.",
+  "You don\u2019t have opinions; you have peer-reviewed hypotheses that nobody asked for.",
+  "You possess the social grace of a sudden system reboot in the middle of a speech.",
+  "You are the reason people check the group chat twice before answering a phone call.",
+  "You joined this crew for the snacks and stayed purely to observe the inevitable collapse.",
+  "Your presence here feels like a guest star who didn\u2019t read the script before filming.",
+  "You answered every question like a spy trying not to blow their cover at a bake sale.",
+  "You managed to disagree with everyone while maintaining complete eye contact.",
+  "You radiate the energy of someone whose favourite hobby is leaving parties without saying goodbye.",
+  "You are socially present, but emotionally running an ad blocker on the whole room.",
+  "You treated this test as a personality audit and scored an immediate extension.",
+  "You answered with pure aesthetic confidence and zero supporting documentation.",
+  "You are the wild card that makes the dealer nervously shuffle the deck again.",
+  "You think outside the box because you never figured out how to open the box.",
+  "Your answers suggest you were raised by wolves who had very specific opinions on public transit."
+];
+var INDIVIDUAL_COMPLIMENTS = [
+  "The genuine backbone of this crew. Without you, this lobby would have uninstalled itself.",
+  "Remarkable instincts. You see the shortcut three turns before anyone else notices the road.",
+  "Unshakeable calm. While the rest of the squad is screaming, you are casually solving the puzzle.",
+  "The rare friend who brings both a backup plan and the aux cable.",
+  "Razor-sharp intuition. You read the room faster than the room can read itself.",
+  "Your logic is clean, grounded, and shockingly immune to peer pressure.",
+  "The human anchor keeping this entire chaotic vessel from drifting out to sea.",
+  "Effortlessly adaptable. You can vibe with the masterminds and the wildcards alike.",
+  "A refreshing dose of sanity in a friend group that routinely tests the laws of probability.",
+  "You make tough calls look easy and bad situations look like planned adventures.",
+  "Quiet confidence that doesn\u2019t need to shout to take control of the situation.",
+  "The friend everyone secretly hopes will take charge when plans start crumbling.",
+  "Terrific radar for nonsense. You spot the trap before the door even begins to close.",
+  "Pure social glue. You bridge the gap between people who have nothing else in common.",
+  "Incredible loyalty. Even when the squad makes a dumb call, you back them up with style.",
+  "You have that rare gift of being hilarious without having to force the punchline.",
+  "Your instincts are so consistent they could be certified by an international standards board.",
+  "The squad\u2019s secret weapon. Underestimate you at their own considerable risk.",
+  "A master of improvised solutions. You turn disasters into memorable stories every time.",
+  "You bring the exact right energy: bold enough to move forward, smart enough to survive.",
+  "Genuinely authentic. You answer for yourself, not for the crowd, and it always pays off.",
+  "The kind of friend who remembers the emergency contacts and the inside jokes equally well.",
+  "Unfazed by chaos. You operate at room temperature even when the room is on fire.",
+  "Great cognitive balance. You know when to think it through and when to trust the hunch.",
+  "You keep your promises and your exit strategies equally sharp.",
+  "Natural leadership that works through respect and humor rather than bossiness.",
+  "The friend who actually reads the map so the rest of the car can look at the scenery.",
+  "Sharp wit, zero malice. You keep the banter alive without ever punching down.",
+  "A truly distinctive mind. You see angles and possibilities that everyone else walks right past.",
+  "Reliable in the crunch. When the timer hits five seconds, your hand never shakes.",
+  "The friend who turns an ordinary Tuesday night into an legendary anecdote.",
+  "Fiercely independent, yet undeniably fun to have on the roster.",
+  "You bring order to madness without draining the fun out of the room.",
+  "A grounded presence that makes everyone around you feel ten percent more competent.",
+  "You have an uncanny knack for being right while making everyone feel included.",
+  "Authentic wildcard energy used exclusively for good and entertainment.",
+  "The squad diplomat who can de-escalate an argument without taking sides.",
+  "Terrific creative problem solver. You don\u2019t just pick an option; you redefine the premise.",
+  "You make everyone around you feel like they are part of the winning team.",
+  "Steady hands, clear head, and the patience of an Olympic archery coach.",
+  "You possess the rarest squad trait: common sense deployed with a sense of humor.",
+  "A genuinely memorable player whose answers gave the whole session its flavor.",
+  "The glue that turns a collection of individuals into an actual crew.",
+  "High emotional intelligence paired with sharp tactical instincts.",
+  "You prove that being thoughtful and being spontaneous don\u2019t have to be enemies."
+];
+var AXIS_OBSERVATIONS = {
+  plan_dominant: [
+    "You could schedule an argument three weeks in advance and still send reminder emails.",
+    "Everyone in this room has a Google Calendar, but only you treat it as sacred scripture.",
+    "Spontaneity has to give you forty-eight hours of written notice to be considered.",
+    "You blueprint your downtime with the intensity of an architectural firm.",
+    "If a plan goes off course by five minutes, you initiate protocol alpha immediately.",
+    "Your backup plans have backup plans that have been peer-reviewed."
+  ],
+  chaos_dominant: [
+    "Nobody here has a plan. Somehow, against all odds, that became the plan.",
+    "You treat agendas like suggestions and timetables like abstract poetry.",
+    "Your philosophy is simple: why plan ahead when you can panic in real-time?",
+    "A squad that operates purely on momentum, adrenaline, and lucky bounces.",
+    "If predictability is an art form, you are currently finger-painting on the ceiling.",
+    "You don\u2019t look before you leap; you leap, inspect the scenery, and negotiate landing."
+  ],
+  plan_chaos_split: [
+    "Half the crew plans everything. The other half is the reason plans fail.",
+    'A civil war between the itinerary enthusiasts and the "let\u2019s see what happens" brigade.',
+    "One person is booking the tickets while the other is still debating if the trip exists.",
+    "The classic friction: architects building walls, and sparks trying to jump over them.",
+    "Every group outing is a delicate hostage negotiation between order and madness."
+  ],
+  solo_dominant: [
+    "A group chat full of people who privately despise group projects.",
+    "Everyone brought their own car to the meetup just so they could leave independently.",
+    "United in our shared desire to be left alone by approximately ninety percent of humanity.",
+    "A squad of lone wolves who occasionally share a clearing in the forest.",
+    "You operate best with at least three feet of personal space between your thoughts."
+  ],
+  crew_dominant: [
+    "Nobody here knows how to do anything alone. You operate as a single nervous system.",
+    "You order food family-style even when everyone ordered the exact same thing.",
+    "You would hold a committee meeting to decide which side of the pavement to walk on.",
+    "High collective loyalty: you sink together, swim together, and get lost together.",
+    "Separation anxiety sets in the moment someone goes to the counter alone."
+  ],
+  solo_crew_split: [
+    "Two members are trying to coordinate matching outfits; two are actively turning off their location.",
+    "A tug-of-war between the collective swarm and the fierce individual contractors.",
+    "Half the squad wants a team huddle; the other half is already walking out the door.",
+    "You have the team players and the independent operators sharing one tiny cockpit.",
+    "A delicate alliance between people who need a crew and people who tolerate company."
+  ],
+  logic_dominant: [
+    "You overthink things professionally and probably have spreadsheets for your hobbies.",
+    "Half the crew reads instructions. The other half reads the footnotes of the instructions.",
+    "Every decision requires a cost-benefit analysis and a brief moment of silence for math.",
+    "You analyse the joke until it stops being funny, then agree that it was technically valid.",
+    "High brainpower, heavy overthinking, and a collective allergy to reckless leaps of faith."
+  ],
+  instinct_dominant: [
+    "One bad idea away from a legendary story that you will retell for twenty years.",
+    "You don\u2019t read instructions; you become the instructions through trial and error.",
+    "Your collective gut feeling is loud, immediate, and rarely backed by hard data.",
+    "You run on pure animal instinct and the thrill of avoiding immediate consequences.",
+    "If it feels right in the first two seconds, the debate is officially over."
+  ],
+  logic_instinct_split: [
+    "Half the crew reads the map. The other half follows the smell of coffee.",
+    "A permanent battle between the calculators and the hunch-followers.",
+    'One person asks "what are the odds?" while the other person has already pressed the button.',
+    "Brain vs gut: the eternal debate playing out live on every single question.",
+    "A balanced tug-of-war between careful deduction and reckless enthusiasm."
+  ]
+};
+var FINAL_CREW_ROASTS = [
+  "Friendship is temporary. Group therapy is forever.",
+  "You survived this session, but your group chat will never be the same.",
+  "A collection of minds that makes perfect sense to nobody except yourselves.",
+  "May your plans be as forgiving as your friendship.",
+  "You are not a well-oiled machine; you are a shopping trolley with one squeaky wheel that everyone loves.",
+  "Four distinct personalities, one shared emergency contact list.",
+  "You shouldn\u2019t work as a team on paper, yet here you are defying workplace safety laws.",
+  "Proof that you don\u2019t need common sense when you have common loyalty.",
+  "Some crews conquer the world. This crew struggles to agree on parking.",
+  "A masterclass in peaceful coexistence with occasional tactical insults.",
+  "United by choice, divided by basically every question on this test.",
+  "Take care of each other; the outside world is not ready for this combination."
+];
+
+// src/shared/crewVerdictEngine.ts
+function hashStringToUint32(str) {
+  let hash = 2166136261;
+  for (let i = 0; i < str.length; i++) {
+    hash ^= str.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
+function getCrewSyncTier(sync) {
+  const clamped = Math.max(0, Math.min(100, Math.round(sync)));
+  const found = CREW_SYNC_TIERS.find((t) => clamped >= t.minSync && clamped <= t.maxSync);
+  return found ?? CREW_SYNC_TIERS[CREW_SYNC_TIERS.length - 1];
+}
+function getPairRelationshipTier(sync) {
+  const clamped = Math.max(0, Math.min(100, Math.round(sync)));
+  const found = PAIRWISE_RELATIONSHIP_TIERS.find((t) => clamped >= t.minSync && clamped <= t.maxSync);
+  return found ?? PAIRWISE_RELATIONSHIP_TIERS[PAIRWISE_RELATIONSHIP_TIERS.length - 1];
+}
+function computeCompleteCrewVerdict(params) {
+  const { sessionId, crewSyncPercent, questions, members } = params;
+  const k = members.length;
+  if (k < 2) {
+    throw new Error("Crew verdict requires at least 2 members");
+  }
+  const sessionSeed = hashStringToUint32(`session:${sessionId}:sync:${crewSyncPercent}`);
+  const rng = mulberry32(sessionSeed);
+  const tier = getCrewSyncTier(crewSyncPercent);
+  const verdictLineIdx = Math.floor(rng() * tier.verdictLines.length);
+  const verdictLine = tier.verdictLines[verdictLineIdx];
+  const memberPersonalities = members.map((m) => {
+    const chosenAxes = [];
+    for (const q of questions) {
+      const optIdx = m.answers[q.id];
+      if (optIdx !== void 0 && q.options[optIdx]?.axes) {
+        chosenAxes.push(q.options[optIdx].axes);
+      } else {
+        chosenAxes.push([0, 0, 0]);
+      }
+    }
+    const axisResult = computePersonality(chosenAxes);
+    return {
+      memberId: m.memberId,
+      nickname: m.nickname,
+      isMe: m.isMe,
+      axisResult,
+      answers: m.answers
+    };
+  });
+  const questionMajorities = [];
+  const questionOptionVoters = {};
+  for (const q of questions) {
+    const counts = [0, 0, 0, 0];
+    questionOptionVoters[q.id] = { 0: [], 1: [], 2: [], 3: [] };
+    for (const m of members) {
+      const opt = m.answers[q.id];
+      if (opt !== void 0 && opt >= 0 && opt <= 3) {
+        counts[opt]++;
+        questionOptionVoters[q.id][opt].push(m.memberId);
+      }
+    }
+    const maxCount = Math.max(...counts);
+    const majorityOpt = counts.indexOf(maxCount);
+    const hasTie = counts.filter((c) => c === maxCount).length > 1;
+    questionMajorities.push({ questionId: q.id, majorityOpt, isSplit: hasTie });
+  }
+  const memberStats = members.map((m) => {
+    let majorityDisagreementCount = 0;
+    let loneChoiceCount = 0;
+    let extremeAnswerCount = 0;
+    for (let qIdx = 0; qIdx < questions.length; qIdx++) {
+      const q = questions[qIdx];
+      const opt = m.answers[q.id];
+      const maj = questionMajorities[qIdx];
+      if (opt !== void 0 && opt >= 0 && opt <= 3) {
+        if (!maj.isSplit && opt !== maj.majorityOpt) {
+          majorityDisagreementCount++;
+        }
+        if (questionOptionVoters[q.id][opt]?.length === 1) {
+          loneChoiceCount++;
+        }
+        const axes = q.options[opt]?.axes;
+        if (axes && (Math.abs(axes[0]) >= 2 || Math.abs(axes[1]) >= 2 || Math.abs(axes[2]) >= 2)) {
+          extremeAnswerCount++;
+        }
+      }
+    }
+    return {
+      memberId: m.memberId,
+      majorityDisagreementCount,
+      loneChoiceCount,
+      extremeAnswerCount
+    };
+  });
+  const pairwiseRelationships = [];
+  const pairSyncMap = {};
+  for (const m of members) {
+    pairSyncMap[m.memberId] = {};
+  }
+  for (let i = 0; i < k; i++) {
+    for (let j = i + 1; j < k; j++) {
+      const a = members[i];
+      const b = members[j];
+      let matches = 0;
+      for (const q of questions) {
+        if (a.answers[q.id] !== void 0 && a.answers[q.id] === b.answers[q.id]) {
+          matches++;
+        }
+      }
+      const percentage = questions.length > 0 ? Math.round(matches / questions.length * 100) : 0;
+      pairSyncMap[a.memberId][b.memberId] = percentage;
+      pairSyncMap[b.memberId][a.memberId] = percentage;
+      const pTier = getPairRelationshipTier(percentage);
+      const pairRng = mulberry32(hashStringToUint32(`pair:${a.memberId}:${b.memberId}:${sessionSeed}`));
+      const lineIdx = Math.floor(pairRng() * pTier.lines.length);
+      const commentary = pTier.lines[lineIdx];
+      pairwiseRelationships.push({
+        memberAId: a.memberId,
+        memberAName: a.nickname,
+        memberBId: b.memberId,
+        memberBName: b.nickname,
+        matches,
+        total: questions.length,
+        percentage,
+        tierId: pTier.id,
+        tierLabel: pTier.label,
+        commentary
+      });
+    }
+  }
+  pairwiseRelationships.sort((a, b) => b.percentage - a.percentage);
+  const memberAvgSync = {};
+  for (const m of members) {
+    const peers = members.filter((p) => p.memberId !== m.memberId);
+    let sum = 0;
+    let strongest;
+    let weakest;
+    for (const p of peers) {
+      const s = pairSyncMap[m.memberId][p.memberId] ?? 0;
+      sum += s;
+      if (!strongest || s > strongest.percentage) {
+        strongest = { memberId: p.memberId, nickname: p.nickname, percentage: s };
+      }
+      if (!weakest || s < weakest.percentage) {
+        weakest = { memberId: p.memberId, nickname: p.nickname, percentage: s };
+      }
+    }
+    const avg = peers.length > 0 ? Math.round(sum / peers.length) : crewSyncPercent;
+    memberAvgSync[m.memberId] = { avg, strongest, weakest };
+  }
+  let sumP = 0;
+  let sumS = 0;
+  let sumL = 0;
+  let leftPCount = 0;
+  let rightPCount = 0;
+  let leftSCount = 0;
+  let rightSCount = 0;
+  let leftLCount = 0;
+  let rightLCount = 0;
+  const archetypeCounts = {
+    the_architect: 0,
+    the_lone_oracle: 0,
+    the_dispatcher: 0,
+    the_anchor: 0,
+    the_rogue_tactician: 0,
+    the_free_agent: 0,
+    the_plot_twister: 0,
+    the_spark: 0
+  };
+  for (const mp of memberPersonalities) {
+    sumP += mp.axisResult.raw[0];
+    sumS += mp.axisResult.raw[1];
+    sumL += mp.axisResult.raw[2];
+    if (mp.axisResult.poles[0] === "PLAN") leftPCount++;
+    else rightPCount++;
+    if (mp.axisResult.poles[1] === "SOLO") leftSCount++;
+    else rightSCount++;
+    if (mp.axisResult.poles[2] === "LOGIC") leftLCount++;
+    else rightLCount++;
+    archetypeCounts[mp.axisResult.archetypeId] = (archetypeCounts[mp.axisResult.archetypeId] || 0) + 1;
+  }
+  const crewMeanRaw = [sumP / k, sumS / k, sumL / k];
+  const toSlider = (raw) => Math.max(0, Math.min(100, Math.round((raw + 14) / 28 * 100)));
+  const memberCentroidDistances = {};
+  for (const mp of memberPersonalities) {
+    const dp = mp.axisResult.raw[0] - crewMeanRaw[0];
+    const ds = mp.axisResult.raw[1] - crewMeanRaw[1];
+    const dl = mp.axisResult.raw[2] - crewMeanRaw[2];
+    const dist = Math.sqrt(dp * dp + ds * ds + dl * dl);
+    memberCentroidDistances[mp.memberId] = dist;
+  }
+  const calcConsensus = (left, right) => {
+    const diff = Math.abs(left - right);
+    return Math.round(diff / k * 100);
+  };
+  const consensusP = calcConsensus(leftPCount, rightPCount);
+  const consensusS = calcConsensus(leftSCount, rightSCount);
+  const consensusL = calcConsensus(leftLCount, rightLCount);
+  const pickAxisCommentary = (axis, left, right, consensus) => {
+    const axisRng = mulberry32(hashStringToUint32(`axis:${axis}:${sessionSeed}`));
+    if (axis === "plan_chaos") {
+      if (consensus < 35) {
+        return AXIS_OBSERVATIONS.plan_chaos_split[Math.floor(axisRng() * AXIS_OBSERVATIONS.plan_chaos_split.length)];
+      }
+      return left >= right ? AXIS_OBSERVATIONS.plan_dominant[Math.floor(axisRng() * AXIS_OBSERVATIONS.plan_dominant.length)] : AXIS_OBSERVATIONS.chaos_dominant[Math.floor(axisRng() * AXIS_OBSERVATIONS.chaos_dominant.length)];
+    }
+    if (axis === "solo_crew") {
+      if (consensus < 35) {
+        return AXIS_OBSERVATIONS.solo_crew_split[Math.floor(axisRng() * AXIS_OBSERVATIONS.solo_crew_split.length)];
+      }
+      return left >= right ? AXIS_OBSERVATIONS.solo_dominant[Math.floor(axisRng() * AXIS_OBSERVATIONS.solo_dominant.length)] : AXIS_OBSERVATIONS.crew_dominant[Math.floor(axisRng() * AXIS_OBSERVATIONS.crew_dominant.length)];
+    }
+    if (consensus < 35) {
+      return AXIS_OBSERVATIONS.logic_instinct_split[Math.floor(axisRng() * AXIS_OBSERVATIONS.logic_instinct_split.length)];
+    }
+    return left >= right ? AXIS_OBSERVATIONS.logic_dominant[Math.floor(axisRng() * AXIS_OBSERVATIONS.logic_dominant.length)] : AXIS_OBSERVATIONS.instinct_dominant[Math.floor(axisRng() * AXIS_OBSERVATIONS.instinct_dominant.length)];
+  };
+  const findOutliers = (axisIdx, leftCount, rightCount, leftPole, rightPole) => {
+    if (Math.abs(leftCount - rightCount) <= 1) return [];
+    const minorityPole = leftCount < rightCount ? leftPole : rightPole;
+    return memberPersonalities.filter((mp) => mp.axisResult.poles[axisIdx] === minorityPole).map((mp) => mp.nickname);
+  };
+  const planAxisDetail = {
+    axis: "plan_chaos",
+    axisName: "Plan vs Chaos",
+    leftPole: "PLAN",
+    rightPole: "CHAOS",
+    leftCount: leftPCount,
+    rightCount: rightPCount,
+    crewAverageRaw: Math.round(crewMeanRaw[0] * 10) / 10,
+    crewAverageSlider: toSlider(crewMeanRaw[0]),
+    dominantPole: leftPCount >= rightPCount ? "PLAN" : "CHAOS",
+    consensusScore: consensusP,
+    commentary: pickAxisCommentary("plan_chaos", leftPCount, rightPCount, consensusP),
+    outlierMembers: findOutliers(0, leftPCount, rightPCount, "PLAN", "CHAOS")
+  };
+  const soloAxisDetail = {
+    axis: "solo_crew",
+    axisName: "Solo vs Crew",
+    leftPole: "SOLO",
+    rightPole: "CREW",
+    leftCount: leftSCount,
+    rightCount: rightSCount,
+    crewAverageRaw: Math.round(crewMeanRaw[1] * 10) / 10,
+    crewAverageSlider: toSlider(crewMeanRaw[1]),
+    dominantPole: leftSCount >= rightSCount ? "SOLO" : "CREW",
+    consensusScore: consensusS,
+    commentary: pickAxisCommentary("solo_crew", leftSCount, rightSCount, consensusS),
+    outlierMembers: findOutliers(1, leftSCount, rightSCount, "SOLO", "CREW")
+  };
+  const logicAxisDetail = {
+    axis: "logic_instinct",
+    axisName: "Logic vs Instinct",
+    leftPole: "LOGIC",
+    rightPole: "INSTINCT",
+    leftCount: leftLCount,
+    rightCount: rightLCount,
+    crewAverageRaw: Math.round(crewMeanRaw[2] * 10) / 10,
+    crewAverageSlider: toSlider(crewMeanRaw[2]),
+    dominantPole: leftLCount >= rightLCount ? "LOGIC" : "INSTINCT",
+    consensusScore: consensusL,
+    commentary: pickAxisCommentary("logic_instinct", leftLCount, rightLCount, consensusL),
+    outlierMembers: findOutliers(2, leftLCount, rightLCount, "LOGIC", "INSTINCT")
+  };
+  const axisList = [planAxisDetail, soloAxisDetail, logicAxisDetail].sort(
+    (a, b) => b.consensusScore - a.consensusScore
+  );
+  const strongestAgreement = axisList[0].consensusScore >= 40 ? {
+    axisName: axisList[0].axisName,
+    pole: axisList[0].dominantPole,
+    description: `${axisList[0].dominantPole === axisList[0].leftPole ? axisList[0].leftCount : axisList[0].rightCount} of ${k} players aligned on ${axisList[0].dominantPole}.`
+  } : null;
+  const biggestDisagreement = axisList[2].consensusScore < 70 ? {
+    axisName: axisList[2].axisName,
+    splitDescription: `${axisList[2].leftCount} ${axisList[2].leftPole} vs ${axisList[2].rightCount} ${axisList[2].rightPole}`,
+    description: `Split evenly down the middle with minimal consensus.`
+  } : null;
+  let dominantArchetypeId = "the_spark";
+  let dominantCount = 0;
+  for (const [aId, cnt] of Object.entries(archetypeCounts)) {
+    if (cnt > dominantCount) {
+      dominantCount = cnt;
+      dominantArchetypeId = aId;
+    }
+  }
+  const dominantDef = ARCHETYPES[dominantArchetypeId];
+  const dominantCrewArchetype = {
+    id: dominantArchetypeId,
+    name: dominantDef.name,
+    count: dominantCount,
+    description: dominantDef.oneLineTrait
+  };
+  const personalityDynamics = {
+    dominantCrewArchetype,
+    axes: {
+      plan_chaos: planAxisDetail,
+      solo_crew: soloAxisDetail,
+      logic_instinct: logicAxisDetail
+    },
+    strongestAgreement,
+    biggestDisagreement,
+    crewArchetypeDistribution: archetypeCounts
+  };
+  const awardWinners = [];
+  const addAward = (awardId, winnerIds, customExplanation) => {
+    if (!winnerIds.length) return;
+    const def = CREW_AWARDS_BANK.find((a) => a.id === awardId);
+    if (!def) return;
+    const nicknames = winnerIds.map(
+      (id) => members.find((m) => m.memberId === id)?.nickname ?? "Player"
+    );
+    awardWinners.push({
+      awardId,
+      title: def.title,
+      icon: def.icon,
+      winnerMemberIds: winnerIds,
+      winnerNicknames: nicknames,
+      explanation: customExplanation || `${nicknames.join(" & ")} earned this title through verified session choices.`
+    });
+  };
+  if (pairwiseRelationships.length > 0) {
+    const topPair = pairwiseRelationships[0];
+    if (topPair.percentage >= 60) {
+      addAward(
+        "the_human_mirror",
+        [topPair.memberAId, topPair.memberBId],
+        `Synchronised at an astounding ${topPair.percentage}% with ${topPair.matches} identical answers.`
+      );
+    }
+  }
+  const sortedByExtreme = [...memberStats].sort(
+    (a, b) => b.extremeAnswerCount - a.extremeAnswerCount
+  );
+  if (sortedByExtreme[0].extremeAnswerCount >= 3 && (sortedByExtreme.length === 1 || sortedByExtreme[0].extremeAnswerCount > sortedByExtreme[1].extremeAnswerCount)) {
+    addAward(
+      "walking_red_flag",
+      [sortedByExtreme[0].memberId],
+      `Consistently locked in the most anomalous, high-risk answer options in the session.`
+    );
+  }
+  const voiceOfReasonCandidates = memberPersonalities.map((mp) => ({
+    memberId: mp.memberId,
+    score: -mp.axisResult.raw[0] + -mp.axisResult.raw[2],
+    // positive if plan + logic
+    pPole: mp.axisResult.poles[0],
+    lPole: mp.axisResult.poles[2]
+  })).filter((c) => c.pPole === "PLAN" && c.lPole === "LOGIC").sort((a, b) => b.score - a.score);
+  if (voiceOfReasonCandidates.length > 0) {
+    addAward(
+      "the_voice_of_reason",
+      [voiceOfReasonCandidates[0].memberId],
+      `Anchored the room with cold logic and blueprint-first methodology.`
+    );
+  }
+  const sortedByDistance = Object.entries(memberCentroidDistances).sort((a, b) => b[1] - a[1]);
+  if (sortedByDistance.length > 0 && sortedByDistance[0][1] > 3) {
+    addAward(
+      "the_main_character",
+      [sortedByDistance[0][0]],
+      `Possessed the most distinct, idiosyncratic personality vector relative to the entire crew.`
+    );
+  }
+  const sortedClosest = Object.entries(memberCentroidDistances).sort((a, b) => a[1] - b[1]);
+  if (sortedClosest.length > 0) {
+    addAward(
+      "the_diplomat",
+      [sortedClosest[0][0]],
+      `Closest match to the crew's mathematical average on every axis.`
+    );
+  }
+  const wildcardCandidates = memberPersonalities.map((mp) => {
+    const balance = Math.abs(mp.axisResult.sliders[0] - 50) + Math.abs(mp.axisResult.sliders[1] - 50) + Math.abs(mp.axisResult.sliders[2] - 50);
+    return { memberId: mp.memberId, balance };
+  }).sort((a, b) => a.balance - b.balance);
+  if (wildcardCandidates.length > 0 && wildcardCandidates[0].balance <= 40) {
+    addAward(
+      "the_wildcard",
+      [wildcardCandidates[0].memberId],
+      `Refused to be boxed into predictable habits, keeping the squad guessing.`
+    );
+  }
+  let bestCloneDiff = Infinity;
+  let clonePair = null;
+  for (let i = 0; i < k; i++) {
+    for (let j = i + 1; j < k; j++) {
+      const m1 = memberPersonalities[i];
+      const m2 = memberPersonalities[j];
+      const diff = Math.abs(m1.axisResult.sliders[0] - m2.axisResult.sliders[0]) + Math.abs(m1.axisResult.sliders[1] - m2.axisResult.sliders[1]) + Math.abs(m1.axisResult.sliders[2] - m2.axisResult.sliders[2]);
+      if (diff < bestCloneDiff) {
+        bestCloneDiff = diff;
+        clonePair = [m1.memberId, m2.memberId];
+      }
+    }
+  }
+  if (clonePair && bestCloneDiff <= 25) {
+    addAward(
+      "the_clone",
+      clonePair,
+      `Shared nearly indistinguishable personality slider positions across all three axes.`
+    );
+  }
+  const sortedContrarians = [...memberStats].sort(
+    (a, b) => b.majorityDisagreementCount - a.majorityDisagreementCount
+  );
+  if (sortedContrarians[0].majorityDisagreementCount >= 3 && (sortedContrarians.length === 1 || sortedContrarians[0].majorityDisagreementCount > sortedContrarians[1].majorityDisagreementCount)) {
+    addAward(
+      "the_contrarian",
+      [sortedContrarians[0].memberId],
+      `Broke away from the majority vote on ${sortedContrarians[0].majorityDisagreementCount} separate questions.`
+    );
+  }
+  const sortedTherapists = memberPersonalities.map((mp) => ({
+    memberId: mp.memberId,
+    totalDev: Math.abs(mp.axisResult.raw[0]) + Math.abs(mp.axisResult.raw[1]) + Math.abs(mp.axisResult.raw[2])
+  })).sort((a, b) => a.totalDev - b.totalDev);
+  if (sortedTherapists.length > 0 && sortedTherapists[0].totalDev <= 8) {
+    addAward(
+      "the_therapist",
+      [sortedTherapists[0].memberId],
+      `Remarkably centered without leaning into extreme poles on any axis.`
+    );
+  }
+  const instigatorCandidates = memberPersonalities.map((mp) => ({
+    memberId: mp.memberId,
+    score: mp.axisResult.raw[0] + mp.axisResult.raw[2],
+    // positive if chaos + instinct
+    pPole: mp.axisResult.poles[0],
+    lPole: mp.axisResult.poles[2]
+  })).filter((c) => c.pPole === "CHAOS" && c.lPole === "INSTINCT").sort((a, b) => b.score - a.score);
+  if (instigatorCandidates.length > 0 && instigatorCandidates[0].score >= 6) {
+    addAward(
+      "the_instigator",
+      [instigatorCandidates[0].memberId],
+      `The first to embrace high-octane chaos and impulsive choices.`
+    );
+  }
+  const sortedLoneWolf = memberPersonalities.map((mp) => ({ memberId: mp.memberId, soloRaw: mp.axisResult.raw[1] })).sort((a, b) => a.soloRaw - b.soloRaw);
+  if (sortedLoneWolf.length > 0 && sortedLoneWolf[0].soloRaw <= -4) {
+    addAward(
+      "the_lone_wolf",
+      [sortedLoneWolf[0].memberId],
+      `Consistently preferred independent agency over collective consensus.`
+    );
+  }
+  const glueCandidates = memberPersonalities.map((mp) => ({
+    memberId: mp.memberId,
+    crewRaw: mp.axisResult.raw[1],
+    avgSync: memberAvgSync[mp.memberId]?.avg ?? 0
+  })).filter((c) => c.crewRaw >= 2 && c.avgSync >= 55).sort((a, b) => b.avgSync - a.avgSync);
+  if (glueCandidates.length > 0) {
+    addAward(
+      "the_glue",
+      [glueCandidates[0].memberId],
+      `United high collective loyalty with top-tier synchronization with fellow teammates.`
+    );
+  }
+  const usedRoastIndices = /* @__PURE__ */ new Set();
+  const usedCompIndices = /* @__PURE__ */ new Set();
+  const playerAnalyses = members.map((m, mIdx) => {
+    const mp = memberPersonalities.find((p) => p.memberId === m.memberId);
+    const stats = memberStats.find((s) => s.memberId === m.memberId);
+    const avgInfo = memberAvgSync[m.memberId];
+    const centroidDist = memberCentroidDistances[m.memberId] ?? 0;
+    let labelId = "the_unpredictable_one";
+    if (avgInfo.avg >= 70 && mp.axisResult.poles[1] === "CREW") {
+      labelId = "crew_glue";
+    } else if (avgInfo.avg <= 35 && stats.loneChoiceCount >= 2) {
+      labelId = "the_outsider";
+    } else if (stats.extremeAnswerCount >= 3 && mp.axisResult.poles[0] === "CHAOS") {
+      labelId = "the_chaos_engine";
+    } else if (centroidDist <= 2.2) {
+      labelId = "the_diplomat";
+    } else if (mp.axisResult.poles[0] === "PLAN" && mp.axisResult.poles[2] === "LOGIC") {
+      labelId = "the_voice_of_reason";
+    } else if (avgInfo.strongest && avgInfo.strongest.percentage >= 80) {
+      labelId = "the_human_mirror";
+    } else if (stats.majorityDisagreementCount >= 3) {
+      labelId = "the_wildcard";
+    } else {
+      labelId = "the_unpredictable_one";
+    }
+    const labelDef = INDIVIDUAL_LABELS[labelId];
+    const playerSeed = hashStringToUint32(`player:${m.memberId}:${sessionSeed}`);
+    const playerRng = mulberry32(playerSeed);
+    let roastIdx = Math.floor(playerRng() * INDIVIDUAL_ROASTS.length);
+    let attempts = 0;
+    while (usedRoastIndices.has(roastIdx) && attempts < INDIVIDUAL_ROASTS.length) {
+      roastIdx = (roastIdx + 1) % INDIVIDUAL_ROASTS.length;
+      attempts++;
+    }
+    usedRoastIndices.add(roastIdx);
+    const roast = INDIVIDUAL_ROASTS[roastIdx];
+    let compIdx = Math.floor(playerRng() * INDIVIDUAL_COMPLIMENTS.length);
+    attempts = 0;
+    while (usedCompIndices.has(compIdx) && attempts < INDIVIDUAL_COMPLIMENTS.length) {
+      compIdx = (compIdx + 1) % INDIVIDUAL_COMPLIMENTS.length;
+      attempts++;
+    }
+    usedCompIndices.add(compIdx);
+    const compliment = INDIVIDUAL_COMPLIMENTS[compIdx];
+    const arch = ARCHETYPES[mp.axisResult.archetypeId];
+    const observation = `${arch.name}: ${arch.oneLineTrait}. ${mp.axisResult.poles[0] === "PLAN" ? "Favours planned structure" : "Leans into spontaneous chaos"} and ${mp.axisResult.poles[2] === "LOGIC" ? "analytical clarity" : "raw instinctive gut reads"}.`;
+    const awardsReceived = awardWinners.filter((w) => w.winnerMemberIds.includes(m.memberId)).map((w) => ({
+      id: w.awardId,
+      title: w.title,
+      icon: w.icon,
+      explanation: w.explanation
+    }));
+    return {
+      memberId: m.memberId,
+      nickname: m.nickname,
+      isMe: m.isMe,
+      archetypeId: mp.axisResult.archetypeId,
+      archetypeName: arch.name,
+      axisResult: mp.axisResult,
+      averagePairSync: avgInfo.avg,
+      strongestPartner: avgInfo.strongest,
+      weakestPartner: avgInfo.weakest,
+      individualLabel: {
+        id: labelDef.id,
+        title: labelDef.title,
+        description: labelDef.description
+      },
+      roast,
+      compliment,
+      observation,
+      awardsReceived,
+      distanceFromCrewMean: Math.round(centroidDist * 10) / 10,
+      loneChoiceCount: stats.loneChoiceCount,
+      extremeAnswerCount: stats.extremeAnswerCount,
+      majorityDisagreementCount: stats.majorityDisagreementCount
+    };
+  });
+  const finalRoastIdx = Math.floor(rng() * FINAL_CREW_ROASTS.length);
+  const finalCrewRoast = FINAL_CREW_ROASTS[finalRoastIdx];
+  return {
+    syncPercent: crewSyncPercent,
+    tier: {
+      id: tier.id,
+      title: tier.title,
+      shortDesc: tier.shortDesc,
+      crewDiagnosis: tier.crewDiagnosis,
+      verdictLine,
+      tone: tier.tone,
+      badgeColor: tier.badgeColor,
+      accentGlow: tier.accentGlow
+    },
+    finalCrewRoast,
+    personalityDynamics,
+    playerAnalyses,
+    pairwiseRelationships,
+    awards: awardWinners
+  };
+}
+
+// src/server/security.ts
+import crypto from "crypto";
+var UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+var DEVICE_COOKIE_NAME = "bp_device_id";
+function escapeHtml(input) {
+  return input.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+function sanitizeUserText(raw, maxLen) {
+  if (!raw) return "";
+  const cleaned = raw.replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200D\uFEFF]/g, "").replace(/[<>]/g, "").replace(/\s+/g, " ").trim();
+  return cleaned.slice(0, maxLen);
+}
+function isValidUuid(value) {
+  return typeof value === "string" && UUID_REGEX.test(value);
+}
+function parseCookies(cookieHeader) {
+  const out = {};
+  if (!cookieHeader) return out;
+  const parts = cookieHeader.split(";");
+  for (const part of parts) {
+    const idx = part.indexOf("=");
+    if (idx === -1) continue;
+    const key = part.slice(0, idx).trim();
+    const val = part.slice(idx + 1).trim();
+    if (key) {
+      try {
+        out[key] = decodeURIComponent(val);
+      } catch {
+        out[key] = val;
+      }
+    }
+  }
+  return out;
+}
+function resolveDeviceId(req, res, explicitDeviceId) {
+  const headerId = typeof req.headers["x-device-id"] === "string" ? req.headers["x-device-id"] : void 0;
+  const cookies = parseCookies(req.headers.cookie);
+  const cookieId = cookies[DEVICE_COOKIE_NAME];
+  const candidate = [explicitDeviceId, headerId, cookieId].find((id) => isValidUuid(id));
+  const deviceId = candidate ?? crypto.randomUUID();
+  if (cookieId !== deviceId) {
+    const isHttps = req.secure || req.headers["x-forwarded-proto"] === "https";
+    res.cookie(DEVICE_COOKIE_NAME, deviceId, {
+      httpOnly: false,
+      sameSite: "lax",
+      secure: isHttps,
+      maxAge: 365 * 24 * 60 * 60 * 1e3,
+      path: "/"
+    });
+  }
+  return deviceId;
+}
+function getClientIp(req) {
+  return req.ip || req.socket.remoteAddress || "unknown";
+}
+var AnswerRateLimiter = class {
+  constructor(limit = 60, windowMs = 6e4) {
+    this.buckets = /* @__PURE__ */ new Map();
+    this.limit = limit;
+    this.windowMs = windowMs;
+  }
+  check(key, now = Date.now()) {
+    const cutoff = now - this.windowMs;
+    let bucket = this.buckets.get(key);
+    if (!bucket) {
+      bucket = { timestamps: [] };
+      this.buckets.set(key, bucket);
+    }
+    while (bucket.timestamps.length > 0 && bucket.timestamps[0] <= cutoff) {
+      bucket.timestamps.shift();
+    }
+    if (bucket.timestamps.length >= this.limit) {
+      const oldest = bucket.timestamps[0];
+      const retryAfterSec = Math.max(1, Math.ceil((oldest + this.windowMs - now) / 1e3));
+      return { allowed: false, remaining: 0, retryAfterSec };
+    }
+    bucket.timestamps.push(now);
+    if (this.buckets.size > 5e3) {
+      for (const [k, b] of this.buckets.entries()) {
+        if (b.timestamps.length === 0 || b.timestamps[b.timestamps.length - 1] <= cutoff) {
+          this.buckets.delete(k);
+        }
+      }
+    }
+    return { allowed: true, remaining: this.limit - bucket.timestamps.length, retryAfterSec: 0 };
+  }
+  checkPair(ip, deviceId, now = Date.now()) {
+    const ipRes = this.check(`ip:${ip}`, now);
+    if (!ipRes.allowed) return { allowed: false, retryAfterSec: ipRes.retryAfterSec };
+    const devRes = this.check(`dev:${deviceId}`, now);
+    if (!devRes.allowed) return { allowed: false, retryAfterSec: devRes.retryAfterSec };
+    return { allowed: true, retryAfterSec: 0 };
+  }
+};
+
 // src/server/solo.ts
+import crypto2 from "crypto";
 function getUtcDateString(date = /* @__PURE__ */ new Date()) {
   return date.toISOString().slice(0, 10);
 }
@@ -1680,12 +2817,49 @@ function getCrewState(db, codeInput, deviceId) {
       member: { nickname: rawBoard.awards.loneSignal.nickname },
       soloChoices: rawBoard.awards.loneSignal.loneCount
     } : null;
+    let completeVerdict = null;
+    try {
+      if (crew.verdict_payload) {
+        completeVerdict = JSON.parse(crew.verdict_payload);
+      } else {
+        const questionsWithAxes = qRows.map((q) => {
+          const opts = JSON.parse(q.options);
+          return {
+            id: q.id,
+            prompt: q.prompt,
+            options: opts.map((opt) => ({
+              text: opt.text,
+              axes: opt.axes
+            }))
+          };
+        });
+        completeVerdict = computeCompleteCrewVerdict({
+          sessionId: crew.id,
+          crewSyncPercent: rawBoard.crewSyncPercent,
+          questions: questionsWithAxes,
+          members: scoringInputs.map((si) => ({
+            memberId: si.memberId,
+            nickname: si.nickname,
+            isMe: si.isMe,
+            answers: si.answers
+          }))
+        });
+        db.prepare("UPDATE crews SET verdict_payload = ? WHERE id = ?").run(
+          JSON.stringify(completeVerdict),
+          crew.id
+        );
+      }
+    } catch (verdictErr) {
+      console.error("Failed to compute or cache crew verdict:", verdictErr);
+    }
     board = {
       ...rawBoard,
+      verdict: completeVerdict,
       sync: rawBoard.crewSyncPercent,
       roast: {
         ...rawBoard.roast,
-        headline: rawBoard.roast.title
+        headline: completeVerdict?.tier.title || rawBoard.roast.title,
+        line: completeVerdict?.tier.verdictLine || rawBoard.roast.line
       },
       members: rawBoard.members.map((m) => ({
         ...m,

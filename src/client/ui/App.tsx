@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { sound } from './audio';
+import { CrewVerdictView } from './CrewVerdictView';
 
 type Pack = { id: string; name: string };
 type Question = { id: string; prompt: string; options: { text: string }[] };
@@ -50,6 +51,9 @@ export type MakeCardPayload = {
   crewSync?: number;
   crewRoastHeadline?: string;
   crewRoastLine?: string;
+  crewTierColor?: string;
+  crewDiagnosis?: string;
+  crewFinalRoast?: string;
   crewStats?: string[];
   crewHighlights?: { label: string; text: string }[];
   // Legacy / fallback fields:
@@ -577,53 +581,58 @@ async function makeCard(
     const crewRoastLine = opts.crewRoastLine || '';
     const crewStats = opts.crewStats || [];
     const highlights = opts.crewHighlights || [];
+    const accentColor = opts.crewTierColor || '#34d399';
 
     // Hero Sync Card Box
     const syncBoxY = 270;
-    const syncBoxH = 250;
+    const syncBoxH = 260;
     c.save();
     drawRoundedRect(c, 100, syncBoxY, 880, syncBoxH, 20);
     c.fillStyle = 'rgba(16, 26, 48, 0.9)';
     c.fill();
-    c.strokeStyle = '#34d399';
+    c.strokeStyle = accentColor;
     c.lineWidth = 2.5;
-    c.shadowColor = '#34d399';
+    c.shadowColor = accentColor;
     c.shadowBlur = 18;
     c.stroke();
 
     c.font = '600 15px "Space Grotesk", sans-serif';
     c.textAlign = 'center';
     c.fillStyle = '#94a3b8';
-    c.fillText(`CREW: ${crewTitle.toUpperCase()}`, 540, syncBoxY + 40);
+    c.fillText(`CREW: ${crewTitle.toUpperCase()}`, 540, syncBoxY + 38);
 
-    // Large Sync %
+    // Large Sync % & Tier Badge
     c.font = '48px "Press Start 2P", monospace';
-    c.fillStyle = '#34d399';
-    c.fillText(`${crewSync}% SYNC`, 540, syncBoxY + 115);
+    c.fillStyle = accentColor;
+    c.fillText(`${crewSync}% SYNC`, 540, syncBoxY + 110);
+
+    c.font = '16px "Press Start 2P", monospace';
+    c.fillStyle = '#f8fafc';
+    c.fillText(crewHeadline.toUpperCase(), 540, syncBoxY + 152);
 
     // Sync Bar
-    drawRoundedRect(c, 160, syncBoxY + 155, 760, 20, 10);
+    drawRoundedRect(c, 160, syncBoxY + 175, 760, 20, 10);
     c.fillStyle = '#090e1c';
     c.fill();
     c.strokeStyle = '#1e3a34';
     c.stroke();
 
     const syncFillW = Math.max(10, Math.min(760, (crewSync / 100) * 760));
-    drawRoundedRect(c, 160, syncBoxY + 155, syncFillW, 20, 10);
-    const syncGrad = c.createLinearGradient(160, syncBoxY + 155, 920, syncBoxY + 155);
+    drawRoundedRect(c, 160, syncBoxY + 175, syncFillW, 20, 10);
+    const syncGrad = c.createLinearGradient(160, syncBoxY + 175, 920, syncBoxY + 175);
     syncGrad.addColorStop(0, '#38bdf8');
-    syncGrad.addColorStop(1, '#34d399');
+    syncGrad.addColorStop(1, accentColor);
     c.fillStyle = syncGrad;
     c.fill();
 
     // Stats under bar
-    c.font = '14px "Press Start 2P", monospace';
+    c.font = '13px "Press Start 2P", monospace';
     c.fillStyle = '#94a3b8';
-    c.fillText(crewStats.join('   //   '), 540, syncBoxY + 215);
+    c.fillText(crewStats.join('   //   '), 540, syncBoxY + 230);
     c.restore();
 
     // Crew Roast Dossier
-    const cRoastY = 550;
+    const cRoastY = 560;
     const cRoastH = 220;
     c.save();
     drawRoundedRect(c, 100, cRoastY, 880, cRoastH, 20);
@@ -633,28 +642,28 @@ async function makeCard(
     c.lineWidth = 1.5;
     c.stroke();
 
-    c.font = '600 16px "Press Start 2P", monospace';
+    c.font = '600 15px "Press Start 2P", monospace';
     c.fillStyle = '#fb7185';
     c.textAlign = 'center';
-    c.fillText(`🔥 ${crewHeadline}`, 540, cRoastY + 50);
+    c.fillText(`🔥 CREW VERDICT & ROAST`, 540, cRoastY + 45);
 
-    c.font = '22px "Space Grotesk", sans-serif';
+    c.font = '21px "Space Grotesk", sans-serif';
     c.fillStyle = '#f8fafc';
     const cRoastLines = wrapTextToWidth(c, `"${crewRoastLine}"`, 800);
-    let cry = cRoastY + 105;
+    let cry = cRoastY + 95;
     for (const line of cRoastLines.slice(0, 3)) {
       c.fillText(line, 540, cry);
-      cry += 34;
+      cry += 32;
     }
     c.restore();
 
     // Squad Highlights Grid
-    let highY = 800;
+    let highY = 810;
     c.save();
     c.font = '15px "Press Start 2P", monospace';
     c.fillStyle = '#38bdf8';
     c.textAlign = 'left';
-    c.fillText('// SQUAD HIGHLIGHTS & BADGES', 105, highY);
+    c.fillText('// SQUAD AWARDS & HIGHLIGHTS', 105, highY);
     highY += 30;
 
     for (const item of highlights.slice(0, 5)) {
@@ -1179,53 +1188,52 @@ export default function App() {
     const b = crew?.board;
     if (!b) return null;
     const highlights: { label: string; text: string }[] = [];
-    const twoPlayer = b.twoPlayerSummary;
-    if (twoPlayer?.perfectSyncQuestions?.length) {
-      highlights.push({
-        label: '🌟 PERFECT SYNC',
-        text: `${twoPlayer.perfectSyncQuestions.length} signals matched unanimously!`,
-      });
-    }
-    if (twoPlayer?.splitDecisionQuestions?.length) {
-      highlights.push({
-        label: '⚔️ SPLIT DECISIONS',
-        text: `${twoPlayer.splitDecisionQuestions.length} signals diverged between players.`,
-      });
-    }
-    if (b.mindTwins?.length) {
-      highlights.push({
-        label: '👯 MIND TWINS',
-        text: b.mindTwins.map((p: any) => `${(p.names || [p.memberAName, p.memberBName]).join(' & ')} (${p.matches}/7 matches)`).join(', '),
-      });
-    }
-    if (b.perfectSync?.length && !twoPlayer) {
-      highlights.push({
-        label: '🌟 PERFECT SYNC',
-        text: `${b.perfectSync.length} signals matched unanimously!`,
-      });
-    }
-    if (b.commonGround?.length) {
-      highlights.push({
-        label: '🤝 COMMON GROUND',
-        text: b.commonGround.map((q: any) => q.prompt).join(' · '),
-      });
-    }
-    if (b.civilWar?.length) {
-      highlights.push({
-        label: '⚔️ CIVIL WAR',
-        text: b.civilWar.map((q: any) => q.prompt).join(' · '),
-      });
-    }
-    if (b.loneSignal) {
-      highlights.push({
-        label: '🎯 LONE SIGNAL',
-        text: b.loneSignal.member?.nickname || b.loneSignal.nickname || 'Solo Player',
-      });
+    const verdict = b.verdict;
+
+    if (verdict?.awards?.length) {
+      for (const aw of verdict.awards.slice(0, 4)) {
+        highlights.push({
+          label: `${aw.icon} ${aw.title.toUpperCase()}`,
+          text: `${aw.winnerNicknames.join(' & ')} · ${aw.explanation}`,
+        });
+      }
+    } else {
+      const twoPlayer = b.twoPlayerSummary;
+      if (twoPlayer?.perfectSyncQuestions?.length) {
+        highlights.push({
+          label: '🌟 PERFECT SYNC',
+          text: `${twoPlayer.perfectSyncQuestions.length} signals matched unanimously!`,
+        });
+      }
+      if (twoPlayer?.splitDecisionQuestions?.length) {
+        highlights.push({
+          label: '⚔️ SPLIT DECISIONS',
+          text: `${twoPlayer.splitDecisionQuestions.length} signals diverged between players.`,
+        });
+      }
+      if (b.mindTwins?.length) {
+        highlights.push({
+          label: '👯 MIND TWINS',
+          text: b.mindTwins.map((p: any) => `${(p.names || [p.memberAName, p.memberBName]).join(' & ')} (${p.matches}/7 matches)`).join(', '),
+        });
+      }
+      if (b.commonGround?.length) {
+        highlights.push({
+          label: '🤝 COMMON GROUND',
+          text: b.commonGround.map((q: any) => q.prompt).join(' · '),
+        });
+      }
+      if (b.civilWar?.length) {
+        highlights.push({
+          label: '⚔️ CIVIL WAR',
+          text: b.civilWar.map((q: any) => q.prompt).join(' · '),
+        });
+      }
     }
 
     const syncPct = b.crewSyncPercent ?? b.sync ?? 0;
-    const roastHeadline = b.roast?.title || b.roast?.headline || 'CREW VERDICT';
-    const roastLine = b.roast?.line || '';
+    const roastHeadline = verdict?.tier.title || b.roast?.title || b.roast?.headline || 'CREW VERDICT';
+    const roastLine = verdict?.tier.verdictLine || b.roast?.line || '';
     const playerCount = b.completedCount || b.members?.length || 0;
     const signalCount = (b.questionBreakdowns || b.questions)?.length || 7;
 
@@ -1235,6 +1243,7 @@ export default function App() {
       crewSync: syncPct,
       crewRoastHeadline: roastHeadline,
       crewRoastLine: roastLine,
+      crewTierColor: verdict?.tier.badgeColor,
       crewStats: [
         `${playerCount} PLAYERS`,
         `${signalCount} SIGNALS`,
@@ -1802,223 +1811,52 @@ export default function App() {
               </>
             )}
 
-            {/* BEAUTIFIED CREW BOARD END SCREEN */}
+            {/* BEAUTIFIED CREW BOARD END SCREEN & CREW VERDICT SYSTEM */}
             {crew.board && (
               <>
-                {/* 1. Hero Sync Card */}
-                <div className="crew-hero-card">
-                  <div className="crew-sync-badge">
-                    <span className="crew-sync-num">
-                      {crew.board.crewSyncPercent ?? crew.board.sync ?? 0}%
-                    </span>
-                    <span className="crew-sync-label">CREW SYNCHRONIZATION</span>
-                  </div>
-                  <div className="crew-sync-bar">
-                    <div
-                      className="crew-sync-fill"
-                      style={{ width: `${crew.board.crewSyncPercent ?? crew.board.sync ?? 0}%` }}
-                    />
-                  </div>
-                  <div className="crew-roast-box">
-                    <div className="crew-roast-badge">
-                      🔥 {crew.board.roast?.title || crew.board.roast?.headline || 'SQUAD VERDICT'}
+                {crew.board.verdict ? (
+                  <CrewVerdictView
+                    verdict={crew.board.verdict}
+                    myNickname={crew.me?.nickname}
+                    myDeviceId={device()}
+                    onShare={shareCrew}
+                    onDownload={downloadCrew}
+                    onCopyLink={() => {
+                      sound.playSelect();
+                      navigator.clipboard.writeText(location.href);
+                    }}
+                    onPlayAgain={() => createCrew(crew.crew?.mode || 'mixed')}
+                    onHome={() => setView('home')}
+                  />
+                ) : (
+                  <>
+                    {/* Fallback 1. Hero Sync Card */}
+                    <div className="crew-hero-card">
+                      <div className="crew-sync-badge">
+                        <span className="crew-sync-num">
+                          {crew.board.crewSyncPercent ?? crew.board.sync ?? 0}%
+                        </span>
+                        <span className="crew-sync-label">CREW SYNCHRONIZATION</span>
+                      </div>
+                      <div className="crew-sync-bar">
+                        <div
+                          className="crew-sync-fill"
+                          style={{ width: `${crew.board.crewSyncPercent ?? crew.board.sync ?? 0}%` }}
+                        />
+                      </div>
+                      <div className="crew-roast-box">
+                        <div className="crew-roast-badge">
+                          🔥 {crew.board.roast?.title || crew.board.roast?.headline || 'SQUAD VERDICT'}
+                        </div>
+                        <p className="crew-roast-text">"{crew.board.roast?.line || ''}"</p>
+                      </div>
                     </div>
-                    <p className="crew-roast-text">"{crew.board.roast?.line || ''}"</p>
-                  </div>
-                </div>
-
-                {/* 2. Squad Leaderboard */}
-                <div className="crew-section">
-                  <div className="eyebrow">
-                    <span>SQUAD LEADERBOARD</span>
-                    <span>
-                      {crew.completedCount ?? crew.crew?.completedCount ?? crew.board.completedCount ?? crew.board.members?.length ?? 0} FINISHED
-                    </span>
-                  </div>
-                  <div className="crew-leaderboard">
-                    {crew.board.members
-                      ?.slice()
-                      .sort(
-                        (a: any, b: any) =>
-                          (b.totalScore ?? b.score ?? 0) - (a.totalScore ?? a.score ?? 0)
-                      )
-                      .map((m: any, rank: number) => {
-                        const isMe = m.isMe || m.deviceId === device();
-                        const pts = m.totalScore ?? m.score ?? 0;
-                        const maxPts = m.maxScore || 700;
-                        return (
-                          <div
-                            key={m.memberId || m.deviceId || rank}
-                            className={`crew-member-row ${isMe ? 'is-me' : ''}`}
-                          >
-                            <span className="crew-rank">#{rank + 1}</span>
-                            <div className="crew-member-info">
-                              <div className="crew-member-name">
-                                {m.nickname}
-                                {isMe && <span className="you-chip">YOU</span>}
-                              </div>
-                              <div className="crew-member-bar-track">
-                                <div
-                                  className="crew-member-bar-fill"
-                                  style={{
-                                    width: `${Math.min(100, Math.max(5, (pts / maxPts) * 100))}%`,
-                                  }}
-                                />
-                              </div>
-                            </div>
-                            <span className="crew-member-score">
-                              {pts} <small>PTS</small>
-                            </span>
-                          </div>
-                        );
-                      })}
-                  </div>
-                </div>
-
-                {/* 3. Squad Awards & Badges */}
-                {((crew.board.twoPlayerSummary?.perfectSyncQuestions?.length > 0) ||
-                  (crew.board.twoPlayerSummary?.splitDecisionQuestions?.length > 0) ||
-                  (crew.board.mindTwins?.length > 0) ||
-                  (crew.board.awards?.mindTwins?.pairs?.length > 0) ||
-                  (crew.board.commonGround?.length > 0) ||
-                  (crew.board.awards?.commonGround) ||
-                  (crew.board.civilWar?.length > 0) ||
-                  (crew.board.awards?.civilWar) ||
-                  (crew.board.loneSignal) ||
-                  (crew.board.awards?.loneSignal) ||
-                  (crew.board.perfectSync?.length > 0)) && (
-                  <div className="crew-section">
-                    <div className="eyebrow">SQUAD BADGES & HIGHLIGHTS</div>
-                    <div className="crew-awards-grid">
-                      {/* 2-Player Perfect Sync */}
-                      {crew.board.twoPlayerSummary?.perfectSyncQuestions?.length > 0 && (
-                        <div className="crew-award-card common-ground">
-                          <div className="crew-award-title">
-                            🌟 PERFECT SYNC ({crew.board.twoPlayerSummary.perfectSyncQuestions.length}/7 SIGNALS)
-                          </div>
-                          <div className="crew-award-desc">
-                            {crew.board.twoPlayerSummary.perfectSyncQuestions.map((ps: any, idx: number) => (
-                              <div key={idx} style={{ marginTop: idx > 0 ? '6px' : '0' }}>
-                                <strong>Signal #{ps.index}:</strong> Both agreed on "{ps.chosenText}"
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* 2-Player Split Decisions */}
-                      {crew.board.twoPlayerSummary?.splitDecisionQuestions?.length > 0 && (
-                        <div className="crew-award-card civil-war">
-                          <div className="crew-award-title">
-                            ⚔️ SPLIT DECISIONS ({crew.board.twoPlayerSummary.splitDecisionQuestions.length}/7 SIGNALS)
-                          </div>
-                          <div className="crew-award-desc">
-                            {crew.board.twoPlayerSummary.splitDecisionQuestions.map((sd: any, idx: number) => (
-                              <div key={idx} style={{ marginTop: idx > 0 ? '6px' : '0' }}>
-                                <strong>Signal #{sd.index}:</strong>{' '}
-                                {sd.choices?.map((c: any) => `${c.nickname}: "${c.text}"`).join(' vs ')}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Mind Twins (3+ players) */}
-                      {crew.board.mindTwins?.map((pair: any, i: number) => (
-                        <div key={`mt-${i}`} className="crew-award-card mind-twins">
-                          <div className="crew-award-title">👯 MIND TWINS</div>
-                          <div className="crew-award-desc">
-                            <strong>{(pair.names || [pair.memberAName, pair.memberBName]).join(' & ')}</strong> matched on {pair.matches} of 7 signals!
-                          </div>
-                        </div>
-                      ))}
-
-                      {/* Perfect Sync (3+ players) */}
-                      {crew.board.perfectSync?.length > 0 && !crew.board.twoPlayerSummary && (
-                        <div className="crew-award-card common-ground">
-                          <div className="crew-award-title">
-                            🌟 PERFECT SYNC ({crew.board.perfectSync.length} SIGNALS)
-                          </div>
-                          <div className="crew-award-desc">
-                            Unanimous choices: {crew.board.perfectSync.map((q: any) => `"${q.prompt}"`).join(', ')}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Common Ground (3+ players) */}
-                      {(crew.board.commonGround?.[0] || crew.board.awards?.commonGround) && !crew.board.twoPlayerSummary && (
-                        <div className="crew-award-card common-ground">
-                          <div className="crew-award-title">🤝 COMMON GROUND</div>
-                          <div className="crew-award-desc">
-                            Highest consensus: "{(crew.board.commonGround?.[0] || crew.board.awards?.commonGround)?.prompt}"
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Civil War (3+ players) */}
-                      {(crew.board.civilWar?.[0] || crew.board.awards?.civilWar) && !crew.board.twoPlayerSummary && (
-                        <div className="crew-award-card civil-war">
-                          <div className="crew-award-title">⚔️ CIVIL WAR</div>
-                          <div className="crew-award-desc">
-                            Biggest disagreement: "{(crew.board.civilWar?.[0] || crew.board.awards?.civilWar)?.prompt}"
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Lone Signal */}
-                      {(crew.board.loneSignal || crew.board.awards?.loneSignal) && (
-                        <div className="crew-award-card lone-signal">
-                          <div className="crew-award-title">🐺 LONE SIGNAL</div>
-                          <div className="crew-award-desc">
-                            <strong>
-                              {crew.board.loneSignal?.member?.nickname ||
-                                crew.board.awards?.loneSignal?.nickname ||
-                                'A rebel player'}
-                            </strong>{' '}
-                            took the solo route{' '}
-                            {crew.board.loneSignal?.soloChoices ||
-                              crew.board.awards?.loneSignal?.loneCount ||
-                              1}{' '}
-                            times.
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                  </>
                 )}
 
-                {/* 4. Pairwise Matrix */}
-                {((crew.board.pairwise?.length > 0) || (crew.board.pairs?.length > 0)) && (
-                  <div className="crew-section">
-                    <div className="eyebrow">PAIRWISE SYNC MATRIX</div>
-                    <div className="crew-pairs-grid">
-                      {(crew.board.pairwise || crew.board.pairs).map((pair: any, i: number) => {
-                        const nameA = pair.memberAName || pair.names?.[0] || 'Player 1';
-                        const nameB = pair.memberBName || pair.names?.[1] || 'Player 2';
-                        const pct = pair.percentage ?? pair.percent ?? 0;
-                        const matches = pair.matches ?? 0;
-                        return (
-                          <div key={i} className="crew-pair-card">
-                            <div className="crew-pair-names">
-                              {nameA} + {nameB}
-                            </div>
-                            <div className="crew-pair-meter">
-                              <div className="crew-pair-fill" style={{ width: `${pct}%` }} />
-                            </div>
-                            <div className="crew-pair-stat">
-                              <span>{matches}/7 MATCHES</span>
-                              <span>{pct}%</span>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-
-                {/* 5. Question Breakdown: Who Chose What */}
+                {/* Question Breakdown: Who Chose What (Available below verdict) */}
                 {((crew.board.questionBreakdowns?.length > 0) || (crew.board.questions?.length > 0)) && (
-                  <div className="crew-section">
+                  <div className="crew-section" style={{ marginTop: '20px' }}>
                     <div className="eyebrow">
                       <span>SIGNAL BREAKDOWN</span>
                       <span>WHO CHOSE WHAT</span>

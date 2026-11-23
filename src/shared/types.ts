@@ -1,3 +1,5 @@
+import type { CompleteCrewVerdict } from './crewVerdictTypes';
+
 export type PackId =
   | 'the_mix'
   | 'everyday_life'
@@ -259,6 +261,7 @@ export interface CrewBoardPayload {
       loneCount: number;
     } | null;
   } | null;
+  verdict?: CompleteCrewVerdict | null;
 }
 
 export interface CrewStateResponse {

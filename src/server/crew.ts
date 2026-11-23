@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import type Database from 'better-sqlite3';
 import { computeCrewBoard, fisherYatesShuffle, mulberry32 } from '../shared/scoring';
+import { computeCompleteCrewVerdict } from '../shared/crewVerdictEngine';
 import type {
   CrewStateResponse,
   PackId,
@@ -32,6 +33,7 @@ interface DbCrewRow {
   creator_device_id: string;
   max_players: number;
   status: string;
+  verdict_payload?: string | null;
   created_at: string;
 }
 
@@ -310,12 +312,55 @@ export function getCrewState(
         }
       : null;
 
+    // Crew Verdict System integration:
+    // Full personalized verdict computation with determinism & database caching.
+    let completeVerdict = null;
+    try {
+      if (crew.verdict_payload) {
+        completeVerdict = JSON.parse(crew.verdict_payload);
+      } else {
+        const questionsWithAxes = qRows.map((q) => {
+          const opts = JSON.parse(q.options) as { text: string; axes: [number, number, number] }[];
+          return {
+            id: q.id,
+            prompt: q.prompt,
+            options: opts.map((opt) => ({
+              text: opt.text,
+              axes: opt.axes,
+            })),
+          };
+        });
+
+        completeVerdict = computeCompleteCrewVerdict({
+          sessionId: crew.id,
+          crewSyncPercent: rawBoard.crewSyncPercent,
+          questions: questionsWithAxes,
+          members: scoringInputs.map((si) => ({
+            memberId: si.memberId,
+            nickname: si.nickname,
+            isMe: si.isMe,
+            answers: si.answers,
+          })),
+        });
+
+        // Persist so reopening or refreshing returns the exact same deterministic verdict
+        db.prepare('UPDATE crews SET verdict_payload = ? WHERE id = ?').run(
+          JSON.stringify(completeVerdict),
+          crew.id
+        );
+      }
+    } catch (verdictErr) {
+      console.error('Failed to compute or cache crew verdict:', verdictErr);
+    }
+
     board = {
       ...rawBoard,
+      verdict: completeVerdict,
       sync: rawBoard.crewSyncPercent,
       roast: {
         ...rawBoard.roast,
-        headline: rawBoard.roast.title,
+        headline: completeVerdict?.tier.title || rawBoard.roast.title,
+        line: completeVerdict?.tier.verdictLine || rawBoard.roast.line,
       },
       members: rawBoard.members.map((m) => ({
         ...m,

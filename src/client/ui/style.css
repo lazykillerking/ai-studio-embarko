@@ -1851,3 +1851,531 @@ main[data-theme=neon_coast] .grid {
     min-height: 56px;
   }
 }
+
+/* ==========================================================================
+   CREW VERDICT & ROAST SYSTEM EXTENSIONS
+   ========================================================================== */
+
+.crew-verdict-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.crew-verdict-hero {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
+  border: 2px solid #34d399;
+  border-radius: 8px;
+  padding: 18px 16px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.crew-verdict-tag {
+  font: 9px 'Press Start 2P', monospace;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
+.crew-verdict-sync-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.crew-verdict-sync-big {
+  font: 44px 'Press Start 2P', monospace;
+  line-height: 1.1;
+  text-shadow: 0 0 20px currentColor;
+}
+
+.crew-verdict-tier-badge {
+  font: 11px 'Press Start 2P', monospace;
+  padding: 6px 12px;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+
+.crew-verdict-punchline {
+  font: italic 16px 'Space Grotesk', sans-serif;
+  color: #f8fafc;
+  line-height: 1.4;
+  margin-bottom: 14px;
+  padding: 0 4px;
+}
+
+.crew-verdict-diagnosis {
+  background: rgba(9, 14, 28, 0.7);
+  border: 1px solid #1e293b;
+  border-radius: 6px;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+.crew-diagnosis-header {
+  font: 8px 'Press Start 2P', monospace;
+  color: #38bdf8;
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+
+.crew-verdict-diagnosis p {
+  font-size: 13px;
+  color: #cbd5e1;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.crew-verdict-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.crew-tab-btn {
+  font: 8px 'Press Start 2P', monospace;
+  padding: 10px 4px;
+  background: #0f172a;
+  color: #94a3b8;
+  border: 1px solid #334155;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.crew-tab-btn.active {
+  background: var(--accent);
+  color: #020617;
+  border-color: var(--accent);
+  font-weight: bold;
+}
+
+.crew-tab-content {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.crew-verdict-card {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 6px;
+  padding: 14px;
+}
+
+.crew-dominant-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin: 8px 0 4px;
+}
+
+.crew-dominant-title {
+  font: 14px 'Press Start 2P', monospace;
+  color: #38bdf8;
+}
+
+.crew-dominant-count {
+  font: 8px 'Press Start 2P', monospace;
+  color: #64748b;
+}
+
+.crew-dominant-desc {
+  font-size: 13px;
+  color: #cbd5e1;
+  font-style: italic;
+  margin: 4px 0 0;
+}
+
+.crew-axes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.crew-axis-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.crew-axis-labels {
+  display: flex;
+  justify-content: space-between;
+  font: 8px 'Press Start 2P', monospace;
+  color: #64748b;
+}
+
+.crew-axis-labels .bold-pole {
+  color: #38bdf8;
+  font-weight: bold;
+}
+
+.crew-axis-name {
+  color: #94a3b8;
+}
+
+.crew-axis-track {
+  height: 6px;
+  background: #090e1c;
+  border-radius: 3px;
+  position: relative;
+  border: 1px solid #1e293b;
+}
+
+.crew-axis-indicator {
+  position: absolute;
+  top: -4px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #38bdf8;
+  border: 2px solid #020617;
+  transform: translateX(-50%);
+  box-shadow: 0 0 8px #38bdf8;
+}
+
+.crew-axis-commentary {
+  font-size: 12px;
+  color: #cbd5e1;
+  font-style: italic;
+  line-height: 1.4;
+  margin-top: 2px;
+}
+
+.crew-split-highlight-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+@media(min-width: 600px) {
+  .crew-split-highlight-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.crew-highlight-box {
+  background: #0b1020;
+  border-radius: 6px;
+  padding: 12px;
+  border-left: 3px solid #38bdf8;
+}
+
+.crew-highlight-box.agreement {
+  border-left-color: #34d399;
+}
+
+.crew-highlight-box.conflict {
+  border-left-color: #f43f5e;
+}
+
+.highlight-tag {
+  font: 8px 'Press Start 2P', monospace;
+  color: #94a3b8;
+  margin-bottom: 4px;
+}
+
+.crew-highlight-box h4 {
+  font: 11px 'Press Start 2P', monospace;
+  color: #f8fafc;
+  margin: 0 0 6px;
+}
+
+.crew-highlight-box p {
+  font-size: 12px;
+  color: #94a3b8;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.crew-player-cards-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.crew-player-card {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 6px;
+  padding: 14px;
+  position: relative;
+}
+
+.crew-player-card.is-me-card {
+  border-color: #38bdf8;
+  background: linear-gradient(180deg, rgba(56, 189, 248, 0.08), #0f172a);
+}
+
+.crew-player-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 6px;
+}
+
+.crew-player-name-section {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.crew-player-name {
+  font: 12px 'Press Start 2P', monospace;
+  color: #f8fafc;
+}
+
+.crew-player-label-badge {
+  font: 8px 'Press Start 2P', monospace;
+  padding: 3px 6px;
+  background: #1e293b;
+  color: #fde047;
+  border-radius: 3px;
+  border: 1px solid #475569;
+}
+
+.crew-player-sync-stat {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+}
+
+.crew-player-sync-stat .stat-num {
+  font: 12px 'Press Start 2P', monospace;
+  color: #34d399;
+}
+
+.crew-player-sync-stat .stat-label {
+  font: 7px 'Press Start 2P', monospace;
+  color: #64748b;
+}
+
+.crew-player-archetype-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.crew-player-archetype-row .arch-name {
+  font: 10px 'Press Start 2P', monospace;
+}
+
+.crew-player-archetype-row .arch-poles {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.crew-player-obs {
+  font-size: 12px;
+  color: #cbd5e1;
+  line-height: 1.4;
+  margin: 6px 0 10px;
+}
+
+.crew-player-roast-box {
+  background: rgba(9, 14, 28, 0.85);
+  border: 1px solid #1e293b;
+  border-radius: 4px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.roast-row, .compliment-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.roast-icon, .compliment-icon {
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.roast-text {
+  font-size: 12px;
+  color: #fb7185;
+  line-height: 1.4;
+}
+
+.compliment-text {
+  font-size: 12px;
+  color: #34d399;
+  line-height: 1.4;
+}
+
+.crew-player-partners {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 11px;
+  color: #94a3b8;
+  margin-bottom: 8px;
+}
+
+.crew-player-awards-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.player-award-pill {
+  font: 8px 'Press Start 2P', monospace;
+  padding: 4px 8px;
+  background: rgba(251, 191, 36, 0.15);
+  border: 1px solid #fbbf24;
+  color: #fde047;
+  border-radius: 3px;
+}
+
+.crew-chemistry-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.crew-chemistry-card {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 6px;
+  padding: 12px;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.crew-chemistry-card:hover {
+  border-color: #38bdf8;
+}
+
+.chemistry-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chemistry-names {
+  font: 11px 'Space Grotesk', sans-serif;
+  color: #f8fafc;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vs-sign {
+  color: #eab308;
+}
+
+.chemistry-percent-badge {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.pct-num {
+  font: 12px 'Press Start 2P', monospace;
+  color: #38bdf8;
+}
+
+.pct-matches {
+  font: 8px 'Press Start 2P', monospace;
+  color: #64748b;
+}
+
+.chemistry-tier-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.chemistry-tier-label {
+  font: 9px 'Press Start 2P', monospace;
+  color: #fbbf24;
+}
+
+.expand-hint {
+  font: 7px 'Press Start 2P', monospace;
+  color: #64748b;
+}
+
+.chemistry-commentary-box {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, margin-top 0.3s ease;
+}
+
+.chemistry-commentary-box.is-open {
+  max-height: 120px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed #1e293b;
+}
+
+.chemistry-commentary-text {
+  font-size: 12px;
+  color: #cbd5e1;
+  font-style: italic;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.crew-award-card.full-award {
+  background: #0f172a;
+  border: 1px solid #fbbf24;
+  border-radius: 6px;
+  padding: 12px;
+}
+
+.crew-award-winner-badge {
+  font: 8px 'Press Start 2P', monospace;
+  color: #38bdf8;
+  margin: 6px 0 8px;
+}
+
+.crew-final-roast-banner {
+  background: linear-gradient(90deg, rgba(244, 63, 94, 0.15), rgba(251, 146, 60, 0.15));
+  border: 1px solid #f43f5e;
+  border-radius: 6px;
+  padding: 14px;
+  text-align: center;
+  margin-top: 6px;
+}
+
+.final-roast-tag {
+  font: 8px 'Press Start 2P', monospace;
+  color: #fb7185;
+  margin-bottom: 6px;
+  letter-spacing: 1px;
+}
+
+.final-roast-line {
+  font: italic 15px 'Space Grotesk', sans-serif;
+  color: #f8fafc;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.crew-verdict-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
