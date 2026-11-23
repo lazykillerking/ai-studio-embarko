@@ -1,5 +1,22 @@
-export type PackId = 'the_mix' | 'neon_coast' | 'campus_chaos';
-export type VisualTheme = 'the_mix' | 'neon_coast' | 'campus_chaos';
+export type PackId =
+  | 'the_mix'
+  | 'everyday_life'
+  | 'social_circuit'
+  | 'neon_coast'
+  | 'campus_chaos'
+  | 'leonida_vibe'
+  | 'pop_culture'
+  | 'moral_mayhem';
+
+export type VisualTheme =
+  | 'the_mix'
+  | 'everyday_life'
+  | 'social_circuit'
+  | 'neon_coast'
+  | 'campus_chaos'
+  | 'leonida_vibe'
+  | 'pop_culture'
+  | 'moral_mayhem';
 
 export type ArchetypeId =
   | 'the_architect'

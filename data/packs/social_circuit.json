@@ -1,0 +1,1893 @@
+{
+  "pack": {
+    "id": "social_circuit",
+    "slug": "social-circuit",
+    "name": "SOCIAL CIRCUIT",
+    "description": "Friendship, dating, relationships and social dynamics",
+    "visual_theme": "social_circuit",
+    "status": "published",
+    "sort_order": 4
+  },
+  "questions": [
+    {
+      "id": "lv_076",
+      "pack_id": "social_circuit",
+      "prompt": "Your closest friend starts acting differently around new people.",
+      "options": [
+        {
+          "text": "Ask them what's changed",
+          "axes": [
+            -2,
+            2,
+            -1
+          ]
+        },
+        {
+          "text": "Let them do their thing",
+          "axes": [
+            1,
+            -2,
+            -1
+          ]
+        },
+        {
+          "text": "Call them out in front of everyone",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Watch before making assumptions",
+          "axes": [
+            -2,
+            -1,
+            -2
+          ]
+        }
+      ],
+      "difficulty": "medium",
+      "tags": [
+        "friendship",
+        "social",
+        "observation"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_077",
+      "pack_id": "social_circuit",
+      "prompt": "Someone tells you a secret about your best friend.",
+      "options": [
+        {
+          "text": "Tell my friend immediately",
+          "axes": [
+            1,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Verify it before reacting",
+          "axes": [
+            -2,
+            -1,
+            -2
+          ]
+        },
+        {
+          "text": "Keep it to myself",
+          "axes": [
+            -1,
+            -2,
+            -1
+          ]
+        },
+        {
+          "text": "Ask the person why they told me",
+          "axes": [
+            0,
+            2,
+            -2
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "loyalty",
+        "secrets",
+        "friendship"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_078",
+      "pack_id": "social_circuit",
+      "prompt": "Your friend cancels plans for the third time.",
+      "options": [
+        {
+          "text": "Stop inviting them",
+          "axes": [
+            -1,
+            -2,
+            -1
+          ]
+        },
+        {
+          "text": "Ask what's actually going on",
+          "axes": [
+            -1,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Cancel on them next time",
+          "axes": [
+            2,
+            1,
+            2
+          ]
+        },
+        {
+          "text": "Assume life is just happening",
+          "axes": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "difficulty": "easy",
+      "tags": [
+        "friendship",
+        "boundaries",
+        "social"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_079",
+      "pack_id": "social_circuit",
+      "prompt": "You realise you're always the one initiating conversations.",
+      "options": [
+        {
+          "text": "Stop texting and see what happens",
+          "axes": [
+            -1,
+            -2,
+            -1
+          ]
+        },
+        {
+          "text": "Tell them how it feels",
+          "axes": [
+            -1,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Keep reaching out if I care",
+          "axes": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "text": "Find people who match my energy",
+          "axes": [
+            2,
+            -2,
+            -1
+          ]
+        }
+      ],
+      "difficulty": "medium",
+      "tags": [
+        "friendship",
+        "effort",
+        "relationships"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_080",
+      "pack_id": "social_circuit",
+      "prompt": "Your friend gets into a relationship and disappears.",
+      "options": [
+        {
+          "text": "Give them space",
+          "axes": [
+            -1,
+            -2,
+            -1
+          ]
+        },
+        {
+          "text": "Tell them they're being annoying",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Wait for the honeymoon phase to end",
+          "axes": [
+            -2,
+            -1,
+            -2
+          ]
+        },
+        {
+          "text": "Make new plans without them",
+          "axes": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "difficulty": "easy",
+      "tags": [
+        "friendship",
+        "dating",
+        "humour"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_081",
+      "pack_id": "social_circuit",
+      "prompt": "You accidentally become friends with two people who hate each other.",
+      "options": [
+        {
+          "text": "Keep both friendships separate",
+          "axes": [
+            -2,
+            -2,
+            -2
+          ]
+        },
+        {
+          "text": "Try to make them friends",
+          "axes": [
+            -1,
+            2,
+            1
+          ]
+        },
+        {
+          "text": "Tell them to sort it out",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Enjoy the drama from a distance",
+          "axes": [
+            2,
+            -2,
+            -1
+          ]
+        }
+      ],
+      "difficulty": "medium",
+      "tags": [
+        "friendship",
+        "drama",
+        "social"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_082",
+      "pack_id": "social_circuit",
+      "prompt": "Someone in your group takes a joke way too personally.",
+      "options": [
+        {
+          "text": "Apologise and move on",
+          "axes": [
+            -1,
+            2,
+            1
+          ]
+        },
+        {
+          "text": "Explain why it was funny",
+          "axes": [
+            -2,
+            1,
+            -2
+          ]
+        },
+        {
+          "text": "Make another joke",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Avoid joking around them again",
+          "axes": [
+            -1,
+            -2,
+            -1
+          ]
+        }
+      ],
+      "difficulty": "medium",
+      "tags": [
+        "humour",
+        "friendship",
+        "conflict"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_083",
+      "pack_id": "social_circuit",
+      "prompt": "Your friend asks for brutally honest advice about their appearance.",
+      "options": [
+        {
+          "text": "Tell them exactly what I think",
+          "axes": [
+            2,
+            1,
+            2
+          ]
+        },
+        {
+          "text": "Be honest but choose my words",
+          "axes": [
+            -2,
+            2,
+            -1
+          ]
+        },
+        {
+          "text": "Say they look great",
+          "axes": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "text": "Ask what they actually want to know",
+          "axes": [
+            -2,
+            -1,
+            -2
+          ]
+        }
+      ],
+      "difficulty": "medium",
+      "tags": [
+        "honesty",
+        "friendship",
+        "social"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_084",
+      "pack_id": "social_circuit",
+      "prompt": "You see your ex at a party with someone new.",
+      "options": [
+        {
+          "text": "Act like they're invisible",
+          "axes": [
+            -1,
+            -2,
+            -1
+          ]
+        },
+        {
+          "text": "Introduce myself to the new person",
+          "axes": [
+            2,
+            2,
+            -1
+          ]
+        },
+        {
+          "text": "Leave before it gets awkward",
+          "axes": [
+            -2,
+            -1,
+            1
+          ]
+        },
+        {
+          "text": "Have the time of my life anyway",
+          "axes": [
+            2,
+            1,
+            1
+          ]
+        }
+      ],
+      "difficulty": "easy",
+      "tags": [
+        "dating",
+        "exes",
+        "party"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_085",
+      "pack_id": "social_circuit",
+      "prompt": "Your crush asks whether you like them.",
+      "options": [
+        {
+          "text": "Tell them immediately",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Play it cool",
+          "axes": [
+            -1,
+            -1,
+            -1
+          ]
+        },
+        {
+          "text": "Ask why they're asking",
+          "axes": [
+            -2,
+            0,
+            -2
+          ]
+        },
+        {
+          "text": "Make a joke and change topics",
+          "axes": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "difficulty": "easy",
+      "tags": [
+        "dating",
+        "crush",
+        "awkward"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_086",
+      "pack_id": "social_circuit",
+      "prompt": "Someone you like sends you a confusing mixed signal.",
+      "options": [
+        {
+          "text": "Ask them directly",
+          "axes": [
+            -1,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Match their energy",
+          "axes": [
+            1,
+            -1,
+            1
+          ]
+        },
+        {
+          "text": "Overanalyse every interaction",
+          "axes": [
+            -2,
+            -1,
+            -2
+          ]
+        },
+        {
+          "text": "Move on. Too much effort.",
+          "axes": [
+            2,
+            -2,
+            -1
+          ]
+        }
+      ],
+      "difficulty": "medium",
+      "tags": [
+        "dating",
+        "psychology",
+        "relationships"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_087",
+      "pack_id": "social_circuit",
+      "prompt": "Your partner wants access to your phone.",
+      "options": [
+        {
+          "text": "Hand it over without hesitation",
+          "axes": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "text": "Ask why they need it",
+          "axes": [
+            -2,
+            1,
+            -2
+          ]
+        },
+        {
+          "text": "Absolutely not",
+          "axes": [
+            -1,
+            -2,
+            2
+          ]
+        },
+        {
+          "text": "Make a joke and dodge the question",
+          "axes": [
+            2,
+            1,
+            -1
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "dating",
+        "privacy",
+        "boundaries"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_088",
+      "pack_id": "social_circuit",
+      "prompt": "You realise someone is flirting with you, but you're not interested.",
+      "options": [
+        {
+          "text": "Tell them politely",
+          "axes": [
+            -1,
+            2,
+            1
+          ]
+        },
+        {
+          "text": "Pretend I don't notice",
+          "axes": [
+            -2,
+            -2,
+            -1
+          ]
+        },
+        {
+          "text": "Make it painfully obvious",
+          "axes": [
+            2,
+            1,
+            2
+          ]
+        },
+        {
+          "text": "Enjoy the attention anyway",
+          "axes": [
+            2,
+            -1,
+            1
+          ]
+        }
+      ],
+      "difficulty": "easy",
+      "tags": [
+        "dating",
+        "social",
+        "attention"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_089",
+      "pack_id": "social_circuit",
+      "prompt": "Your partner forgets an important date.",
+      "options": [
+        {
+          "text": "Bring it up immediately",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Let it slide this time",
+          "axes": [
+            -1,
+            2,
+            1
+          ]
+        },
+        {
+          "text": "Remember it for later",
+          "axes": [
+            -2,
+            -2,
+            -1
+          ]
+        },
+        {
+          "text": "Make them plan something better",
+          "axes": [
+            1,
+            1,
+            2
+          ]
+        }
+      ],
+      "difficulty": "medium",
+      "tags": [
+        "dating",
+        "relationships",
+        "expectations"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_090",
+      "pack_id": "social_circuit",
+      "prompt": "Your friend starts dating someone you genuinely dislike.",
+      "options": [
+        {
+          "text": "Tell them exactly why",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Keep my opinion to myself",
+          "axes": [
+            -2,
+            -2,
+            -1
+          ]
+        },
+        {
+          "text": "Get to know that person first",
+          "axes": [
+            -1,
+            2,
+            -2
+          ]
+        },
+        {
+          "text": "Make jokes about their choice",
+          "axes": [
+            2,
+            1,
+            1
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "friendship",
+        "dating",
+        "judgement"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_091",
+      "pack_id": "social_circuit",
+      "prompt": "Someone keeps interrupting you during a conversation.",
+      "options": [
+        {
+          "text": "Interrupt them right back",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Wait for my turn",
+          "axes": [
+            -2,
+            1,
+            -2
+          ]
+        },
+        {
+          "text": "Stop talking altogether",
+          "axes": [
+            -1,
+            -2,
+            -1
+          ]
+        },
+        {
+          "text": "Call out their behaviour",
+          "axes": [
+            1,
+            2,
+            1
+          ]
+        }
+      ],
+      "difficulty": "easy",
+      "tags": [
+        "communication",
+        "confidence",
+        "social"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_092",
+      "pack_id": "social_circuit",
+      "prompt": "You notice someone sitting alone at a party.",
+      "options": [
+        {
+          "text": "Go introduce myself",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Invite them into our group",
+          "axes": [
+            -1,
+            2,
+            1
+          ]
+        },
+        {
+          "text": "Leave them be",
+          "axes": [
+            -1,
+            -2,
+            -1
+          ]
+        },
+        {
+          "text": "Observe whether they want company",
+          "axes": [
+            -2,
+            -1,
+            -2
+          ]
+        }
+      ],
+      "difficulty": "easy",
+      "tags": [
+        "empathy",
+        "party",
+        "social"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_093",
+      "pack_id": "social_circuit",
+      "prompt": "Your group cannot agree on where to eat.",
+      "options": [
+        {
+          "text": "Pick a place and end the debate",
+          "axes": [
+            -1,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Let everyone vote",
+          "axes": [
+            -2,
+            2,
+            -2
+          ]
+        },
+        {
+          "text": "Suggest somewhere completely random",
+          "axes": [
+            2,
+            1,
+            2
+          ]
+        },
+        {
+          "text": "Order food separately",
+          "axes": [
+            1,
+            -2,
+            -1
+          ]
+        }
+      ],
+      "difficulty": "easy",
+      "tags": [
+        "food",
+        "friendship",
+        "decisions"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_094",
+      "pack_id": "social_circuit",
+      "prompt": "A friend borrows money and keeps avoiding repayment.",
+      "options": [
+        {
+          "text": "Demand it back",
+          "axes": [
+            2,
+            1,
+            2
+          ]
+        },
+        {
+          "text": "Have a private conversation",
+          "axes": [
+            -2,
+            2,
+            -1
+          ]
+        },
+        {
+          "text": "Forget the money, remember the lesson",
+          "axes": [
+            -1,
+            -2,
+            1
+          ]
+        },
+        {
+          "text": "Ask mutual friends to intervene",
+          "axes": [
+            -1,
+            2,
+            -2
+          ]
+        }
+      ],
+      "difficulty": "medium",
+      "tags": [
+        "money",
+        "friendship",
+        "boundaries"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_095",
+      "pack_id": "social_circuit",
+      "prompt": "Someone takes credit for an idea you shared privately.",
+      "options": [
+        {
+          "text": "Expose them publicly",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Collect proof first",
+          "axes": [
+            -2,
+            -1,
+            -2
+          ]
+        },
+        {
+          "text": "Confront them privately",
+          "axes": [
+            -1,
+            1,
+            1
+          ]
+        },
+        {
+          "text": "Never share ideas with them again",
+          "axes": [
+            -1,
+            -2,
+            -1
+          ]
+        }
+      ],
+      "difficulty": "medium",
+      "tags": [
+        "trust",
+        "ego",
+        "workplace"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_096",
+      "pack_id": "social_circuit",
+      "prompt": "Your friend tells the same story for the tenth time.",
+      "options": [
+        {
+          "text": "Listen like it's brand new",
+          "axes": [
+            -1,
+            2,
+            1
+          ]
+        },
+        {
+          "text": "Finish the story for them",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Tell them you've heard it already",
+          "axes": [
+            -1,
+            -1,
+            -2
+          ]
+        },
+        {
+          "text": "Find a creative way to escape",
+          "axes": [
+            1,
+            -2,
+            1
+          ]
+        }
+      ],
+      "difficulty": "easy",
+      "tags": [
+        "humour",
+        "friendship",
+        "social"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_097",
+      "pack_id": "social_circuit",
+      "prompt": "You are invited to two events happening at the same time.",
+      "options": [
+        {
+          "text": "Choose the one planned first",
+          "axes": [
+            -2,
+            0,
+            -2
+          ]
+        },
+        {
+          "text": "Go wherever my favourite people are",
+          "axes": [
+            1,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Try attending both",
+          "axes": [
+            2,
+            1,
+            1
+          ]
+        },
+        {
+          "text": "Skip both and enjoy my evening",
+          "axes": [
+            -1,
+            -2,
+            -1
+          ]
+        }
+      ],
+      "difficulty": "easy",
+      "tags": [
+        "social",
+        "time",
+        "lifestyle"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_098",
+      "pack_id": "social_circuit",
+      "prompt": "You discover your friends have a separate group chat without you.",
+      "options": [
+        {
+          "text": "Ask them about it",
+          "axes": [
+            1,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Start my own group chat",
+          "axes": [
+            2,
+            2,
+            -1
+          ]
+        },
+        {
+          "text": "Assume everyone needs privacy",
+          "axes": [
+            -2,
+            -1,
+            -2
+          ]
+        },
+        {
+          "text": "Quietly distance myself",
+          "axes": [
+            -1,
+            -2,
+            1
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "friendship",
+        "trust",
+        "group-dynamics"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_099",
+      "pack_id": "social_circuit",
+      "prompt": "Someone you barely know starts telling you their life story.",
+      "options": [
+        {
+          "text": "Listen. Maybe they need it.",
+          "axes": [
+            -1,
+            2,
+            1
+          ]
+        },
+        {
+          "text": "Ask questions and get involved",
+          "axes": [
+            1,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Look for a polite exit",
+          "axes": [
+            -2,
+            -2,
+            -1
+          ]
+        },
+        {
+          "text": "Share an equally personal story",
+          "axes": [
+            2,
+            1,
+            2
+          ]
+        }
+      ],
+      "difficulty": "easy",
+      "tags": [
+        "empathy",
+        "communication",
+        "social"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_100",
+      "pack_id": "social_circuit",
+      "prompt": "Your best friend achieves something you've always wanted.",
+      "options": [
+        {
+          "text": "Celebrate them wholeheartedly",
+          "axes": [
+            1,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Feel jealous but hide it",
+          "axes": [
+            -2,
+            -2,
+            -1
+          ]
+        },
+        {
+          "text": "Use it as motivation",
+          "axes": [
+            -1,
+            -1,
+            -2
+          ]
+        },
+        {
+          "text": "Ask how they managed it",
+          "axes": [
+            -2,
+            1,
+            -2
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "jealousy",
+        "ambition",
+        "friendship"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_101",
+      "pack_id": "social_circuit",
+      "prompt": "You get invited to a wedding where you know only one person.",
+      "options": [
+        {
+          "text": "Become friends with everyone",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Stick with the person I know",
+          "axes": [
+            -1,
+            2,
+            -1
+          ]
+        },
+        {
+          "text": "Enjoy the food and leave",
+          "axes": [
+            1,
+            -2,
+            1
+          ]
+        },
+        {
+          "text": "Find a quiet corner",
+          "axes": [
+            -2,
+            -2,
+            -2
+          ]
+        }
+      ],
+      "difficulty": "easy",
+      "tags": [
+        "party",
+        "social",
+        "introversion"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_102",
+      "pack_id": "social_circuit",
+      "prompt": "A friend asks you to lie to their parents for them.",
+      "options": [
+        {
+          "text": "Cover for them without questions",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Ask what actually happened",
+          "axes": [
+            -2,
+            1,
+            -2
+          ]
+        },
+        {
+          "text": "Refuse to get involved",
+          "axes": [
+            -1,
+            -2,
+            -1
+          ]
+        },
+        {
+          "text": "Help, but set some conditions",
+          "axes": [
+            -1,
+            2,
+            -1
+          ]
+        }
+      ],
+      "difficulty": "medium",
+      "tags": [
+        "loyalty",
+        "honesty",
+        "friendship"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_103",
+      "pack_id": "social_circuit",
+      "prompt": "Your friend makes a terrible decision while clearly emotional.",
+      "options": [
+        {
+          "text": "Stop them immediately",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Let them learn from it",
+          "axes": [
+            -1,
+            -2,
+            1
+          ]
+        },
+        {
+          "text": "Talk them through the consequences",
+          "axes": [
+            -2,
+            2,
+            -2
+          ]
+        },
+        {
+          "text": "Stay close in case it goes wrong",
+          "axes": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "difficulty": "medium",
+      "tags": [
+        "friendship",
+        "judgement",
+        "decision-making"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_104",
+      "pack_id": "social_circuit",
+      "prompt": "Someone compliments you in front of a huge crowd.",
+      "options": [
+        {
+          "text": "Own it. I deserve this.",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Redirect the compliment",
+          "axes": [
+            -1,
+            2,
+            -1
+          ]
+        },
+        {
+          "text": "Get visibly awkward",
+          "axes": [
+            -1,
+            -2,
+            1
+          ]
+        },
+        {
+          "text": "Make a joke out of it",
+          "axes": [
+            1,
+            2,
+            -1
+          ]
+        }
+      ],
+      "difficulty": "easy",
+      "tags": [
+        "ego",
+        "confidence",
+        "humour"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_105",
+      "pack_id": "social_circuit",
+      "prompt": "You find out someone has been talking behind your back.",
+      "options": [
+        {
+          "text": "Confront them face to face",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Ignore it unless it affects me",
+          "axes": [
+            -1,
+            -2,
+            -2
+          ]
+        },
+        {
+          "text": "Find out exactly what was said",
+          "axes": [
+            -2,
+            -1,
+            -2
+          ]
+        },
+        {
+          "text": "Cut them off without explanation",
+          "axes": [
+            1,
+            -2,
+            1
+          ]
+        }
+      ],
+      "difficulty": "medium",
+      "tags": [
+        "trust",
+        "drama",
+        "conflict"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_106",
+      "pack_id": "social_circuit",
+      "prompt": "Your friend starts becoming more successful than you.",
+      "options": [
+        {
+          "text": "Push myself to catch up",
+          "axes": [
+            -2,
+            -1,
+            -2
+          ]
+        },
+        {
+          "text": "Celebrate their wins",
+          "axes": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "text": "Turn it into friendly competition",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Focus on my own timeline",
+          "axes": [
+            -1,
+            -2,
+            -1
+          ]
+        }
+      ],
+      "difficulty": "medium",
+      "tags": [
+        "ambition",
+        "competition",
+        "friendship"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_107",
+      "pack_id": "social_circuit",
+      "prompt": "You're stuck in an elevator with someone you dislike.",
+      "options": [
+        {
+          "text": "Make uncomfortable small talk",
+          "axes": [
+            -1,
+            2,
+            1
+          ]
+        },
+        {
+          "text": "Stay completely silent",
+          "axes": [
+            -2,
+            -2,
+            -1
+          ]
+        },
+        {
+          "text": "Address the tension directly",
+          "axes": [
+            2,
+            1,
+            2
+          ]
+        },
+        {
+          "text": "Pretend we're best friends",
+          "axes": [
+            2,
+            2,
+            -1
+          ]
+        }
+      ],
+      "difficulty": "easy",
+      "tags": [
+        "awkward",
+        "conflict",
+        "humour"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_108",
+      "pack_id": "social_circuit",
+      "prompt": "You have to describe your best friend in one sentence.",
+      "options": [
+        {
+          "text": "The person I can always trust",
+          "axes": [
+            -1,
+            2,
+            1
+          ]
+        },
+        {
+          "text": "My favourite source of chaos",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "The person who understands me",
+          "axes": [
+            -1,
+            -1,
+            2
+          ]
+        },
+        {
+          "text": "A walking collection of red flags",
+          "axes": [
+            2,
+            1,
+            -1
+          ]
+        }
+      ],
+      "difficulty": "easy",
+      "tags": [
+        "friendship",
+        "humour",
+        "personality"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_109",
+      "pack_id": "social_circuit",
+      "prompt": "A friend is clearly making a fool of themselves in public.",
+      "options": [
+        {
+          "text": "Pull them aside discreetly",
+          "axes": [
+            -2,
+            2,
+            -1
+          ]
+        },
+        {
+          "text": "Join in. We're both going down.",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Let them have their moment",
+          "axes": [
+            1,
+            -2,
+            1
+          ]
+        },
+        {
+          "text": "Tell them afterwards",
+          "axes": [
+            -1,
+            -1,
+            -2
+          ]
+        }
+      ],
+      "difficulty": "easy",
+      "tags": [
+        "friendship",
+        "loyalty",
+        "humour"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_110",
+      "pack_id": "social_circuit",
+      "prompt": "Someone asks why you're still single.",
+      "options": [
+        {
+          "text": "I enjoy my own company",
+          "axes": [
+            -1,
+            -2,
+            -1
+          ]
+        },
+        {
+          "text": "Haven't found my person yet",
+          "axes": [
+            -1,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Ask why they're so interested",
+          "axes": [
+            2,
+            1,
+            2
+          ]
+        },
+        {
+          "text": "Give them a completely fake story",
+          "axes": [
+            2,
+            -2,
+            -1
+          ]
+        }
+      ],
+      "difficulty": "easy",
+      "tags": [
+        "dating",
+        "humour",
+        "social"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_111",
+      "pack_id": "social_circuit",
+      "prompt": "Your friend group is slowly drifting apart.",
+      "options": [
+        {
+          "text": "Organise a reunion",
+          "axes": [
+            -2,
+            2,
+            -1
+          ]
+        },
+        {
+          "text": "Accept that life changes",
+          "axes": [
+            -1,
+            -2,
+            -1
+          ]
+        },
+        {
+          "text": "Start making new memories",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Keep in touch with individuals",
+          "axes": [
+            -1,
+            -2,
+            1
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "nostalgia",
+        "friendship",
+        "relationships"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_112",
+      "pack_id": "social_circuit",
+      "prompt": "You notice someone is being excluded from your group.",
+      "options": [
+        {
+          "text": "Bring them into the conversation",
+          "axes": [
+            -1,
+            2,
+            1
+          ]
+        },
+        {
+          "text": "Ask the group what's happening",
+          "axes": [
+            -2,
+            2,
+            -2
+          ]
+        },
+        {
+          "text": "Talk to them privately",
+          "axes": [
+            -1,
+            -2,
+            1
+          ]
+        },
+        {
+          "text": "Call everyone out immediately",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        }
+      ],
+      "difficulty": "medium",
+      "tags": [
+        "empathy",
+        "inclusion",
+        "social"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_113",
+      "pack_id": "social_circuit",
+      "prompt": "Your partner and best friend strongly dislike each other.",
+      "options": [
+        {
+          "text": "Make them spend time together",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Keep both relationships separate",
+          "axes": [
+            -2,
+            -2,
+            -2
+          ]
+        },
+        {
+          "text": "Find out what's causing the tension",
+          "axes": [
+            -2,
+            1,
+            -2
+          ]
+        },
+        {
+          "text": "Let them figure it out themselves",
+          "axes": [
+            1,
+            -1,
+            1
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "relationships",
+        "friendship",
+        "conflict"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_114",
+      "pack_id": "social_circuit",
+      "prompt": "You receive a heartfelt apology from someone who hurt you.",
+      "options": [
+        {
+          "text": "Forgive them immediately",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Accept it, but need time",
+          "axes": [
+            -2,
+            1,
+            -1
+          ]
+        },
+        {
+          "text": "Actions matter more than words",
+          "axes": [
+            -2,
+            -1,
+            -2
+          ]
+        },
+        {
+          "text": "Some things cannot be repaired",
+          "axes": [
+            1,
+            -2,
+            1
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "forgiveness",
+        "trust",
+        "emotional"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "lv_115",
+      "pack_id": "social_circuit",
+      "prompt": "You could know exactly who your real friends are. Would you?",
+      "options": [
+        {
+          "text": "Yes. No more guessing.",
+          "axes": [
+            -2,
+            1,
+            -2
+          ]
+        },
+        {
+          "text": "No. Let people reveal themselves.",
+          "axes": [
+            2,
+            -1,
+            2
+          ]
+        },
+        {
+          "text": "Only if they could know about me too",
+          "axes": [
+            -1,
+            2,
+            1
+          ]
+        },
+        {
+          "text": "I'd rather discover it naturally",
+          "axes": [
+            1,
+            -2,
+            -1
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "friendship",
+        "trust",
+        "psychology"
+      ],
+      "status": "published",
+      "version": 1
+    }
+  ]
+}

@@ -114,6 +114,128 @@ export function selectDailyQuestionIds(params: {
 }
 
 /**
+ * Selects 7 question IDs for The Mix (aggregate selection mode across all eligible published packs):
+ * - Balances across available packs (avoids picking all 7 from one theme)
+ * - Allows multiple questions per pack (capped at balanced threshold)
+ * - Deterministic given seedUint32
+ * - Never repeats a question in the same session
+ * - Avoids recently seen questions where sufficient inventory exists
+ */
+export function selectTheMixQuestionIds(params: {
+  publishedQuestions: { id: string; pack_id: string; sort_order: number }[];
+  seedUint32: number;
+  excludedIds: Set<string>;
+  launchSetMode: boolean;
+}): string[] {
+  const { publishedQuestions, seedUint32, excludedIds, launchSetMode } = params;
+
+  if (launchSetMode) {
+    const packs = [...new Set(publishedQuestions.map((q) => q.pack_id))].sort();
+    const byPack = new Map<string, typeof publishedQuestions>();
+    for (const p of packs) {
+      byPack.set(
+        p,
+        publishedQuestions
+          .filter((q) => q.pack_id === p)
+          .sort((a, b) => a.sort_order - b.sort_order || a.id.localeCompare(b.id))
+      );
+    }
+    const picked: string[] = [];
+    let round = 0;
+    while (picked.length < 7) {
+      let addedInRound = 0;
+      for (const p of packs) {
+        if (picked.length >= 7) break;
+        const list = byPack.get(p) ?? [];
+        if (round < list.length) {
+          picked.push(list[round].id);
+          addedInRound++;
+        }
+      }
+      if (addedInRound === 0) break;
+      round++;
+    }
+    return picked.slice(0, 7);
+  }
+
+  const rng = mulberry32(seedUint32);
+  const byPack = new Map<string, typeof publishedQuestions>();
+  for (const q of publishedQuestions) {
+    if (!byPack.has(q.pack_id)) byPack.set(q.pack_id, []);
+    byPack.get(q.pack_id)!.push(q);
+  }
+
+  const packIds = [...byPack.keys()].sort();
+  if (packIds.length === 0) return [];
+
+  const shuffledByPack = new Map<string, typeof publishedQuestions>();
+  for (const [p, list] of byPack.entries()) {
+    const sorted = [...list].sort((a, b) => a.id.localeCompare(b.id));
+    shuffledByPack.set(p, fisherYatesShuffle(sorted, rng));
+  }
+
+  // Balance cap: e.g. for 4 packs, ceil(7/4) = 2. Max 2 questions per pack on initial pass.
+  // For 2 packs, ceil(7/2) = 4.
+  const maxPerPack = Math.max(2, Math.ceil(7 / packIds.length));
+  const picked: string[] = [];
+  const pickedSet = new Set<string>();
+  const packCounts: Record<string, number> = {};
+  for (const p of packIds) packCounts[p] = 0;
+
+  // Pass 1: Fresh questions (not in excludedIds)
+  const packOrder = fisherYatesShuffle(packIds, rng);
+  let changed = true;
+  while (picked.length < 7 && changed) {
+    changed = false;
+    for (const p of packOrder) {
+      if (picked.length >= 7) break;
+      if (packCounts[p] >= maxPerPack) continue;
+      const list = shuffledByPack.get(p) ?? [];
+      const nextFresh = list.find((q) => !pickedSet.has(q.id) && !excludedIds.has(q.id));
+      if (nextFresh) {
+        picked.push(nextFresh.id);
+        pickedSet.add(nextFresh.id);
+        packCounts[p]++;
+        changed = true;
+      }
+    }
+  }
+
+  // Pass 2: Fallback to excluded questions if inventory runs low
+  if (picked.length < 7) {
+    changed = true;
+    while (picked.length < 7 && changed) {
+      changed = false;
+      for (const p of packOrder) {
+        if (picked.length >= 7) break;
+        if (packCounts[p] >= maxPerPack) continue;
+        const list = shuffledByPack.get(p) ?? [];
+        const nextQ = list.find((q) => !pickedSet.has(q.id));
+        if (nextQ) {
+          picked.push(nextQ.id);
+          pickedSet.add(nextQ.id);
+          packCounts[p]++;
+          changed = true;
+        }
+      }
+    }
+  }
+
+  // Pass 3: If still under 7 (e.g. strict maxPerPack blocked it), relax maxPerPack
+  if (picked.length < 7) {
+    for (const q of publishedQuestions) {
+      if (picked.length >= 7) break;
+      if (!pickedSet.has(q.id)) {
+        picked.push(q.id);
+        pickedSet.add(q.id);
+      }
+    }
+  }
+
+  return fisherYatesShuffle(picked, rng);
+}
+
+/**
  * Smoothed share p = (c_i + 1) / (N + 4).
  */
 export function computeSmoothedShare(chosenVotes: number, totalVotes: number): number {

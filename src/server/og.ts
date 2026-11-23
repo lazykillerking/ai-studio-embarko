@@ -48,7 +48,11 @@ export function injectOgMetaTags(
             ? 'Neon Coast'
             : meta.packId === 'campus_chaos'
               ? 'Campus Chaos'
-              : 'The Mix';
+              : meta.packId === 'social_circuit'
+                ? 'Social Circuit'
+                : meta.packId === 'everyday_life'
+                  ? 'Everyday Life'
+                  : 'The Mix';
       title = `Join ${meta.name} on BRAINPRINT`;
       description = `Code ${meta.code} · ${packLabel} · ${meta.memberCount} joined. Answer 7 blind questions and see how synced your crew really is!`;
       imagePath =

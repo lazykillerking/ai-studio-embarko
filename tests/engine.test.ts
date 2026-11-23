@@ -170,16 +170,17 @@ describe('2. Sample-size gates (N = 0 to 20), tiers & immutability', () => {
     expect(repeat.answerRecords).toHaveLength(7);
 
     // Same device playing same question on another day does NOT insert a second population_votes row
+    const targetQid = qIds.find((id) => getOrCreateDailySet(db, 'the_mix', '2026-11-26').includes(id)) ?? qIds[0];
     submitSoloAnswer(db, {
       deviceId: p1,
       packId: 'the_mix',
-      date: '2026-11-23',
-      questionId: qIds[0],
+      date: '2026-11-26',
+      questionId: targetQid,
       optionIndex: 3,
     });
     const { cnt } = db
       .prepare('SELECT COUNT(*) as cnt FROM population_votes WHERE device_id = ? AND question_id = ?')
-      .get(p1, qIds[0]) as { cnt: number };
+      .get(p1, targetQid) as { cnt: number };
     expect(cnt).toBe(1);
 
     // Score titles check
@@ -436,5 +437,69 @@ describe('5. Security utilities: sanitization, escaping & rate limiter', () => {
     expect(rl.checkPair('1.2.3.4', 'dev1', 1003).allowed).toBe(false);
     // After 60s window expires, allowed again
     expect(rl.checkPair('1.2.3.4', 'dev1', 62_000).allowed).toBe(true);
+  });
+});
+
+describe('6. Question bank refactor: The Mix aggregate mode & dedicated packs', () => {
+  it('dedicates packs strictly to their own questions', () => {
+    const db = makeTestDb();
+    const scDaily = getOrCreateDailySet(db, 'social_circuit', '2026-11-20', false);
+    expect(scDaily).toHaveLength(7);
+    const scRows = db.prepare(`SELECT id, pack_id FROM questions WHERE id IN (${scDaily.map(() => '?').join(',')})`).all(...scDaily) as { id: string; pack_id: string }[];
+    for (const r of scRows) {
+      expect(r.pack_id).toBe('social_circuit');
+      expect(r.id.startsWith('lv_')).toBe(true);
+    }
+
+    const ncDaily = getOrCreateDailySet(db, 'neon_coast', '2026-11-20', false);
+    expect(ncDaily).toHaveLength(7);
+    const ncRows = db.prepare(`SELECT id, pack_id FROM questions WHERE id IN (${ncDaily.map(() => '?').join(',')})`).all(...ncDaily) as { id: string; pack_id: string }[];
+    for (const r of ncRows) {
+      expect(r.pack_id).toBe('neon_coast');
+      expect(r.id.startsWith('nc_')).toBe(true);
+    }
+
+    const ccDaily = getOrCreateDailySet(db, 'campus_chaos', '2026-11-20', false);
+    expect(ccDaily).toHaveLength(7);
+    const ccRows = db.prepare(`SELECT id, pack_id FROM questions WHERE id IN (${ccDaily.map(() => '?').join(',')})`).all(...ccDaily) as { id: string; pack_id: string }[];
+    for (const r of ccRows) {
+      expect(r.pack_id).toBe('campus_chaos');
+      expect(r.id.startsWith('cc_')).toBe(true);
+    }
+
+    const elDaily = getOrCreateDailySet(db, 'everyday_life', '2026-11-20', false);
+    expect(elDaily).toHaveLength(7);
+    const elRows = db.prepare(`SELECT id, pack_id FROM questions WHERE id IN (${elDaily.map(() => '?').join(',')})`).all(...elDaily) as { id: string; pack_id: string }[];
+    for (const r of elRows) {
+      expect(r.pack_id).toBe('everyday_life');
+      expect(r.id.startsWith('tm_')).toBe(true);
+    }
+    db.close();
+  });
+
+  it('aggregates questions from multiple themed packs when The Mix is selected', () => {
+    const db = makeTestDb();
+    const mixDaily = getOrCreateDailySet(db, 'the_mix', '2026-11-25', false);
+    expect(mixDaily).toHaveLength(7);
+
+    // Verify no duplicates within session
+    const uniqueIds = new Set(mixDaily);
+    expect(uniqueIds.size).toBe(7);
+
+    // Verify questions come from multiple packs (balanced)
+    const rows = db.prepare(`SELECT id, pack_id FROM questions WHERE id IN (${mixDaily.map(() => '?').join(',')})`).all(...mixDaily) as { id: string; pack_id: string }[];
+    const packCounts: Record<string, number> = {};
+    for (const r of rows) {
+      packCounts[r.pack_id] = (packCounts[r.pack_id] || 0) + 1;
+    }
+
+    // Must be selected from at least 3 distinct packs
+    expect(Object.keys(packCounts).length).toBeGreaterThanOrEqual(3);
+
+    // No single pack dominates all 7 questions
+    for (const count of Object.values(packCounts)) {
+      expect(count).toBeLessThanOrEqual(3);
+    }
+    db.close();
   });
 });

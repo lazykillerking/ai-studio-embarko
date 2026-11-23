@@ -14,13 +14,44 @@
       "pack_id": "campus_chaos",
       "prompt": "Your 4-person group presentation is tomorrow morning and half the slides are blank.",
       "options": [
-        { "text": "Build the remaining deck solo overnight", "axes": [-2, -2, -2] },
-        { "text": "Run a crisp midnight sprint call together", "axes": [-2, 2, -1] },
-        { "text": "Wing your slides live with pure charm", "axes": [2, -1, 2] },
-        { "text": "Turn the sparse deck into a bold Q&A", "axes": [2, 2, 1] }
+        {
+          "text": "Build the remaining deck solo overnight",
+          "axes": [
+            -2,
+            -2,
+            -2
+          ]
+        },
+        {
+          "text": "Run a crisp midnight sprint call",
+          "axes": [
+            -2,
+            2,
+            -1
+          ]
+        },
+        {
+          "text": "Wing your slides live with pure charm",
+          "axes": [
+            2,
+            -1,
+            2
+          ]
+        },
+        {
+          "text": "Turn the sparse deck into a bold Q&A",
+          "axes": [
+            2,
+            2,
+            1
+          ]
+        }
       ],
       "difficulty": "easy",
-      "tags": ["projects", "deadlines"],
+      "tags": [
+        "projects",
+        "deadlines"
+      ],
       "status": "published",
       "version": 1
     },
@@ -29,13 +60,44 @@
       "pack_id": "campus_chaos",
       "prompt": "It is 8:55 AM and your 9:00 AM lecture is ten minutes away across campus. Call it?",
       "options": [
-        { "text": "Power-walk the exact shortcut and slip in", "axes": [-2, -2, -1] },
-        { "text": "Grab coffee first; late is already late", "axes": [2, -2, 2] },
-        { "text": "Text a friend to save a back-row seat", "axes": [-1, 2, -1] },
-        { "text": "Recruit hallway stragglers for a sprint", "axes": [2, 2, 2] }
+        {
+          "text": "Power-walk the shortcut and slip in",
+          "axes": [
+            -2,
+            -2,
+            -1
+          ]
+        },
+        {
+          "text": "Grab coffee first; late is already late",
+          "axes": [
+            2,
+            -2,
+            2
+          ]
+        },
+        {
+          "text": "Text a friend to save a back-row seat",
+          "axes": [
+            -1,
+            2,
+            -1
+          ]
+        },
+        {
+          "text": "Recruit hallway stragglers for a sprint",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        }
       ],
       "difficulty": "easy",
-      "tags": ["morning", "lectures"],
+      "tags": [
+        "morning",
+        "lectures"
+      ],
       "status": "published",
       "version": 1
     },
@@ -44,13 +106,44 @@
       "pack_id": "campus_chaos",
       "prompt": "Finals week hits and the library is 98% packed. Where do you claim study territory?",
       "options": [
-        { "text": "Reserve a quiet corner booth days ahead", "axes": [-2, -2, -2] },
-        { "text": "Discover an unlocked empty seminar room", "axes": [2, -2, 1] },
-        { "text": "Book a whiteboard room for a study squad", "axes": [-2, 2, -1] },
-        { "text": "Camp at the noisy canteen with friends", "axes": [2, 2, 2] }
+        {
+          "text": "Reserve a quiet corner booth days ahead",
+          "axes": [
+            -2,
+            -2,
+            -2
+          ]
+        },
+        {
+          "text": "Discover an unlocked empty seminar room",
+          "axes": [
+            2,
+            -2,
+            1
+          ]
+        },
+        {
+          "text": "Book a whiteboard room for a study squad",
+          "axes": [
+            -2,
+            2,
+            -1
+          ]
+        },
+        {
+          "text": "Camp at the noisy canteen with friends",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        }
       ],
       "difficulty": "easy",
-      "tags": ["exams", "study"],
+      "tags": [
+        "exams",
+        "study"
+      ],
       "status": "published",
       "version": 1
     },
@@ -59,13 +152,44 @@
       "pack_id": "campus_chaos",
       "prompt": "The cafeteria launches a mystery chef special with zero label. Your lunch move?",
       "options": [
-        { "text": "Stick strictly to your reliable standby", "axes": [-2, -2, -2] },
-        { "text": "Order it immediately out of curiosity", "axes": [2, -2, 2] },
-        { "text": "Wait for a friend's first bite review", "axes": [-1, 2, -1] },
-        { "text": "Dare the whole table to order it together", "axes": [2, 2, 2] }
+        {
+          "text": "Stick strictly to your reliable standby",
+          "axes": [
+            -2,
+            -2,
+            -2
+          ]
+        },
+        {
+          "text": "Order it immediately out of curiosity",
+          "axes": [
+            2,
+            -2,
+            2
+          ]
+        },
+        {
+          "text": "Wait for a friend's first bite review",
+          "axes": [
+            -1,
+            2,
+            -1
+          ]
+        },
+        {
+          "text": "Dare the whole table to order it",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        }
       ],
       "difficulty": "easy",
-      "tags": ["canteen", "food"],
+      "tags": [
+        "canteen",
+        "food"
+      ],
       "status": "published",
       "version": 1
     },
@@ -74,13 +198,44 @@
       "pack_id": "campus_chaos",
       "prompt": "A professor asks a silent lecture hall a tough question and makes eye contact with you.",
       "options": [
-        { "text": "Give a structured best-guess breakdown", "axes": [-2, -1, -2] },
-        { "text": "Answer on pure gut instinct confidently", "axes": [2, -2, 2] },
-        { "text": "Build off a classmate's whisper smoothly", "axes": [-1, 2, 1] },
-        { "text": "Ask a clever follow-up to buy everyone time", "axes": [2, 2, -1] }
+        {
+          "text": "Give a structured best-guess breakdown",
+          "axes": [
+            -2,
+            -1,
+            -2
+          ]
+        },
+        {
+          "text": "Answer on pure gut instinct confidently",
+          "axes": [
+            2,
+            -2,
+            2
+          ]
+        },
+        {
+          "text": "Build off a classmate's whisper smoothly",
+          "axes": [
+            -1,
+            2,
+            1
+          ]
+        },
+        {
+          "text": "Ask a clever question to buy time",
+          "axes": [
+            2,
+            2,
+            -1
+          ]
+        }
       ],
       "difficulty": "medium",
-      "tags": ["classroom", "pressure"],
+      "tags": [
+        "classroom",
+        "pressure"
+      ],
       "status": "published",
       "version": 1
     },
@@ -89,13 +244,44 @@
       "pack_id": "campus_chaos",
       "prompt": "The campus Wi-Fi crashes 40 minutes before an online essay deadline. First reaction?",
       "options": [
-        { "text": "Switch to your pre-tested mobile hotspot", "axes": [-2, -2, -2] },
-        { "text": "Sprint to the computer lab across the quad", "axes": [1, -2, 1] },
-        { "text": "Coordinate a shared tether with roommates", "axes": [-2, 2, -1] },
-        { "text": "Email a dramatic status update from outside", "axes": [2, 2, 2] }
+        {
+          "text": "Switch to your pre-tested mobile hotspot",
+          "axes": [
+            -2,
+            -2,
+            -2
+          ]
+        },
+        {
+          "text": "Sprint to the lab across the quad",
+          "axes": [
+            1,
+            -2,
+            1
+          ]
+        },
+        {
+          "text": "Coordinate a shared phone hotspot",
+          "axes": [
+            -2,
+            2,
+            -1
+          ]
+        },
+        {
+          "text": "Email a dramatic update from outside",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        }
       ],
       "difficulty": "medium",
-      "tags": ["deadlines", "tech"],
+      "tags": [
+        "deadlines",
+        "tech"
+      ],
       "status": "published",
       "version": 1
     },
@@ -104,13 +290,44 @@
       "pack_id": "campus_chaos",
       "prompt": "Dorm or hostel fire drill goes off at 1:30 AM. What single thing do you grab?",
       "options": [
-        { "text": "Pre-packed go-bag by the door", "axes": [-2, -2, -2] },
-        { "text": "Only slippers and sheer sleepy vibes", "axes": [2, -2, 2] },
-        { "text": "Knock on your neighbor's door on the way", "axes": [-1, 2, 2] },
-        { "text": "A speaker to keep the courtyard awake", "axes": [2, 2, 1] }
+        {
+          "text": "Pre-packed go-bag by the door",
+          "axes": [
+            -2,
+            -2,
+            -2
+          ]
+        },
+        {
+          "text": "Only slippers and sheer sleepy vibes",
+          "axes": [
+            2,
+            -2,
+            2
+          ]
+        },
+        {
+          "text": "Knock on your neighbor's door on the way",
+          "axes": [
+            -1,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "A speaker to keep the courtyard awake",
+          "axes": [
+            2,
+            2,
+            1
+          ]
+        }
       ],
       "difficulty": "easy",
-      "tags": ["dorm", "night"],
+      "tags": [
+        "dorm",
+        "night"
+      ],
       "status": "published",
       "version": 1
     },
@@ -119,13 +336,44 @@
       "pack_id": "campus_chaos",
       "prompt": "You have one elective slot left this semester. How do you choose the course?",
       "options": [
-        { "text": "Cross-check syllabus load and exam dates", "axes": [-2, -2, -2] },
-        { "text": "Pick the weirdest course title on impulse", "axes": [2, -2, 2] },
-        { "text": "Enroll in whatever your best friend took", "axes": [-1, 2, 2] },
-        { "text": "Convince four friends to try improv class", "axes": [2, 2, 1] }
+        {
+          "text": "Cross-check syllabus load and exam dates",
+          "axes": [
+            -2,
+            -2,
+            -2
+          ]
+        },
+        {
+          "text": "Pick the weirdest course on impulse",
+          "axes": [
+            2,
+            -2,
+            2
+          ]
+        },
+        {
+          "text": "Enroll in whatever your best friend took",
+          "axes": [
+            -1,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Convince friends to try improv class",
+          "axes": [
+            2,
+            2,
+            1
+          ]
+        }
       ],
       "difficulty": "easy",
-      "tags": ["courses", "planning"],
+      "tags": [
+        "courses",
+        "planning"
+      ],
       "status": "published",
       "version": 1
     },
@@ -134,13 +382,44 @@
       "pack_id": "campus_chaos",
       "prompt": "Someone leaves a mysterious free-pizza flyer in the hallway with an unclear room number.",
       "options": [
-        { "text": "Check the student portal to verify first", "axes": [-2, -1, -2] },
-        { "text": "Follow the garlic scent like a radar", "axes": [2, -2, 2] },
-        { "text": "Alert the floor chat and scout in pairs", "axes": [-1, 2, -1] },
-        { "text": "Crash two club meetings until you score", "axes": [2, 2, 1] }
+        {
+          "text": "Check the student portal to verify first",
+          "axes": [
+            -2,
+            -1,
+            -2
+          ]
+        },
+        {
+          "text": "Follow the garlic scent like a radar",
+          "axes": [
+            2,
+            -2,
+            2
+          ]
+        },
+        {
+          "text": "Alert the floor chat and scout in pairs",
+          "axes": [
+            -1,
+            2,
+            -1
+          ]
+        },
+        {
+          "text": "Crash two club meetings until you score",
+          "axes": [
+            2,
+            2,
+            1
+          ]
+        }
       ],
       "difficulty": "easy",
-      "tags": ["food", "campus"],
+      "tags": [
+        "food",
+        "campus"
+      ],
       "status": "published",
       "version": 1
     },
@@ -149,13 +428,44 @@
       "pack_id": "campus_chaos",
       "prompt": "You accidentally oversleep and miss a pop quiz worth 5% of the grade. What now?",
       "options": [
-        { "text": "Recalculate your semester grade targets", "axes": [-2, -2, -2] },
-        { "text": "Shrug it off and nail the next lecture", "axes": [2, -2, 2] },
-        { "text": "Trade notes with classmates to catch up", "axes": [-2, 2, -1] },
-        { "text": "Laugh about it over canteen fries first", "axes": [2, 2, 2] }
+        {
+          "text": "Recalculate your semester grade targets",
+          "axes": [
+            -2,
+            -2,
+            -2
+          ]
+        },
+        {
+          "text": "Shrug it off and nail the next lecture",
+          "axes": [
+            2,
+            -2,
+            2
+          ]
+        },
+        {
+          "text": "Trade notes with classmates to catch up",
+          "axes": [
+            -2,
+            2,
+            -1
+          ]
+        },
+        {
+          "text": "Laugh about it over canteen fries first",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        }
       ],
       "difficulty": "medium",
-      "tags": ["grades", "resilience"],
+      "tags": [
+        "grades",
+        "resilience"
+      ],
       "status": "published",
       "version": 1
     },
@@ -164,13 +474,44 @@
       "pack_id": "campus_chaos",
       "prompt": "Club fair fills the main quad with 60 loud booths and free stickers. Your approach?",
       "options": [
-        { "text": "Visit the three clubs you researched prior", "axes": [-2, -2, -2] },
-        { "text": "Wander solo and collect every cool sticker", "axes": [2, -2, 2] },
-        { "text": "Sign up for a team club with hallmates", "axes": [-1, 2, 1] },
-        { "text": "Join a wild new club just for the demo", "axes": [2, 2, -1] }
+        {
+          "text": "Visit the three clubs you researched",
+          "axes": [
+            -2,
+            -2,
+            -2
+          ]
+        },
+        {
+          "text": "Wander solo and collect cool stickers",
+          "axes": [
+            2,
+            -2,
+            2
+          ]
+        },
+        {
+          "text": "Sign up for a team club with hallmates",
+          "axes": [
+            -1,
+            2,
+            1
+          ]
+        },
+        {
+          "text": "Join a wild new club just for the demo",
+          "axes": [
+            2,
+            2,
+            -1
+          ]
+        }
       ],
       "difficulty": "easy",
-      "tags": ["clubs", "social"],
+      "tags": [
+        "clubs",
+        "social"
+      ],
       "status": "published",
       "version": 1
     },
@@ -179,13 +520,44 @@
       "pack_id": "campus_chaos",
       "prompt": "Your study group dissolves into a 45-minute tangent about snacks and playlists. Your move?",
       "options": [
-        { "text": "Quietly pop headphones on and finish solo", "axes": [-2, -2, -1] },
-        { "text": "Set a 25-minute timer to steer them back", "axes": [-2, 2, -2] },
-        { "text": "Lean into the vibe; morale matters too", "axes": [1, 2, 2] },
-        { "text": "Escalate the debate with a wild hot take", "axes": [2, 2, 2] }
+        {
+          "text": "Pop headphones on and finish solo",
+          "axes": [
+            -2,
+            -2,
+            -1
+          ]
+        },
+        {
+          "text": "Set a 25-minute timer to steer them back",
+          "axes": [
+            -2,
+            2,
+            -2
+          ]
+        },
+        {
+          "text": "Lean into the vibe; morale matters too",
+          "axes": [
+            1,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Escalate the debate with a wild hot take",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        }
       ],
       "difficulty": "medium",
-      "tags": ["study", "friends"],
+      "tags": [
+        "study",
+        "friends"
+      ],
       "status": "published",
       "version": 1
     },
@@ -194,13 +566,44 @@
       "pack_id": "campus_chaos",
       "prompt": "A surprise snow or rain day cancels every class on campus. How do you spend it?",
       "options": [
-        { "text": "Get two weeks ahead on readings calmly", "axes": [-2, -2, -2] },
-        { "text": "Build an epic hallway snack fort together", "axes": [2, 2, 2] },
-        { "text": "Organize a dorm board-game tournament", "axes": [-2, 2, -1] },
-        { "text": "Sleep until 2 PM and start a random hobby", "axes": [2, -2, 2] }
+        {
+          "text": "Get two weeks ahead on readings calmly",
+          "axes": [
+            -2,
+            -2,
+            -2
+          ]
+        },
+        {
+          "text": "Build a hallway snack fort together",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Organize a dorm board-game tournament",
+          "axes": [
+            -2,
+            2,
+            -1
+          ]
+        },
+        {
+          "text": "Sleep until 2 PM, start a new hobby",
+          "axes": [
+            2,
+            -2,
+            2
+          ]
+        }
       ],
       "difficulty": "easy",
-      "tags": ["dayoff", "dorm"],
+      "tags": [
+        "dayoff",
+        "dorm"
+      ],
       "status": "published",
       "version": 1
     },
@@ -209,13 +612,44 @@
       "pack_id": "campus_chaos",
       "prompt": "You finish a brutal exam 35 minutes before the clock ends. What do you actually do?",
       "options": [
-        { "text": "Re-verify every single answer methodically", "axes": [-2, -2, -2] },
-        { "text": "Trust your first pass and walk out early", "axes": [2, -2, 2] },
-        { "text": "Wait outside to debrief with your squad", "axes": [-1, 2, 1] },
-        { "text": "Head straight to the cafe for celebration", "axes": [2, 2, 1] }
+        {
+          "text": "Re-verify every answer methodically",
+          "axes": [
+            -2,
+            -2,
+            -2
+          ]
+        },
+        {
+          "text": "Trust your first pass and walk out early",
+          "axes": [
+            2,
+            -2,
+            2
+          ]
+        },
+        {
+          "text": "Wait outside to debrief with your squad",
+          "axes": [
+            -1,
+            2,
+            1
+          ]
+        },
+        {
+          "text": "Head straight to the cafe to celebrate",
+          "axes": [
+            2,
+            2,
+            1
+          ]
+        }
       ],
       "difficulty": "easy",
-      "tags": ["exams", "instinct"],
+      "tags": [
+        "exams",
+        "instinct"
+      ],
       "status": "published",
       "version": 1
     },
@@ -224,13 +658,44 @@
       "pack_id": "campus_chaos",
       "prompt": "The semester ends tonight and everyone is packing up. Your signature finale move?",
       "options": [
-        { "text": "Color-code boxes and finish by sunset", "axes": [-2, -2, -2] },
-        { "text": "Leave packing to 3 AM and wander campus", "axes": [2, -2, 2] },
-        { "text": "Host a goodbye dinner with a set schedule", "axes": [-2, 2, -1] },
-        { "text": "Spark a spontaneous midnight rooftop sendoff", "axes": [2, 2, 2] }
+        {
+          "text": "Color-code boxes and finish by sunset",
+          "axes": [
+            -2,
+            -2,
+            -2
+          ]
+        },
+        {
+          "text": "Leave packing to 3 AM and wander campus",
+          "axes": [
+            2,
+            -2,
+            2
+          ]
+        },
+        {
+          "text": "Host a goodbye dinner on schedule",
+          "axes": [
+            -2,
+            2,
+            -1
+          ]
+        },
+        {
+          "text": "Spark a midnight rooftop sendoff",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        }
       ],
       "difficulty": "easy",
-      "tags": ["finale", "memories"],
+      "tags": [
+        "finale",
+        "memories"
+      ],
       "status": "published",
       "version": 1
     }

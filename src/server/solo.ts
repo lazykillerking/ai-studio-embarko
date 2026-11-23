@@ -8,6 +8,7 @@ import {
   getRarityBand,
   getScoreTitle,
   selectDailyQuestionIds,
+  selectTheMixQuestionIds,
 } from '../shared/scoring';
 import type {
   AnswerRecord,
@@ -93,7 +94,93 @@ export function getOrCreateDailySet(
   challengeDate: string,
   launchSetMode = isLaunchSetMode()
 ): string[] {
+  // If The Mix is selected, aggregate across all eligible published packs
+  if (packId === 'the_mix') {
+    const existing = db
+      .prepare('SELECT question_ids FROM daily_sets WHERE pack_id = ? AND challenge_date = ?')
+      .get(packId, challengeDate) as { question_ids: string } | undefined;
+
+    if (existing) {
+      return JSON.parse(existing.question_ids) as string[];
+    }
+
+    const allPublished = db
+      .prepare(
+        `SELECT q.id, q.pack_id, q.sort_order
+         FROM questions q
+         JOIN packs p ON p.id = q.pack_id
+         WHERE q.status = 'published' AND p.status = 'published' AND p.id != 'the_mix'
+         ORDER BY q.id ASC`
+      )
+      .all() as { id: string; pack_id: string; sort_order: number }[];
+
+    if (launchSetMode) {
+      const selectedIds = selectTheMixQuestionIds({
+        publishedQuestions: allPublished,
+        seedUint32: computeDailySeedUint32(packId, challengeDate),
+        excludedIds: new Set<string>(),
+        launchSetMode: true,
+      });
+
+      db.prepare(
+        `INSERT OR IGNORE INTO daily_sets (id, pack_id, challenge_date, question_ids, created_at)
+         VALUES (?, ?, ?, ?, ?)`
+      ).run(crypto.randomUUID(), packId, challengeDate, JSON.stringify(selectedIds), new Date().toISOString());
+
+      const authoritative = db
+        .prepare('SELECT question_ids FROM daily_sets WHERE pack_id = ? AND challenge_date = ?')
+        .get(packId, challengeDate) as { question_ids: string };
+      return JSON.parse(authoritative.question_ids) as string[];
+    }
+
+    const exclusionWindow = getDailyExclusionWindow(allPublished.length);
+    const excludedIds = new Set<string>();
+
+    if (exclusionWindow > 0) {
+      const prevDates = getPreviousUtcDates(challengeDate, exclusionWindow);
+      const placeholders = prevDates.map(() => '?').join(',');
+      const prevSets = db
+        .prepare(
+          `SELECT question_ids FROM daily_sets
+           WHERE pack_id = ? AND challenge_date IN (${placeholders})`
+        )
+        .all(packId, ...prevDates) as { question_ids: string }[];
+      for (const row of prevSets) {
+        const ids = JSON.parse(row.question_ids) as string[];
+        ids.forEach((id) => excludedIds.add(id));
+      }
+    }
+
+    const seedUint32 = computeDailySeedUint32(packId, challengeDate);
+    const selectedIds = selectTheMixQuestionIds({
+      publishedQuestions: allPublished,
+      seedUint32,
+      excludedIds,
+      launchSetMode: false,
+    });
+
+    db.prepare(
+      `INSERT OR IGNORE INTO daily_sets (id, pack_id, challenge_date, question_ids, created_at)
+       VALUES (?, ?, ?, ?, ?)`
+    ).run(crypto.randomUUID(), packId, challengeDate, JSON.stringify(selectedIds), new Date().toISOString());
+
+    const authoritative = db
+      .prepare('SELECT question_ids FROM daily_sets WHERE pack_id = ? AND challenge_date = ?')
+      .get(packId, challengeDate) as { question_ids: string };
+
+    return JSON.parse(authoritative.question_ids) as string[];
+  }
+
+  // Dedicated single pack selection
   if (launchSetMode) {
+    const existing = db
+      .prepare('SELECT question_ids FROM daily_sets WHERE pack_id = ? AND challenge_date = ?')
+      .get(packId, challengeDate) as { question_ids: string } | undefined;
+
+    if (existing) {
+      return JSON.parse(existing.question_ids) as string[];
+    }
+
     const rows = db
       .prepare(
         `SELECT id FROM questions
@@ -102,7 +189,17 @@ export function getOrCreateDailySet(
          LIMIT 7`
       )
       .all(packId) as { id: string }[];
-    return rows.map((r) => r.id);
+    const selectedIds = rows.map((r) => r.id);
+
+    db.prepare(
+      `INSERT OR IGNORE INTO daily_sets (id, pack_id, challenge_date, question_ids, created_at)
+       VALUES (?, ?, ?, ?, ?)`
+    ).run(crypto.randomUUID(), packId, challengeDate, JSON.stringify(selectedIds), new Date().toISOString());
+
+    const authoritative = db
+      .prepare('SELECT question_ids FROM daily_sets WHERE pack_id = ? AND challenge_date = ?')
+      .get(packId, challengeDate) as { question_ids: string };
+    return JSON.parse(authoritative.question_ids) as string[];
   }
 
   const existing = db
@@ -248,8 +345,15 @@ export function listPublishedPacks(
      FROM solo_runs WHERE device_id = ? AND pack_id = ? AND challenge_date = ?`
   );
 
+  const totalQuestionsStmt = db.prepare(
+    `SELECT COUNT(*) as cnt FROM questions WHERE status = 'published'`
+  );
+
   return packs.map((p) => {
-    const { cnt } = countStmt.get(p.id) as { cnt: number };
+    const cnt =
+      p.id === 'the_mix'
+        ? (totalQuestionsStmt.get() as { cnt: number }).cnt
+        : (countStmt.get(p.id) as { cnt: number }).cnt;
     const run = runStmt.get(deviceId, p.id, dateStr) as
       | {
           answer_records: string;

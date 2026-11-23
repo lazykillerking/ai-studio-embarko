@@ -144,6 +144,19 @@ export function seedPacksAndQuestions(db: Database.Database): { packs: number; q
   let questionCount = 0;
 
   const tx = db.transaction(() => {
+    // Ensure the_mix virtual pack entry exists in packs table for mode metadata
+    upsertPack.run({
+      id: 'the_mix',
+      slug: 'the-mix',
+      name: 'THE MIX',
+      description: 'Everyday dilemmas and instincts across all packs',
+      visual_theme: 'the_mix',
+      status: 'published',
+      sort_order: 0,
+      created_at: now,
+    });
+    packCount += 1;
+
     for (const pf of packFiles) {
       upsertPack.run({
         ...pf.pack,

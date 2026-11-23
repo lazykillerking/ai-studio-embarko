@@ -11,7 +11,16 @@ import { injectOgMetaTags } from './og';
 import { AnswerRateLimiter, getClientIp, resolveDeviceId } from './security';
 import { getDailySoloState, getUtcDateString, isLaunchSetMode, listPublishedPacks, submitSoloAnswer } from './solo';
 
-const PackIdSchema = z.enum(['the_mix', 'neon_coast', 'campus_chaos']);
+const PackIdSchema = z.enum([
+  'the_mix',
+  'everyday_life',
+  'social_circuit',
+  'neon_coast',
+  'campus_chaos',
+  'leonida_vibe',
+  'pop_culture',
+  'moral_mayhem',
+]);
 
 const SoloAnswerBodySchema = z.object({
   deviceId: z.string().uuid().optional(),
