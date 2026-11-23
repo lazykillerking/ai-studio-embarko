@@ -1,0 +1,2363 @@
+{
+  "pack": {
+    "id": "moral_mayhem",
+    "slug": "moral-mayhem",
+    "name": "MORAL MAYHEM",
+    "description": "Loyalty, betrayal, justice, sacrifice and uncomfortable choices",
+    "visual_theme": "moral_mayhem",
+    "status": "published",
+    "sort_order": 6
+  },
+  "questions": [
+    {
+      "id": "mm_001",
+      "pack_id": "moral_mayhem",
+      "prompt": "Your best friend confesses to a serious crime. Nobody knows.",
+      "options": [
+        {
+          "text": "Help them face the consequences",
+          "axes": [
+            -2,
+            2,
+            -2
+          ]
+        },
+        {
+          "text": "Protect them no matter what",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Distance myself immediately",
+          "axes": [
+            -1,
+            -2,
+            -1
+          ]
+        },
+        {
+          "text": "Find out exactly what happened",
+          "axes": [
+            -2,
+            -1,
+            -2
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "loyalty",
+        "crime",
+        "friendship"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_002",
+      "pack_id": "moral_mayhem",
+      "prompt": "You can save five strangers or one person you love.",
+      "options": [
+        {
+          "text": "Save the five strangers",
+          "axes": [
+            -2,
+            -1,
+            -2
+          ]
+        },
+        {
+          "text": "Save the person I love",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Find another way to save everyone",
+          "axes": [
+            1,
+            1,
+            2
+          ]
+        },
+        {
+          "text": "Freeze. I couldn't choose.",
+          "axes": [
+            -1,
+            -2,
+            1
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "sacrifice",
+        "ethics",
+        "relationships"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_003",
+      "pack_id": "moral_mayhem",
+      "prompt": "You discover your success came from someone else's stolen work.",
+      "options": [
+        {
+          "text": "Expose the truth publicly",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Fix it privately first",
+          "axes": [
+            -2,
+            -1,
+            -2
+          ]
+        },
+        {
+          "text": "Keep the success. Nobody knows.",
+          "axes": [
+            -1,
+            -2,
+            -1
+          ]
+        },
+        {
+          "text": "Give them credit and move on",
+          "axes": [
+            -1,
+            2,
+            1
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "honesty",
+        "success",
+        "ethics"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_004",
+      "pack_id": "moral_mayhem",
+      "prompt": "A stranger offers you ₹1 crore to betray your closest friend.",
+      "options": [
+        {
+          "text": "Reject it without hesitation",
+          "axes": [
+            -1,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Hear the full offer first",
+          "axes": [
+            -2,
+            -1,
+            -2
+          ]
+        },
+        {
+          "text": "Take the money and disappear",
+          "axes": [
+            2,
+            -2,
+            -2
+          ]
+        },
+        {
+          "text": "Warn my friend about the offer",
+          "axes": [
+            1,
+            2,
+            2
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "money",
+        "betrayal",
+        "loyalty"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_005",
+      "pack_id": "moral_mayhem",
+      "prompt": "You can know every lie someone has ever told you.",
+      "options": [
+        {
+          "text": "Tell me everything",
+          "axes": [
+            -2,
+            -1,
+            -2
+          ]
+        },
+        {
+          "text": "Only reveal lies that matter",
+          "axes": [
+            -2,
+            1,
+            -1
+          ]
+        },
+        {
+          "text": "Some truths aren't worth knowing",
+          "axes": [
+            1,
+            -2,
+            2
+          ]
+        },
+        {
+          "text": "I'd rather expose everyone's lies",
+          "axes": [
+            2,
+            2,
+            -2
+          ]
+        }
+      ],
+      "difficulty": "medium",
+      "tags": [
+        "truth",
+        "trust",
+        "psychology"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_006",
+      "pack_id": "moral_mayhem",
+      "prompt": "Your family asks you to hide a truth that could ruin someone's life.",
+      "options": [
+        {
+          "text": "Protect my family",
+          "axes": [
+            1,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Tell the truth regardless",
+          "axes": [
+            2,
+            -1,
+            2
+          ]
+        },
+        {
+          "text": "Find a way to minimise the damage",
+          "axes": [
+            -2,
+            1,
+            -2
+          ]
+        },
+        {
+          "text": "Stay out of it completely",
+          "axes": [
+            -1,
+            -2,
+            -1
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "family",
+        "honesty",
+        "loyalty"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_007",
+      "pack_id": "moral_mayhem",
+      "prompt": "You can become incredibly wealthy, but someone else becomes poor.",
+      "options": [
+        {
+          "text": "Refuse. Not worth it.",
+          "axes": [
+            -1,
+            2,
+            -1
+          ]
+        },
+        {
+          "text": "Take the deal and help them later",
+          "axes": [
+            -2,
+            -1,
+            -2
+          ]
+        },
+        {
+          "text": "Take it. Their loss, my gain.",
+          "axes": [
+            2,
+            -2,
+            -2
+          ]
+        },
+        {
+          "text": "Find out who the person is first",
+          "axes": [
+            -2,
+            1,
+            1
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "wealth",
+        "ethics",
+        "ambition"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_008",
+      "pack_id": "moral_mayhem",
+      "prompt": "Someone who betrayed you desperately needs your help.",
+      "options": [
+        {
+          "text": "Help them. I know what it's like.",
+          "axes": [
+            1,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Help, but keep my distance",
+          "axes": [
+            -2,
+            -1,
+            -1
+          ]
+        },
+        {
+          "text": "Let them face the consequences",
+          "axes": [
+            -1,
+            -2,
+            -2
+          ]
+        },
+        {
+          "text": "Ask why they need me now",
+          "axes": [
+            2,
+            1,
+            -2
+          ]
+        }
+      ],
+      "difficulty": "medium",
+      "tags": [
+        "forgiveness",
+        "betrayal",
+        "empathy"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_009",
+      "pack_id": "moral_mayhem",
+      "prompt": "You witness your friend cheating in an important competition.",
+      "options": [
+        {
+          "text": "Report them immediately",
+          "axes": [
+            2,
+            -1,
+            2
+          ]
+        },
+        {
+          "text": "Confront them privately",
+          "axes": [
+            -2,
+            2,
+            -1
+          ]
+        },
+        {
+          "text": "Stay silent. Not my business.",
+          "axes": [
+            -1,
+            -2,
+            -1
+          ]
+        },
+        {
+          "text": "Give them a chance to confess",
+          "axes": [
+            -2,
+            1,
+            1
+          ]
+        }
+      ],
+      "difficulty": "medium",
+      "tags": [
+        "integrity",
+        "competition",
+        "friendship"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_010",
+      "pack_id": "moral_mayhem",
+      "prompt": "You can erase one person's worst memory. Who gets to choose?",
+      "options": [
+        {
+          "text": "The person living with it",
+          "axes": [
+            -1,
+            2,
+            1
+          ]
+        },
+        {
+          "text": "Me. I know what's best.",
+          "axes": [
+            2,
+            -1,
+            2
+          ]
+        },
+        {
+          "text": "Nobody. Memories shape people.",
+          "axes": [
+            -2,
+            -2,
+            -2
+          ]
+        },
+        {
+          "text": "A group of people they trust",
+          "axes": [
+            -1,
+            2,
+            -2
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "memory",
+        "consent",
+        "psychology"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_011",
+      "pack_id": "moral_mayhem",
+      "prompt": "Your colleague takes credit for a project you built together.",
+      "options": [
+        {
+          "text": "Expose the truth in the meeting",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Speak to them privately",
+          "axes": [
+            -2,
+            1,
+            -1
+          ]
+        },
+        {
+          "text": "Secure proof before reacting",
+          "axes": [
+            -2,
+            -2,
+            -2
+          ]
+        },
+        {
+          "text": "Let the work speak for itself",
+          "axes": [
+            -1,
+            -2,
+            1
+          ]
+        }
+      ],
+      "difficulty": "medium",
+      "tags": [
+        "workplace",
+        "recognition",
+        "fairness"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_012",
+      "pack_id": "moral_mayhem",
+      "prompt": "You can make one person genuinely happy, but they'll forget you.",
+      "options": [
+        {
+          "text": "Do it. Their happiness matters.",
+          "axes": [
+            1,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Only if they know it was me",
+          "axes": [
+            -1,
+            2,
+            1
+          ]
+        },
+        {
+          "text": "No. I want to be remembered.",
+          "axes": [
+            2,
+            -2,
+            2
+          ]
+        },
+        {
+          "text": "Find another way to help them",
+          "axes": [
+            -2,
+            1,
+            -2
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "sacrifice",
+        "recognition",
+        "altruism"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_013",
+      "pack_id": "moral_mayhem",
+      "prompt": "You discover a close friend has been spreading rumours about you.",
+      "options": [
+        {
+          "text": "Confront them in front of everyone",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Ask them privately why",
+          "axes": [
+            -2,
+            1,
+            1
+          ]
+        },
+        {
+          "text": "Cut them off without explanation",
+          "axes": [
+            -1,
+            -2,
+            -1
+          ]
+        },
+        {
+          "text": "Find out who else knows first",
+          "axes": [
+            -2,
+            -1,
+            -2
+          ]
+        }
+      ],
+      "difficulty": "medium",
+      "tags": [
+        "betrayal",
+        "friendship",
+        "reputation"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_014",
+      "pack_id": "moral_mayhem",
+      "prompt": "Would you accept an award for work someone else secretly did?",
+      "options": [
+        {
+          "text": "Reject it and name them",
+          "axes": [
+            1,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Accept, then share the credit",
+          "axes": [
+            -2,
+            2,
+            -1
+          ]
+        },
+        {
+          "text": "Accept. Opportunities don't wait.",
+          "axes": [
+            2,
+            -2,
+            -2
+          ]
+        },
+        {
+          "text": "Talk to them before deciding",
+          "axes": [
+            -2,
+            1,
+            -2
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "ambition",
+        "honesty",
+        "recognition"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_015",
+      "pack_id": "moral_mayhem",
+      "prompt": "A friend asks you to choose sides in their breakup.",
+      "options": [
+        {
+          "text": "Stand by my friend, always",
+          "axes": [
+            1,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Hear both sides first",
+          "axes": [
+            -2,
+            -1,
+            -2
+          ]
+        },
+        {
+          "text": "Refuse to get involved",
+          "axes": [
+            -1,
+            -2,
+            -1
+          ]
+        },
+        {
+          "text": "Tell them both what I think",
+          "axes": [
+            2,
+            2,
+            1
+          ]
+        }
+      ],
+      "difficulty": "medium",
+      "tags": [
+        "relationships",
+        "loyalty",
+        "fairness"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_016",
+      "pack_id": "moral_mayhem",
+      "prompt": "You find a wallet full of cash with no identification.",
+      "options": [
+        {
+          "text": "Hand it to the nearest authority",
+          "axes": [
+            -2,
+            1,
+            -2
+          ]
+        },
+        {
+          "text": "Keep it. Lucky day.",
+          "axes": [
+            2,
+            -2,
+            2
+          ]
+        },
+        {
+          "text": "Try to locate the owner",
+          "axes": [
+            -1,
+            2,
+            1
+          ]
+        },
+        {
+          "text": "Take a little and return the rest",
+          "axes": [
+            1,
+            -1,
+            2
+          ]
+        }
+      ],
+      "difficulty": "easy",
+      "tags": [
+        "honesty",
+        "money",
+        "everyday-ethics"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_017",
+      "pack_id": "moral_mayhem",
+      "prompt": "You can expose a corrupt person, but your own past gets exposed too.",
+      "options": [
+        {
+          "text": "Expose everything regardless",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Find another route to justice",
+          "axes": [
+            -2,
+            -1,
+            -2
+          ]
+        },
+        {
+          "text": "Stay quiet. Too much to lose.",
+          "axes": [
+            -1,
+            -2,
+            -1
+          ]
+        },
+        {
+          "text": "Accept the consequences and proceed",
+          "axes": [
+            1,
+            1,
+            2
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "justice",
+        "reputation",
+        "courage"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_018",
+      "pack_id": "moral_mayhem",
+      "prompt": "Your friend gets away with something you were punished for.",
+      "options": [
+        {
+          "text": "Demand the same treatment",
+          "axes": [
+            2,
+            1,
+            2
+          ]
+        },
+        {
+          "text": "Ask why the rules differed",
+          "axes": [
+            -2,
+            2,
+            -2
+          ]
+        },
+        {
+          "text": "Let it go. Life isn't fair.",
+          "axes": [
+            -1,
+            -2,
+            -1
+          ]
+        },
+        {
+          "text": "Tell everyone what happened",
+          "axes": [
+            2,
+            2,
+            -2
+          ]
+        }
+      ],
+      "difficulty": "medium",
+      "tags": [
+        "fairness",
+        "jealousy",
+        "justice"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_019",
+      "pack_id": "moral_mayhem",
+      "prompt": "You can learn the exact date of your death. Would you?",
+      "options": [
+        {
+          "text": "Yes. I need to plan.",
+          "axes": [
+            -2,
+            -1,
+            -2
+          ]
+        },
+        {
+          "text": "No. Let life happen.",
+          "axes": [
+            2,
+            -1,
+            2
+          ]
+        },
+        {
+          "text": "Only if my loved ones can know too",
+          "axes": [
+            -1,
+            2,
+            1
+          ]
+        },
+        {
+          "text": "I'd rather know how, not when",
+          "axes": [
+            -2,
+            -2,
+            1
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "mortality",
+        "philosophy",
+        "future"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_020",
+      "pack_id": "moral_mayhem",
+      "prompt": "Someone offers you power over every decision in your friend group.",
+      "options": [
+        {
+          "text": "Set fair rules for everyone",
+          "axes": [
+            -2,
+            2,
+            -2
+          ]
+        },
+        {
+          "text": "Take charge. Finally.",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Give everyone equal control",
+          "axes": [
+            -1,
+            2,
+            -1
+          ]
+        },
+        {
+          "text": "Decline. Not my responsibility.",
+          "axes": [
+            -1,
+            -2,
+            -1
+          ]
+        }
+      ],
+      "difficulty": "medium",
+      "tags": [
+        "power",
+        "leadership",
+        "friendship"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_021",
+      "pack_id": "moral_mayhem",
+      "prompt": "You can punish someone who ruined your life. Nobody will know.",
+      "options": [
+        {
+          "text": "Walk away. I'm done.",
+          "axes": [
+            -1,
+            -2,
+            -1
+          ]
+        },
+        {
+          "text": "Make sure justice is served",
+          "axes": [
+            -2,
+            1,
+            -2
+          ]
+        },
+        {
+          "text": "Give them a taste of their own medicine",
+          "axes": [
+            2,
+            -1,
+            2
+          ]
+        },
+        {
+          "text": "Find out if they regret it first",
+          "axes": [
+            -2,
+            1,
+            1
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "revenge",
+        "justice",
+        "forgiveness"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_022",
+      "pack_id": "moral_mayhem",
+      "prompt": "Your parents disagree with the biggest decision of your life.",
+      "options": [
+        {
+          "text": "Follow my decision anyway",
+          "axes": [
+            2,
+            -2,
+            2
+          ]
+        },
+        {
+          "text": "Try to convince them properly",
+          "axes": [
+            -2,
+            2,
+            -2
+          ]
+        },
+        {
+          "text": "Choose what keeps the family together",
+          "axes": [
+            -1,
+            2,
+            1
+          ]
+        },
+        {
+          "text": "Delay the decision until things settle",
+          "axes": [
+            -2,
+            -1,
+            -1
+          ]
+        }
+      ],
+      "difficulty": "medium",
+      "tags": [
+        "family",
+        "independence",
+        "decisions"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_023",
+      "pack_id": "moral_mayhem",
+      "prompt": "You learn that a popular person is secretly cruel to others.",
+      "options": [
+        {
+          "text": "Expose their behaviour",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Speak to them privately",
+          "axes": [
+            -2,
+            1,
+            -1
+          ]
+        },
+        {
+          "text": "Warn the people around them",
+          "axes": [
+            -1,
+            2,
+            1
+          ]
+        },
+        {
+          "text": "Stay out unless someone asks",
+          "axes": [
+            -1,
+            -2,
+            -2
+          ]
+        }
+      ],
+      "difficulty": "medium",
+      "tags": [
+        "reputation",
+        "justice",
+        "social"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_024",
+      "pack_id": "moral_mayhem",
+      "prompt": "You can guarantee your own success by taking someone else's chance.",
+      "options": [
+        {
+          "text": "Refuse. They deserve their chance.",
+          "axes": [
+            -1,
+            2,
+            1
+          ]
+        },
+        {
+          "text": "Take it. That's competition.",
+          "axes": [
+            2,
+            -2,
+            2
+          ]
+        },
+        {
+          "text": "Find an opportunity for both",
+          "axes": [
+            -2,
+            2,
+            -2
+          ]
+        },
+        {
+          "text": "Wait and see if another chance comes",
+          "axes": [
+            -2,
+            -1,
+            -1
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "ambition",
+        "competition",
+        "fairness"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_025",
+      "pack_id": "moral_mayhem",
+      "prompt": "You discover a lie that has kept your family happy for years.",
+      "options": [
+        {
+          "text": "Tell them the truth",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Leave the past alone",
+          "axes": [
+            -1,
+            -2,
+            1
+          ]
+        },
+        {
+          "text": "Understand why the lie began",
+          "axes": [
+            -2,
+            1,
+            -2
+          ]
+        },
+        {
+          "text": "Tell only those directly affected",
+          "axes": [
+            -1,
+            2,
+            -1
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "family",
+        "truth",
+        "secrets"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_026",
+      "pack_id": "moral_mayhem",
+      "prompt": "A stranger is blamed for something you accidentally caused.",
+      "options": [
+        {
+          "text": "Admit it immediately",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Wait for a chance to explain",
+          "axes": [
+            -2,
+            -1,
+            -2
+          ]
+        },
+        {
+          "text": "Quietly clear their name",
+          "axes": [
+            -1,
+            -2,
+            1
+          ]
+        },
+        {
+          "text": "Hope nobody finds out",
+          "axes": [
+            1,
+            -2,
+            -1
+          ]
+        }
+      ],
+      "difficulty": "medium",
+      "tags": [
+        "accountability",
+        "honesty",
+        "guilt"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_027",
+      "pack_id": "moral_mayhem",
+      "prompt": "You can make everyone respect you, but nobody will love you.",
+      "options": [
+        {
+          "text": "Take the respect",
+          "axes": [
+            -2,
+            -2,
+            -2
+          ]
+        },
+        {
+          "text": "Choose love every time",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Try to earn both naturally",
+          "axes": [
+            -1,
+            2,
+            -1
+          ]
+        },
+        {
+          "text": "Neither. I need my freedom.",
+          "axes": [
+            2,
+            -2,
+            1
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "respect",
+        "love",
+        "identity"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_028",
+      "pack_id": "moral_mayhem",
+      "prompt": "Your team can win only if one member takes all the blame.",
+      "options": [
+        {
+          "text": "Take the blame myself",
+          "axes": [
+            1,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Split responsibility fairly",
+          "axes": [
+            -2,
+            2,
+            -2
+          ]
+        },
+        {
+          "text": "Refuse to sacrifice anyone",
+          "axes": [
+            2,
+            2,
+            1
+          ]
+        },
+        {
+          "text": "Let the team decide",
+          "axes": [
+            -1,
+            2,
+            -1
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "sacrifice",
+        "leadership",
+        "teamwork"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_029",
+      "pack_id": "moral_mayhem",
+      "prompt": "Someone gives you credit for a good deed you never did.",
+      "options": [
+        {
+          "text": "Correct them immediately",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Accept the compliment quietly",
+          "axes": [
+            -1,
+            -2,
+            1
+          ]
+        },
+        {
+          "text": "Use the attention to do real good",
+          "axes": [
+            -2,
+            2,
+            -1
+          ]
+        },
+        {
+          "text": "Tell the truth when it matters",
+          "axes": [
+            -2,
+            -1,
+            -2
+          ]
+        }
+      ],
+      "difficulty": "medium",
+      "tags": [
+        "honesty",
+        "recognition",
+        "reputation"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_030",
+      "pack_id": "moral_mayhem",
+      "prompt": "You can read one person's private thoughts for a day.",
+      "options": [
+        {
+          "text": "Someone I deeply trust",
+          "axes": [
+            -1,
+            2,
+            1
+          ]
+        },
+        {
+          "text": "My biggest rival",
+          "axes": [
+            2,
+            -2,
+            -2
+          ]
+        },
+        {
+          "text": "A random stranger",
+          "axes": [
+            2,
+            -1,
+            2
+          ]
+        },
+        {
+          "text": "Nobody. Privacy matters.",
+          "axes": [
+            -2,
+            -2,
+            -1
+          ]
+        }
+      ],
+      "difficulty": "medium",
+      "tags": [
+        "privacy",
+        "curiosity",
+        "ethics"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_031",
+      "pack_id": "moral_mayhem",
+      "prompt": "You find evidence that an innocent person was punished years ago.",
+      "options": [
+        {
+          "text": "Reopen the case publicly",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Verify everything first",
+          "axes": [
+            -2,
+            -1,
+            -2
+          ]
+        },
+        {
+          "text": "Contact them privately",
+          "axes": [
+            -1,
+            2,
+            1
+          ]
+        },
+        {
+          "text": "Pass the evidence to an authority",
+          "axes": [
+            -2,
+            1,
+            -2
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "justice",
+        "truth",
+        "responsibility"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_032",
+      "pack_id": "moral_mayhem",
+      "prompt": "Your friend asks you to keep a secret that could hurt someone else.",
+      "options": [
+        {
+          "text": "Keep my promise",
+          "axes": [
+            -1,
+            2,
+            1
+          ]
+        },
+        {
+          "text": "Tell the person at risk",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Convince my friend to speak up",
+          "axes": [
+            -2,
+            2,
+            -2
+          ]
+        },
+        {
+          "text": "Refuse to be involved",
+          "axes": [
+            -1,
+            -2,
+            -1
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "secrets",
+        "loyalty",
+        "responsibility"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_033",
+      "pack_id": "moral_mayhem",
+      "prompt": "You can have your dream life, but your closest friend gets yours.",
+      "options": [
+        {
+          "text": "Take the dream life",
+          "axes": [
+            2,
+            -2,
+            2
+          ]
+        },
+        {
+          "text": "Let my friend have it",
+          "axes": [
+            1,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Reject the entire deal",
+          "axes": [
+            -1,
+            -2,
+            -1
+          ]
+        },
+        {
+          "text": "Find a way to share the opportunity",
+          "axes": [
+            -2,
+            2,
+            -2
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "friendship",
+        "sacrifice",
+        "ambition"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_034",
+      "pack_id": "moral_mayhem",
+      "prompt": "A powerful person offers to erase your biggest mistake.",
+      "options": [
+        {
+          "text": "Accept. A fresh start.",
+          "axes": [
+            2,
+            -2,
+            2
+          ]
+        },
+        {
+          "text": "Keep it and learn from it",
+          "axes": [
+            -1,
+            -1,
+            -2
+          ]
+        },
+        {
+          "text": "Ask what they want in return",
+          "axes": [
+            -2,
+            -1,
+            -2
+          ]
+        },
+        {
+          "text": "Use the offer to help someone else",
+          "axes": [
+            1,
+            2,
+            1
+          ]
+        }
+      ],
+      "difficulty": "medium",
+      "tags": [
+        "regret",
+        "power",
+        "choices"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_035",
+      "pack_id": "moral_mayhem",
+      "prompt": "Would you sacrifice your reputation to protect someone innocent?",
+      "options": [
+        {
+          "text": "Yes. Without thinking twice.",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Only after checking every option",
+          "axes": [
+            -2,
+            1,
+            -2
+          ]
+        },
+        {
+          "text": "No. My reputation matters.",
+          "axes": [
+            -1,
+            -2,
+            -1
+          ]
+        },
+        {
+          "text": "Find a way to protect both",
+          "axes": [
+            -2,
+            2,
+            -1
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "sacrifice",
+        "reputation",
+        "courage"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_036",
+      "pack_id": "moral_mayhem",
+      "prompt": "You discover your role model has done something unforgivable.",
+      "options": [
+        {
+          "text": "Stop supporting them immediately",
+          "axes": [
+            2,
+            -2,
+            2
+          ]
+        },
+        {
+          "text": "Understand the full context",
+          "axes": [
+            -2,
+            -1,
+            -2
+          ]
+        },
+        {
+          "text": "Separate their work from their actions",
+          "axes": [
+            -1,
+            -1,
+            1
+          ]
+        },
+        {
+          "text": "Discuss it with people I trust",
+          "axes": [
+            -1,
+            2,
+            -1
+          ]
+        }
+      ],
+      "difficulty": "medium",
+      "tags": [
+        "hypocrisy",
+        "role-models",
+        "judgement"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_037",
+      "pack_id": "moral_mayhem",
+      "prompt": "You get one chance to change a law you believe is unfair.",
+      "options": [
+        {
+          "text": "Build a case with evidence",
+          "axes": [
+            -2,
+            2,
+            -2
+          ]
+        },
+        {
+          "text": "Start a massive public movement",
+          "axes": [
+            2,
+            2,
+            -2
+          ]
+        },
+        {
+          "text": "Challenge it through the system",
+          "axes": [
+            -2,
+            -1,
+            -2
+          ]
+        },
+        {
+          "text": "Break the rule to expose it",
+          "axes": [
+            2,
+            -1,
+            2
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "justice",
+        "society",
+        "activism"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_038",
+      "pack_id": "moral_mayhem",
+      "prompt": "Someone you dislike does something genuinely heroic.",
+      "options": [
+        {
+          "text": "Give them credit publicly",
+          "axes": [
+            1,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Respect the act, not the person",
+          "axes": [
+            -1,
+            -2,
+            -2
+          ]
+        },
+        {
+          "text": "Question their motives",
+          "axes": [
+            -2,
+            -1,
+            -2
+          ]
+        },
+        {
+          "text": "Admit I was wrong about them",
+          "axes": [
+            2,
+            2,
+            1
+          ]
+        }
+      ],
+      "difficulty": "medium",
+      "tags": [
+        "bias",
+        "humility",
+        "judgement"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_039",
+      "pack_id": "moral_mayhem",
+      "prompt": "You can guarantee your family a perfect future by leaving yours behind.",
+      "options": [
+        {
+          "text": "Do it without hesitation",
+          "axes": [
+            1,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Find a future that includes everyone",
+          "axes": [
+            -2,
+            2,
+            -2
+          ]
+        },
+        {
+          "text": "Choose my own future",
+          "axes": [
+            2,
+            -2,
+            2
+          ]
+        },
+        {
+          "text": "Ask my family what they'd want",
+          "axes": [
+            -1,
+            2,
+            1
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "family",
+        "sacrifice",
+        "future"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_040",
+      "pack_id": "moral_mayhem",
+      "prompt": "You discover a close friend is secretly jealous of your success.",
+      "options": [
+        {
+          "text": "Talk about it honestly",
+          "axes": [
+            -2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Keep my achievements private",
+          "axes": [
+            -1,
+            -2,
+            -1
+          ]
+        },
+        {
+          "text": "Use it as motivation",
+          "axes": [
+            2,
+            -1,
+            1
+          ]
+        },
+        {
+          "text": "Give them space to deal with it",
+          "axes": [
+            -1,
+            -2,
+            2
+          ]
+        }
+      ],
+      "difficulty": "medium",
+      "tags": [
+        "jealousy",
+        "friendship",
+        "ambition"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_041",
+      "pack_id": "moral_mayhem",
+      "prompt": "Would you rather know an ugly truth or believe a beautiful lie?",
+      "options": [
+        {
+          "text": "Truth. Always.",
+          "axes": [
+            -2,
+            -1,
+            -2
+          ]
+        },
+        {
+          "text": "The lie, if it hurts nobody",
+          "axes": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "text": "Depends on who is involved",
+          "axes": [
+            -1,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Neither. Let me decide for myself.",
+          "axes": [
+            2,
+            -2,
+            -1
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "truth",
+        "philosophy",
+        "ethics"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_042",
+      "pack_id": "moral_mayhem",
+      "prompt": "You can become famous by revealing a friend's deepest secret.",
+      "options": [
+        {
+          "text": "Never. Some lines aren't crossed.",
+          "axes": [
+            -1,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Change the story to protect them",
+          "axes": [
+            -2,
+            1,
+            -1
+          ]
+        },
+        {
+          "text": "Take the opportunity",
+          "axes": [
+            2,
+            -2,
+            2
+          ]
+        },
+        {
+          "text": "Ask them for permission first",
+          "axes": [
+            -2,
+            2,
+            -2
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "fame",
+        "secrets",
+        "betrayal"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_043",
+      "pack_id": "moral_mayhem",
+      "prompt": "A stranger returns something valuable you lost. You can reward them.",
+      "options": [
+        {
+          "text": "Give them more than they expect",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Give a fair reward",
+          "axes": [
+            -2,
+            1,
+            -2
+          ]
+        },
+        {
+          "text": "Thank them sincerely",
+          "axes": [
+            -1,
+            2,
+            1
+          ]
+        },
+        {
+          "text": "Ask why they returned it",
+          "axes": [
+            -2,
+            -1,
+            -2
+          ]
+        }
+      ],
+      "difficulty": "easy",
+      "tags": [
+        "kindness",
+        "gratitude",
+        "honesty"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_044",
+      "pack_id": "moral_mayhem",
+      "prompt": "You are given absolute power for one day. What's your first move?",
+      "options": [
+        {
+          "text": "Create rules that protect everyone",
+          "axes": [
+            -2,
+            2,
+            -2
+          ]
+        },
+        {
+          "text": "Fix the biggest injustice immediately",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Secure my own future first",
+          "axes": [
+            -2,
+            -2,
+            -2
+          ]
+        },
+        {
+          "text": "Remove all restrictions",
+          "axes": [
+            2,
+            -1,
+            2
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "power",
+        "leadership",
+        "society"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_045",
+      "pack_id": "moral_mayhem",
+      "prompt": "You can undo one betrayal, but the other person won't remember it.",
+      "options": [
+        {
+          "text": "Undo it. I want them back.",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Undo it, but remember everything",
+          "axes": [
+            -2,
+            -1,
+            -2
+          ]
+        },
+        {
+          "text": "Leave the past untouched",
+          "axes": [
+            -1,
+            -2,
+            -1
+          ]
+        },
+        {
+          "text": "Ask whether they deserve another chance",
+          "axes": [
+            -2,
+            1,
+            1
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "betrayal",
+        "forgiveness",
+        "memory"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_046",
+      "pack_id": "moral_mayhem",
+      "prompt": "Your friend group votes to exclude one member. You disagree.",
+      "options": [
+        {
+          "text": "Vote against the majority",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Ask everyone to explain first",
+          "axes": [
+            -2,
+            2,
+            -2
+          ]
+        },
+        {
+          "text": "Leave the group entirely",
+          "axes": [
+            1,
+            -2,
+            1
+          ]
+        },
+        {
+          "text": "Talk to the excluded person privately",
+          "axes": [
+            -1,
+            -2,
+            2
+          ]
+        }
+      ],
+      "difficulty": "medium",
+      "tags": [
+        "peer-pressure",
+        "friendship",
+        "courage"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_047",
+      "pack_id": "moral_mayhem",
+      "prompt": "Would you accept a reward for something good you did anonymously?",
+      "options": [
+        {
+          "text": "Yes. Good work deserves recognition.",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "No. That wasn't the point.",
+          "axes": [
+            -1,
+            -2,
+            1
+          ]
+        },
+        {
+          "text": "Donate the reward",
+          "axes": [
+            -1,
+            2,
+            -1
+          ]
+        },
+        {
+          "text": "Accept it but stay anonymous",
+          "axes": [
+            -2,
+            -2,
+            -2
+          ]
+        }
+      ],
+      "difficulty": "medium",
+      "tags": [
+        "recognition",
+        "kindness",
+        "ego"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_048",
+      "pack_id": "moral_mayhem",
+      "prompt": "You can stop all conflict, but nobody can disagree anymore.",
+      "options": [
+        {
+          "text": "No. Disagreement matters.",
+          "axes": [
+            -1,
+            -2,
+            -2
+          ]
+        },
+        {
+          "text": "Yes. Peace comes first.",
+          "axes": [
+            -2,
+            2,
+            1
+          ]
+        },
+        {
+          "text": "Allow disagreement with boundaries",
+          "axes": [
+            -2,
+            2,
+            -2
+          ]
+        },
+        {
+          "text": "Let people choose their own rules",
+          "axes": [
+            2,
+            -1,
+            2
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "freedom",
+        "society",
+        "philosophy"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_049",
+      "pack_id": "moral_mayhem",
+      "prompt": "Someone apologises only after getting caught. Do you believe them?",
+      "options": [
+        {
+          "text": "No. Their timing says enough.",
+          "axes": [
+            -1,
+            -2,
+            -2
+          ]
+        },
+        {
+          "text": "Listen and judge their actions",
+          "axes": [
+            -2,
+            1,
+            -2
+          ]
+        },
+        {
+          "text": "Forgive them and move forward",
+          "axes": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Accept the apology, not the person",
+          "axes": [
+            -1,
+            -2,
+            1
+          ]
+        }
+      ],
+      "difficulty": "medium",
+      "tags": [
+        "forgiveness",
+        "trust",
+        "accountability"
+      ],
+      "status": "published",
+      "version": 1
+    },
+    {
+      "id": "mm_050",
+      "pack_id": "moral_mayhem",
+      "prompt": "At the end of your life, what would you rather be remembered for?",
+      "options": [
+        {
+          "text": "The lives I changed",
+          "axes": [
+            -1,
+            2,
+            2
+          ]
+        },
+        {
+          "text": "Everything I achieved",
+          "axes": [
+            -2,
+            -1,
+            -2
+          ]
+        },
+        {
+          "text": "The people who stood beside me",
+          "axes": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "text": "Living life entirely on my terms",
+          "axes": [
+            2,
+            -2,
+            2
+          ]
+        }
+      ],
+      "difficulty": "hard",
+      "tags": [
+        "legacy",
+        "identity",
+        "philosophy"
+      ],
+      "status": "published",
+      "version": 1
+    }
+  ]
+}
