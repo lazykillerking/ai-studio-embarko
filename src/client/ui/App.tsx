@@ -215,7 +215,7 @@ export default function App() {
     fetch('/api/packs?deviceId=' + device())
       .then((r) => r.json())
       .then((d) => setPacks(d.packs || []))
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   useEffect(() => {
@@ -257,7 +257,7 @@ export default function App() {
 
   useEffect(() => {
     if (view !== 'crew' || !crewCode) return;
-    const t = setInterval(() => loadCrew(crewCode).catch(() => {}), 5000);
+    const t = setInterval(() => loadCrew(crewCode).catch(() => { }), 5000);
     return () => clearInterval(t);
   }, [view, crewCode]);
 
@@ -483,14 +483,14 @@ export default function App() {
     const b = crew?.board;
     return b
       ? makeCard(`${b.sync}% CREW SYNC`, b.roast.headline, [
-          b.roast.line,
-          `${b.members.length} PLAYERS · ${b.questions.length} SIGNALS`,
-          b.mindTwins ? `MIND TWINS: ${b.mindTwins.map((p: any) => p.names.join(' + ')).join(', ')}` : '',
-          b.commonGround ? `COMMON GROUND: ${b.commonGround.map((q: any) => q.prompt).join(', ')}` : '',
-          b.civilWar?.length ? `CIVIL WAR: ${b.civilWar.map((q: any) => q.prompt).join(', ')}` : '',
-          b.perfectSync?.length ? `PERFECT SYNC: ${b.perfectSync.length} signals` : '',
-          b.loneSignal ? `LONE SIGNAL: ${b.loneSignal.member?.nickname || 'Solo Player'}` : '',
-        ])
+        b.roast.line,
+        `${b.members.length} PLAYERS · ${b.questions.length} SIGNALS`,
+        b.mindTwins ? `MIND TWINS: ${b.mindTwins.map((p: any) => p.names.join(' + ')).join(', ')}` : '',
+        b.commonGround ? `COMMON GROUND: ${b.commonGround.map((q: any) => q.prompt).join(', ')}` : '',
+        b.civilWar?.length ? `CIVIL WAR: ${b.civilWar.map((q: any) => q.prompt).join(', ')}` : '',
+        b.perfectSync?.length ? `PERFECT SYNC: ${b.perfectSync.length} signals` : '',
+        b.loneSignal ? `LONE SIGNAL: ${b.loneSignal.member?.nickname || 'Solo Player'}` : '',
+      ])
       : null;
   };
 
@@ -580,7 +580,7 @@ export default function App() {
               intelligence, morality or worth.
             </p>
             <button className="primary" onClick={startDaily} disabled={busy}>
-              ▶ PLAY DAILY SIGNAL (30s TIMER)
+              ▶ PLAY DAILY SIGNAL
             </button>
             <button className="secondary" onClick={() => createCrew('themed')} disabled={busy}>
               ✦ PLAY WITH CREW
@@ -790,8 +790,8 @@ export default function App() {
                       {p.id === 'the_mix'
                         ? 'General chaos, everyday dilemmas, and unexpected cross-roads.'
                         : p.id === 'neon_coast'
-                        ? 'Midnight drives, clubs, neon streets, and after-hours decisions.'
-                        : 'Dorm life, dining halls, late-night cram sessions, and campus survival.'}
+                          ? 'Midnight drives, clubs, neon streets, and after-hours decisions.'
+                          : 'Dorm life, dining halls, late-night cram sessions, and campus survival.'}
                     </span>
                     <span className="theme-card-play">PLAY PACK →</span>
                   </button>
@@ -919,56 +919,56 @@ export default function App() {
                   crew.board.civilWar?.length > 0 ||
                   crew.board.loneSignal ||
                   crew.board.perfectSync?.length > 0) && (
-                  <div className="crew-section">
-                    <div className="eyebrow">SQUAD BADGES & HIGHLIGHTS</div>
-                    <div className="crew-awards-grid">
-                      {crew.board.mindTwins?.map((pair: any, i: number) => (
-                        <div key={i} className="crew-award-card mind-twins">
-                          <div className="crew-award-title">👯 MIND TWINS</div>
-                          <div className="crew-award-desc">
-                            <strong>{pair.names.join(' & ')}</strong> matched on {pair.matches} of 7 signals!
+                    <div className="crew-section">
+                      <div className="eyebrow">SQUAD BADGES & HIGHLIGHTS</div>
+                      <div className="crew-awards-grid">
+                        {crew.board.mindTwins?.map((pair: any, i: number) => (
+                          <div key={i} className="crew-award-card mind-twins">
+                            <div className="crew-award-title">👯 MIND TWINS</div>
+                            <div className="crew-award-desc">
+                              <strong>{pair.names.join(' & ')}</strong> matched on {pair.matches} of 7 signals!
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        ))}
 
-                      {crew.board.perfectSync?.length > 0 && (
-                        <div className="crew-award-card common-ground">
-                          <div className="crew-award-title">🌟 PERFECT SYNC ({crew.board.perfectSync.length} SIGNALS)</div>
-                          <div className="crew-award-desc">
-                            Unanimous squad choices: {crew.board.perfectSync.map((q: any) => `"${q.prompt}"`).join(', ')}
+                        {crew.board.perfectSync?.length > 0 && (
+                          <div className="crew-award-card common-ground">
+                            <div className="crew-award-title">🌟 PERFECT SYNC ({crew.board.perfectSync.length} SIGNALS)</div>
+                            <div className="crew-award-desc">
+                              Unanimous squad choices: {crew.board.perfectSync.map((q: any) => `"${q.prompt}"`).join(', ')}
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        )}
 
-                      {crew.board.commonGround?.length > 0 && !crew.board.perfectSync?.length && (
-                        <div className="crew-award-card common-ground">
-                          <div className="crew-award-title">🤝 COMMON GROUND</div>
-                          <div className="crew-award-desc">
-                            High consensus on: {crew.board.commonGround.map((q: any) => `"${q.prompt}"`).join(', ')}
+                        {crew.board.commonGround?.length > 0 && !crew.board.perfectSync?.length && (
+                          <div className="crew-award-card common-ground">
+                            <div className="crew-award-title">🤝 COMMON GROUND</div>
+                            <div className="crew-award-desc">
+                              High consensus on: {crew.board.commonGround.map((q: any) => `"${q.prompt}"`).join(', ')}
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        )}
 
-                      {crew.board.civilWar?.length > 0 && (
-                        <div className="crew-award-card civil-war">
-                          <div className="crew-award-title">⚔️ CIVIL WAR</div>
-                          <div className="crew-award-desc">
-                            Biggest disagreement: "{crew.board.civilWar[0]?.prompt}"
+                        {crew.board.civilWar?.length > 0 && (
+                          <div className="crew-award-card civil-war">
+                            <div className="crew-award-title">⚔️ CIVIL WAR</div>
+                            <div className="crew-award-desc">
+                              Biggest disagreement: "{crew.board.civilWar[0]?.prompt}"
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        )}
 
-                      {crew.board.loneSignal && (
-                        <div className="crew-award-card lone-signal">
-                          <div className="crew-award-title">🐺 LONE SIGNAL</div>
-                          <div className="crew-award-desc">
-                            <strong>{crew.board.loneSignal.member?.nickname || 'A rebel player'}</strong> took the solo route {crew.board.loneSignal.soloChoices} times.
+                        {crew.board.loneSignal && (
+                          <div className="crew-award-card lone-signal">
+                            <div className="crew-award-title">🐺 LONE SIGNAL</div>
+                            <div className="crew-award-desc">
+                              <strong>{crew.board.loneSignal.member?.nickname || 'A rebel player'}</strong> took the solo route {crew.board.loneSignal.soloChoices} times.
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        )}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
                 {/* 4. Pairwise Matrix */}
                 {crew.board.pairs?.length > 0 && (
