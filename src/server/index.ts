@@ -367,7 +367,7 @@ async function startServer() {
   const port = Number(process.env.PORT || 3000);
   app.listen(port, '0.0.0.0', () => {
     console.log(
-      `BRAINPRINT listening on http://0.0.0.0:${port} (env=${isProd ? 'production' : 'development'}, db=${getDbPath()}, seeded=${seeded.packs} packs/${seeded.questions} questions)`
+      `BRAINPRINT listening on http://localhost:${port} (or http://127.0.0.1:${port}) (env=${isProd ? 'production' : 'development'}, db=${getDbPath()}, seeded=${seeded.packs} packs/${seeded.questions} questions)`
     );
   });
 }

@@ -3,21 +3,21 @@ import React, { useState } from 'react';
 export const NameCardOverlay: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   return (
     <div
+      className="overlay-backdrop"
       style={{
         position: 'fixed',
         inset: 0,
         zIndex: 90000,
-        background: 'rgba(7, 10, 20, 0.85)',
-        backdropFilter: 'blur(10px)',
+        background: 'rgba(7, 10, 20, 0.88)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         padding: '20px',
-        animation: 'fadeIn 0.25s ease-out',
       }}
       onClick={onClose}
     >
       <div
+        className="overlay-card-pop"
         style={{
           width: '100%',
           maxWidth: '420px',
@@ -125,12 +125,12 @@ export const EmbarkoPromptStepOverlay: React.FC<{ onClose: () => void; onNext: (
 
   return (
     <div
+      className="overlay-backdrop"
       style={{
         position: 'fixed',
         inset: 0,
         zIndex: 90000,
-        background: 'rgba(7, 10, 20, 0.88)',
-        backdropFilter: 'blur(10px)',
+        background: 'rgba(7, 10, 20, 0.9)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -139,6 +139,7 @@ export const EmbarkoPromptStepOverlay: React.FC<{ onClose: () => void; onNext: (
       onClick={onClose}
     >
       <div
+        className="overlay-card-pop"
         style={{
           width: '100%',
           maxWidth: '440px',
@@ -226,12 +227,12 @@ export const EmbarkoPromptStepOverlay: React.FC<{ onClose: () => void; onNext: (
 export const EmbarkoDeployStepOverlay: React.FC<{ onClose: () => void; onNext: () => void }> = ({ onClose, onNext }) => {
   return (
     <div
+      className="overlay-backdrop"
       style={{
         position: 'fixed',
         inset: 0,
         zIndex: 90000,
-        background: 'rgba(7, 10, 20, 0.88)',
-        backdropFilter: 'blur(10px)',
+        background: 'rgba(7, 10, 20, 0.9)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -240,6 +241,7 @@ export const EmbarkoDeployStepOverlay: React.FC<{ onClose: () => void; onNext: (
       onClick={onClose}
     >
       <div
+        className="overlay-card-pop"
         style={{
           width: '100%',
           maxWidth: '440px',
@@ -360,20 +362,21 @@ export const EmbarkoDeployStepOverlay: React.FC<{ onClose: () => void; onNext: (
 export const EndCardOverlay: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   return (
     <div
+      className="overlay-backdrop"
       style={{
         position: 'fixed',
         inset: 0,
         zIndex: 95000,
-        background: 'radial-gradient(circle at center, #131b38 0%, #070a14 100%)',
+        background: 'radial-gradient(circle at center, rgba(19, 27, 56, 0.95) 0%, rgba(7, 10, 20, 0.98) 100%)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         padding: '24px',
-        animation: 'fadeIn 0.3s ease-out',
       }}
       onClick={onClose}
     >
       <div
+        className="overlay-card-pop"
         style={{
           width: '100%',
           maxWidth: '460px',
@@ -487,3 +490,142 @@ export const EndCardOverlay: React.FC<{ onClose: () => void }> = ({ onClose }) =
     </div>
   );
 };
+
+export const CrewLobbyInviteOverlay: React.FC<{
+  roomCode: string;
+  crewName: string;
+  creatorName: string;
+  onClose: () => void;
+  onStart: () => void;
+}> = ({ roomCode, crewName, creatorName, onClose, onStart }) => {
+  const [copied, setCopied] = useState(false);
+  const inviteUrl = `${window.location.origin}/crew/${roomCode}`;
+
+  const copyLink = () => {
+    navigator.clipboard.writeText(inviteUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div
+      className="overlay-backdrop"
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 90000,
+        background: 'rgba(7, 10, 20, 0.92)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '20px',
+      }}
+      onClick={onClose}
+    >
+      <div
+        className="overlay-card-pop"
+        style={{
+          width: '100%',
+          maxWidth: '430px',
+          background: 'linear-gradient(145deg, #121a36, #070a14)',
+          border: '2px solid #38bdf8',
+          borderRadius: '16px',
+          padding: '30px 24px',
+          boxShadow: '0 0 50px rgba(56, 189, 248, 0.35)',
+          position: 'relative',
+          textAlign: 'center',
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+          <span style={{ font: "9px 'Press Start 2P', monospace", color: '#38bdf8', letterSpacing: '1px' }}>
+            // SQUAD LOBBY ACTIVE
+          </span>
+          <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: '#94a3b8', cursor: 'pointer' }}>✕</button>
+        </div>
+
+        <h2 style={{ fontSize: '22px', fontWeight: 800, margin: '0 0 4px', color: '#f8fafc' }}>
+          {crewName}
+        </h2>
+        <p style={{ fontSize: '12px', color: '#94a3b8', margin: '0 0 20px' }}>
+          Created by <strong>{creatorName}</strong> · 1 of 12 Joined
+        </p>
+
+        {/* Room Code Callout */}
+        <div
+          style={{
+            background: 'rgba(56, 189, 248, 0.1)',
+            border: '2px dashed #38bdf8',
+            borderRadius: '12px',
+            padding: '16px',
+            marginBottom: '16px',
+          }}
+        >
+          <div style={{ font: "9px 'Press Start 2P', monospace", color: '#94a3b8', marginBottom: '6px' }}>
+            ROOM CODE
+          </div>
+          <div
+            style={{
+              fontFamily: "'Press Start 2P', monospace",
+              fontSize: '26px',
+              color: '#38bdf8',
+              letterSpacing: '4px',
+              textShadow: '0 0 15px rgba(56, 189, 248, 0.6)',
+            }}
+          >
+            {roomCode}
+          </div>
+        </div>
+
+        <div style={{ fontSize: '11px', color: '#cbd5e1', marginBottom: '20px', lineHeight: 1.4 }}>
+          Send the link to your group chat. Answers stay private until you all lock them in!
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <button
+            onClick={copyLink}
+            style={{
+              width: '100%',
+              background: copied ? '#34d399' : 'rgba(56, 189, 248, 0.2)',
+              border: '1px solid #38bdf8',
+              color: copied ? '#070a14' : '#38bdf8',
+              borderRadius: '8px',
+              padding: '12px',
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontSize: '13px',
+              fontWeight: 700,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              transition: 'all 0.2s ease',
+            }}
+          >
+            {copied ? '✓ INVITE LINK COPIED!' : '📋 COPY INVITE LINK'}
+          </button>
+
+          <button
+            onClick={onStart}
+            style={{
+              width: '100%',
+              background: '#a3e635',
+              color: '#070a14',
+              border: 'none',
+              borderRadius: '8px',
+              padding: '14px',
+              fontFamily: "'Press Start 2P', monospace",
+              fontSize: '11px',
+              cursor: 'pointer',
+              fontWeight: 700,
+              boxShadow: '0 4px 15px rgba(163, 230, 53, 0.4)',
+            }}
+          >
+            START YOUR TRY ▶
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+

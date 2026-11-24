@@ -63,8 +63,10 @@ export const VideoControls: React.FC<VideoControlsProps> = ({
     { id: 'part2_spark', label: '⚡ PART 2: "THE SPARK" & Sliders', desc: '0:17 - The Spark slamming in' },
     { id: 'part3', label: '🧠 PART 3: Embarko Prompt Copy', desc: '0:20 - Step 1: Get Embarko prompt' },
     { id: 'part4', label: '🚀 PART 4: Paste · Wait · Live', desc: '0:26 - AI pasting & deploy' },
-    { id: 'part5_matrix', label: '💥 PART 5: Crew Chemistry Matrix', desc: '0:33 - Group chat sync & matrix' },
-    { id: 'part5_awards', label: '🚩 PART 5: Snap Zoom Red Flag', desc: '0:37 - Peter vs Brian' },
+    { id: 'part5_setup', label: '👥 PART 5: Create Crew (Stewie)', desc: '0:32 - Griffin Squad setup' },
+    { id: 'part5_lobby', label: '🔗 PART 5: Room Code & Link', desc: '0:33 - Room code & share link' },
+    { id: 'part5_matrix', label: '💥 PART 5: Crew Chemistry (Sync)', desc: '0:35 - Group chat sync & roasts' },
+    { id: 'part5_awards', label: '🚩 PART 5: Snap Zoom Red Flag', desc: '0:38 - Peter vs Brian' },
     { id: 'part6', label: '🔗 PART 6: End Card & CTA', desc: '0:41 - #DeployWithEmbarko' },
   ];
 

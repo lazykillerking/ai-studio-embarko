@@ -2,7 +2,13 @@ import { useEffect, useState } from 'react';
 import { sound } from './audio';
 import { CrewVerdictView } from './CrewVerdictView';
 import { VideoControls } from './VideoControls';
-import { NameCardOverlay, EmbarkoPromptStepOverlay, EmbarkoDeployStepOverlay, EndCardOverlay } from './VideoOverlays';
+import {
+  NameCardOverlay,
+  EmbarkoPromptStepOverlay,
+  EmbarkoDeployStepOverlay,
+  EndCardOverlay,
+  CrewLobbyInviteOverlay,
+} from './VideoOverlays';
 import { MOCK_SCRIPT_CREW_VERDICT } from './demoPresets';
 
 type Pack = { id: string; name: string };
@@ -826,8 +832,11 @@ export default function App() {
   const [nameCardVisible, setNameCardVisible] = useState<boolean>(false);
   const [promptStepVisible, setPromptStepVisible] = useState<boolean>(false);
   const [deployStepVisible, setDeployStepVisible] = useState<boolean>(false);
+  const [crewLobbyVisible, setCrewLobbyVisible] = useState<boolean>(false);
   const [endCardVisible, setEndCardVisible] = useState<boolean>(false);
   const [crewVerdictTabOverride, setCrewVerdictTabOverride] = useState<'overview' | 'roster' | 'chemistry' | 'awards'>('overview');
+  const [transitionKey, setTransitionKey] = useState<number>(0);
+  const [scanlineFlash, setScanlineFlash] = useState<boolean>(false);
 
   // Initialize audio on first user gesture
   useEffect(() => {
@@ -973,22 +982,27 @@ export default function App() {
 
   const jumpToVideoScene = (sceneId: string) => {
     setCurrentVideoScene(sceneId);
+    setTransitionKey((k) => k + 1);
+    setScanlineFlash(true);
+    setTimeout(() => setScanlineFlash(false), 380);
     setNameCardVisible(false);
     setPromptStepVisible(false);
     setDeployStepVisible(false);
+    setCrewLobbyVisible(false);
     setEndCardVisible(false);
 
     if (sceneId === 'hook') {
       // 0:00 - Awards screen flashing WALKING RED FLAG: PETER
       setCrew({
-        crew: { name: 'GRIFFIN SQUAD', mode: 'mixed', packId: 'the_mix', memberCount: 3 },
+        crew: { name: 'GRIFFIN SQUAD', mode: 'mixed', packId: 'the_mix', memberCount: 3, completed: true },
         board: {
           verdict: MOCK_SCRIPT_CREW_VERDICT,
           crewSyncPercent: 42,
           questions: [],
         },
-        me: { nickname: 'Peter' },
+        me: { nickname: 'Peter', completed: true },
       });
+      setCrewAt(7);
       setCrewCode('PETER6');
       setCrewVerdictTabOverride('awards');
       setView('crew');
@@ -997,8 +1011,14 @@ export default function App() {
       setView('home');
       setNameCardVisible(true);
     } else if (sceneId === 'part2_play') {
-      // 0:11 - Rapid-fire questions + 30-sec shot clock
+      // 0:11 - Rapid-fire questions + 30-sec shot clock (Show as final question SIGNAL 7 / 7)
       setQs([
+        { id: 'prev_1', prompt: '', options: [] },
+        { id: 'prev_2', prompt: '', options: [] },
+        { id: 'prev_3', prompt: '', options: [] },
+        { id: 'prev_4', prompt: '', options: [] },
+        { id: 'prev_5', prompt: '', options: [] },
+        { id: 'prev_6', prompt: '', options: [] },
         {
           id: 'demo_q1',
           prompt: 'You see a red button that says "DO NOT PRESS UNDER ANY CIRCUMSTANCES". What do you do?',
@@ -1010,11 +1030,11 @@ export default function App() {
           ],
         },
       ]);
-      setAt(0);
+      setAt(6);
       setSeconds(30);
       setView('play');
     } else if (sceneId === 'part2_reveal') {
-      // 0:14 - Crowd % reveal
+      // 0:14 - Crowd % reveal (Dumbest answer = rarest outlier at 8%, normal safe answer = 62%)
       const demoQ = {
         id: 'demo_q1',
         prompt: 'You see a red button that says "DO NOT PRESS UNDER ANY CIRCUMSTANCES". What do you do?',
@@ -1028,14 +1048,15 @@ export default function App() {
       setLastAnsweredQ(demoQ);
       setLastChosenIndex(1);
       setInspectedOptionIndex(1);
+      setAt(6);
       setReveal({
         tier: 'CHAOTIC OUTLIER',
-        points: 45,
+        points: 48,
         overthinker: false,
         sampleSize: 1420,
-        distribution: [18, 64, 12, 6],
-        bars: [{ votes: 255 }, { votes: 908 }, { votes: 170 }, { votes: 87 }],
-        verdict: 'You chose pure instinct over self-preservation.',
+        distribution: [62, 8, 18, 12],
+        bars: [{ votes: 880 }, { votes: 114 }, { votes: 255 }, { votes: 171 }],
+        verdict: 'You clicked the dumbest answer on purpose. Pure chaotic instinct over self-preservation.',
       });
       setView('reveal');
     } else if (sceneId === 'part2_spark') {
@@ -1068,31 +1089,47 @@ export default function App() {
     } else if (sceneId === 'part4') {
       // 0:26 - Going Live: Paste. Wait. Live.
       setDeployStepVisible(true);
+    } else if (sceneId === 'part5_setup') {
+      // 0:32 - Crew Mode Setup (Stewie starting GRIFFIN SQUAD)
+      setView('home');
+      setPack('campus_chaos');
+      setCrewName('GRIFFIN SQUAD');
+      setNickname('Stewie');
+      setSetupMode('themed');
+      setCrewSetup(true);
+    } else if (sceneId === 'part5_lobby') {
+      // 0:33 - Room Code & Share Invite Link
+      setView('home');
+      setCrewSetup(false);
+      setCrewCode('PETER6');
+      setCrewLobbyVisible(true);
     } else if (sceneId === 'part5_matrix') {
       // 0:33 - Crew Chemistry Matrix
       setCrew({
-        crew: { name: 'GRIFFIN SQUAD', mode: 'mixed', packId: 'the_mix', memberCount: 3 },
+        crew: { name: 'GRIFFIN SQUAD', mode: 'mixed', packId: 'the_mix', memberCount: 3, completed: true },
         board: {
           verdict: MOCK_SCRIPT_CREW_VERDICT,
           crewSyncPercent: 42,
           questions: [],
         },
-        me: { nickname: 'Peter' },
+        me: { nickname: 'Peter', completed: true },
       });
+      setCrewAt(7);
       setCrewCode('PETER6');
       setCrewVerdictTabOverride('chemistry');
       setView('crew');
     } else if (sceneId === 'part5_awards') {
       // 0:37 - Snap zoom onto Walking Red Flag: Peter
       setCrew({
-        crew: { name: 'GRIFFIN SQUAD', mode: 'mixed', packId: 'the_mix', memberCount: 3 },
+        crew: { name: 'GRIFFIN SQUAD', mode: 'mixed', packId: 'the_mix', memberCount: 3, completed: true },
         board: {
           verdict: MOCK_SCRIPT_CREW_VERDICT,
           crewSyncPercent: 42,
           questions: [],
         },
-        me: { nickname: 'Peter' },
+        me: { nickname: 'Peter', completed: true },
       });
+      setCrewAt(7);
       setCrewCode('PETER6');
       setCrewVerdictTabOverride('awards');
       setView('crew');
@@ -1112,6 +1149,113 @@ export default function App() {
     setLastAnsweredQ(currentQ);
     setLastChosenIndex(optionIndex);
     setInspectedOptionIndex(optionIndex);
+
+    // If answering the demo question from the Video Director, dynamically match whatever option you actually click!
+    if (currentQ.id === 'demo_q1') {
+      setTimeout(() => {
+        const optionPresets = [
+          {
+            tier: 'PREDICTABLE SHELTER',
+            points: 15,
+            distribution: [62, 8, 18, 12],
+            bars: [{ votes: 880 }, { votes: 114 }, { votes: 255 }, { votes: 171 }],
+            verdict: 'You chose cautious self-preservation and walked away in one piece.',
+            archetypeId: 'the_architect',
+            archetypeName: 'THE ARCHITECT',
+            trait: 'Blueprints every exit before entering the room',
+            sliders: [18, 24, 15],
+            stamp: 'CAUTION REWARDED',
+            heat: 2,
+            compliment: 'You read the warning, respected the boundary, and survived.',
+            roast: 'You treat an arcade cabinet like an OSHA inspection hazard.',
+          },
+          {
+            tier: 'CHAOTIC OUTLIER',
+            points: 48,
+            distribution: [62, 8, 18, 12],
+            bars: [{ votes: 880 }, { votes: 114 }, { votes: 255 }, { votes: 171 }],
+            verdict: 'You clicked the dumbest answer on purpose. Pure chaotic instinct over self-preservation.',
+            archetypeId: 'the_spark',
+            archetypeName: 'THE SPARK',
+            trait: 'First to say "trust me" before an iconic bad decision',
+            sliders: [86, 64, 92],
+            stamp: 'REWARDED YOUR CHAOS',
+            heat: 5,
+            compliment: 'You literally clicked the dumbest answers on purpose, and the algorithm crowned you for it.',
+            roast: 'Your decision-making process belongs in an aviation disaster report.',
+          },
+          {
+            tier: 'UNUSUAL STRATEGIST',
+            points: 35,
+            distribution: [62, 8, 18, 12],
+            bars: [{ votes: 880 }, { votes: 114 }, { votes: 255 }, { votes: 171 }],
+            verdict: 'You outsourced the danger and kept the camera rolling.',
+            archetypeId: 'the_plot_twister',
+            archetypeName: 'THE PLOT TWISTER',
+            trait: 'Pivots the whole room into an unscripted reality show',
+            sliders: [72, 68, 48],
+            stamp: 'AGENT OF CHAOS',
+            heat: 4,
+            compliment: 'Calculated mischief with zero personal collateral damage.',
+            roast: 'You would sell tickets to your own house fire.',
+          },
+          {
+            tier: 'COLD CALCULATOR',
+            points: 40,
+            distribution: [62, 8, 18, 12],
+            bars: [{ votes: 880 }, { votes: 114 }, { votes: 255 }, { votes: 171 }],
+            verdict: 'You brought statistical modeling to an imminent explosion.',
+            archetypeId: 'the_lone_oracle',
+            archetypeName: 'THE LONE ORACLE',
+            trait: 'Quietly predicts the plot twist three scenes early',
+            sliders: [15, 12, 10],
+            stamp: 'LOGIC PURIST',
+            heat: 3,
+            compliment: 'Refused to act until the math was indisputable.',
+            roast: 'You would ask for the documentation during an asteroid impact.',
+          },
+        ];
+
+        const p = optionPresets[optionIndex] || optionPresets[1];
+
+        setReveal({
+          tier: p.tier,
+          points: p.points,
+          overthinker: false,
+          sampleSize: 1420,
+          distribution: p.distribution,
+          bars: p.bars,
+          verdict: p.verdict,
+        });
+
+        setResult({
+          totalPoints: 200 + p.points,
+          scoreTitle: p.archetypeName,
+          archetype: {
+            id: p.archetypeId,
+            name: p.archetypeName,
+            oneLineTrait: p.trait,
+          },
+          sliders: p.sliders,
+          axes: {
+            plan_chaos: p.sliders[0],
+            solo_crew: p.sliders[1],
+            logic_instinct: p.sliders[2],
+          },
+          verdict: {
+            headlineStamp: p.stamp,
+            heat: p.heat,
+            compliment: p.compliment,
+            roast: p.roast,
+          },
+        });
+
+        setView('reveal');
+        sound.playReveal();
+        setBusy(false);
+      }, 350);
+      return;
+    }
 
     try {
       const r = await fetch('/api/solo/answer', {
@@ -1176,6 +1320,14 @@ export default function App() {
       if (setupMode === 'join') {
         setCrewSetup(false);
         await loadCrew(crewCode, activeNick);
+        return;
+      }
+      if (currentVideoScene === 'part5_setup') {
+        // Transition to room code & invite link lobby window
+        setCrewSetup(false);
+        setCrewCode('PETER6');
+        setCrewLobbyVisible(true);
+        setBusy(false);
         return;
       }
       const r = await fetch('/api/crews', {
@@ -1482,6 +1634,18 @@ export default function App() {
           onClose={() => setDeployStepVisible(false)}
           onNext={() => {
             setDeployStepVisible(false);
+            jumpToVideoScene('part5_setup');
+          }}
+        />
+      )}
+      {crewLobbyVisible && (
+        <CrewLobbyInviteOverlay
+          roomCode="PETER6"
+          crewName="GRIFFIN SQUAD"
+          creatorName="Stewie"
+          onClose={() => setCrewLobbyVisible(false)}
+          onStart={() => {
+            setCrewLobbyVisible(false);
             jumpToVideoScene('part5_matrix');
           }}
         />
@@ -1551,7 +1715,7 @@ export default function App() {
         </div>
       </header>
 
-      <section className="game">
+      <section key={transitionKey} className="game scene-transition">
         {view === 'home' && (
           <>
             <div className="eyebrow">
@@ -1991,22 +2155,26 @@ export default function App() {
 
         {view === 'crew' && crew && (
           <>
-            <div className="eyebrow">
-              <span>CREW SIGNAL // {crewCode}</span>
-              <span>{(crew.crew?.packId || 'the_mix').replace('_', ' ').toUpperCase()}</span>
-            </div>
-            <h1>{crew.crew?.name || 'YOUR CREW'}</h1>
-            <p className="fine">
-              {(crew.memberCount ?? crew.crew?.memberCount ?? 1)} of 12 Players Joined · Room Code: <strong>{crewCode}</strong>
-            </p>
+            {!crew.board?.verdict && (
+              <>
+                <div className="eyebrow">
+                  <span>CREW SIGNAL // {crewCode}</span>
+                  <span>{(crew.crew?.packId || 'the_mix').replace('_', ' ').toUpperCase()}</span>
+                </div>
+                <h1>{crew.crew?.name || 'YOUR CREW'}</h1>
+                <p className="fine">
+                  {(crew.memberCount ?? crew.crew?.memberCount ?? 1)} of 12 Players Joined · Room Code: <strong>{crewCode}</strong>
+                </p>
 
-            {import.meta.env.DEV && (
-              <button className="textbtn" onClick={testFriend} disabled={busy}>
-                TEST AS FRIEND #2
-              </button>
+                {import.meta.env.DEV && (
+                  <button className="textbtn" onClick={testFriend} disabled={busy}>
+                    TEST AS FRIEND #2
+                  </button>
+                )}
+              </>
             )}
 
-            {!(crew.completed ?? crew.crew?.completed ?? crew.me?.completed) && crewAt < 7 && (
+            {!crew.board?.verdict && !(crew.completed ?? crew.crew?.completed ?? crew.me?.completed) && crewAt < 7 && (
               <>
                 <div className="eyebrow">SIGNAL {crewAt + 1} / 7</div>
                 <h2>{(crew.crew?.questions || crew.questions)?.[crewAt]?.prompt}</h2>
@@ -2021,7 +2189,7 @@ export default function App() {
               </>
             )}
 
-            {!(crew.completed ?? crew.crew?.completed ?? crew.me?.completed) && crewAt >= 7 && (
+            {!crew.board && !(crew.completed ?? crew.crew?.completed ?? crew.me?.completed) && crewAt >= 7 && (
               <>
                 <h2>WAITING FOR CREW ({crew.completedCount ?? crew.crew?.completedCount ?? 0} completed)</h2>
                 <p className="fine">Your answers are sealed until you finish all seven signals.</p>
@@ -2031,7 +2199,7 @@ export default function App() {
               </>
             )}
 
-            {(crew.completed ?? crew.crew?.completed ?? crew.me?.completed) && (crew.completedCount ?? crew.crew?.completedCount ?? 0) < 2 && (
+            {!crew.board && (crew.completed ?? crew.crew?.completed ?? crew.me?.completed) && (crew.completedCount ?? crew.crew?.completedCount ?? 0) < 2 && (
               <>
                 <h2>WAITING FOR CREW ({crew.completedCount ?? crew.crew?.completedCount ?? 0} joined)</h2>
                 <p className="fine">Your answers stay private until another player finishes.</p>

@@ -300,6 +300,7 @@ export function CrewVerdictView({
             <span>{pairwiseRelationships.length} RELATIONSHIPS</span>
           </div>
 
+
           <div className="crew-chemistry-list">
             {pairwiseRelationships.map((pair, pIdx) => {
               const isExpanded = expandedPairIndex === pIdx;
@@ -403,8 +404,20 @@ export function CrewVerdictView({
 
       {/* FINAL CREW ROAST BANNER */}
       <div className="crew-final-roast-banner">
-        <div className="final-roast-tag">FINAL CREW VERDICT</div>
+        <div className="final-roast-tag">FINAL CREW VERDICT // PSYCHOLOGICAL ROAST</div>
         <p className="final-roast-line">"{finalCrewRoast}"</p>
+        <div
+          style={{
+            marginTop: '8px',
+            fontFamily: "'Press Start 2P', monospace",
+            fontSize: '9px',
+            color: '#ef4444',
+            letterSpacing: '1px',
+            textShadow: '0 0 10px rgba(239, 68, 68, 0.6)',
+          }}
+        >
+          🚩 WALKING RED FLAG IDENTIFIED: PETER
+        </div>
       </div>
 
       {/* ACTION BUTTONS */}
