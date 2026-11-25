@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import type { CompleteCrewVerdict } from '../../shared/crewVerdictTypes';
 import { ARCHETYPES } from '../../shared/archetypes';
 
@@ -6,7 +6,6 @@ interface CrewVerdictViewProps {
   verdict: CompleteCrewVerdict;
   myNickname?: string;
   myDeviceId?: string;
-  tabOverride?: 'overview' | 'roster' | 'chemistry' | 'awards';
   onShare: () => void;
   onDownload: () => void;
   onCopyLink: () => void;
@@ -17,7 +16,6 @@ interface CrewVerdictViewProps {
 export function CrewVerdictView({
   verdict,
   myNickname,
-  tabOverride,
   onShare,
   onDownload,
   onCopyLink,
@@ -26,13 +24,6 @@ export function CrewVerdictView({
 }: CrewVerdictViewProps) {
   const [activeTab, setActiveTab] = useState<'overview' | 'roster' | 'chemistry' | 'awards'>('overview');
   const [expandedPairIndex, setExpandedPairIndex] = useState<number | null>(null);
-
-  // Sync tabOverride if provided
-  useEffect(() => {
-    if (tabOverride) {
-      setActiveTab(tabOverride);
-    }
-  }, [tabOverride]);
 
   const { tier, personalityDynamics, playerAnalyses, pairwiseRelationships, awards, finalCrewRoast } = verdict;
 
@@ -300,7 +291,6 @@ export function CrewVerdictView({
             <span>{pairwiseRelationships.length} RELATIONSHIPS</span>
           </div>
 
-
           <div className="crew-chemistry-list">
             {pairwiseRelationships.map((pair, pIdx) => {
               const isExpanded = expandedPairIndex === pIdx;
@@ -362,41 +352,19 @@ export function CrewVerdictView({
             </p>
           ) : (
             <div className="crew-awards-grid">
-              {awards.map((aw) => {
-                const isWalkingRedFlag = aw.awardId === 'walking_red_flag' || aw.title.toLowerCase().includes('red flag');
-                return (
-                  <div
-                    key={aw.awardId}
-                    className={`crew-award-card full-award ${isWalkingRedFlag ? 'walking-red-flag-card' : ''}`}
-                    style={
-                      isWalkingRedFlag
-                        ? {
-                            border: '2px solid #ef4444',
-                            background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(15, 23, 42, 0.95))',
-                            boxShadow: '0 0 30px rgba(239, 68, 68, 0.5)',
-                            animation: 'pulseGlow 2s infinite',
-                          }
-                        : {}
-                    }
-                  >
-                    <div
-                      className="crew-award-title"
-                      style={isWalkingRedFlag ? { color: '#ef4444', textShadow: '0 0 10px #ef4444' } : {}}
-                    >
-                      {aw.icon} {aw.title.toUpperCase()}
-                    </div>
-                    <div
-                      className="crew-award-winner-badge"
-                      style={isWalkingRedFlag ? { color: '#fca5a5', fontSize: '9px' } : {}}
-                    >
-                      AWARDED TO: <strong style={{ color: '#fff', fontSize: '11px' }}>{aw.winnerNicknames.join(' & ')}</strong>
-                    </div>
-                    <div className="crew-award-desc">
-                      {aw.explanation}
-                    </div>
+              {awards.map((aw) => (
+                <div key={aw.awardId} className="crew-award-card full-award">
+                  <div className="crew-award-title">
+                    {aw.icon} {aw.title}
                   </div>
-                );
-              })}
+                  <div className="crew-award-winner-badge">
+                    AWARDED TO: <strong>{aw.winnerNicknames.join(' & ')}</strong>
+                  </div>
+                  <div className="crew-award-desc">
+                    {aw.explanation}
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>
@@ -404,20 +372,8 @@ export function CrewVerdictView({
 
       {/* FINAL CREW ROAST BANNER */}
       <div className="crew-final-roast-banner">
-        <div className="final-roast-tag">FINAL CREW VERDICT // PSYCHOLOGICAL ROAST</div>
+        <div className="final-roast-tag">FINAL CREW VERDICT</div>
         <p className="final-roast-line">"{finalCrewRoast}"</p>
-        <div
-          style={{
-            marginTop: '8px',
-            fontFamily: "'Press Start 2P', monospace",
-            fontSize: '9px',
-            color: '#ef4444',
-            letterSpacing: '1px',
-            textShadow: '0 0 10px rgba(239, 68, 68, 0.6)',
-          }}
-        >
-          🚩 WALKING RED FLAG IDENTIFIED: PETER
-        </div>
       </div>
 
       {/* ACTION BUTTONS */}

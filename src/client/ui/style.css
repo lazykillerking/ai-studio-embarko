@@ -2418,74 +2418,296 @@ main[data-theme=neon_coast] .grid {
   margin-top: 8px;
 }
 
-/* Video demo animations & elegant arcade transition system */
-.scene-transition {
-  animation: elegantArcadeEntry 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  will-change: transform, opacity, filter;
+/* =========================================================
+   CREW MODE ROOM / LOBBY WINDOW STYLING
+   ========================================================= */
+
+.crew-room-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
 }
 
-@keyframes elegantArcadeEntry {
-  0% {
-    opacity: 0;
-    transform: translateY(16px) scale(0.98);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+.crew-counter-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid #38bdf8;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font: 11px 'Press Start 2P', monospace;
+  color: #38bdf8;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
 }
 
-.overlay-backdrop {
-  animation: overlayFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+.crew-counter-badge .crew-counter-icon {
+  font-size: 14px;
 }
 
-.overlay-card-pop {
-  animation: cardElevate 0.42s cubic-bezier(0.175, 0.885, 0.32, 1.15) forwards;
-  will-change: transform, opacity;
+.crew-counter-badge .crew-counter-val {
+  font-weight: bold;
+  letter-spacing: 1px;
 }
 
-@keyframes overlayFadeIn {
-  from {
-    opacity: 0;
-    backdrop-filter: blur(0px);
-  }
-  to {
-    opacity: 1;
-    backdrop-filter: blur(14px);
-  }
+.crew-theme-badge {
+  font: 9px 'Press Start 2P', monospace;
+  color: #94a3b8;
+  background: #0f172a;
+  border: 1px solid #334155;
+  padding: 6px 10px;
+  border-radius: 4px;
+  letter-spacing: 1px;
 }
 
-@keyframes cardElevate {
-  0% {
-    opacity: 0;
-    transform: scale(0.88) translateY(28px);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
+.crew-room-window {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 8px;
 }
 
-@keyframes pulseGlow {
-  0%, 100% {
-    box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
-    transform: scale(1);
-  }
-  50% {
-    box-shadow: 0 0 40px rgba(239, 68, 68, 0.8), 0 0 60px rgba(239, 68, 68, 0.3);
-    transform: scale(1.02);
-  }
+.crew-room-code-card {
+  background: linear-gradient(180deg, #162039 0%, #0d1527 100%);
+  border: 2px solid var(--accent);
+  box-shadow: 4px 5px #050812;
+  border-radius: 6px;
+  padding: 20px 16px;
+  text-align: center;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.97);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+.crew-room-code-header {
+  margin-bottom: 12px;
+}
+
+.crew-room-code-label {
+  display: block;
+  font: 10px 'Press Start 2P', monospace;
+  color: var(--accent);
+  letter-spacing: 1.5px;
+  margin-bottom: 4px;
+}
+
+.crew-room-hint {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.crew-room-code-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin: 12px 0 6px;
+  flex-wrap: wrap;
+}
+
+.crew-room-code-digits {
+  font: clamp(28px, 7vw, 40px) 'Press Start 2P', monospace;
+  color: #34d399;
+  letter-spacing: 4px;
+  text-shadow: 2px 2px #000;
+  user-select: all;
+}
+
+.crew-code-copy-btn {
+  font: 10px 'Press Start 2P', monospace;
+  background: rgba(52, 211, 153, 0.15);
+  border: 1px solid #34d399;
+  color: #34d399;
+  padding: 8px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.crew-code-copy-btn:hover {
+  background: #34d399;
+  color: #0b1120;
+}
+
+.crew-room-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.crew-copy-link-btn {
+  font: 11px 'Press Start 2P', monospace !important;
+  padding: 14px !important;
+  letter-spacing: 1px;
+}
+
+.crew-wa-btn {
+  font: 10px 'Press Start 2P', monospace !important;
+  border-color: #22c55e !important;
+  color: #22c55e !important;
+}
+
+.crew-wa-btn:hover {
+  background: #22c55e !important;
+  color: #0b1120 !important;
+}
+
+.crew-connected-card {
+  background: #0f172a;
+  border: 1px solid #23314d;
+  box-shadow: 3px 4px #050812;
+  border-radius: 6px;
+  padding: 16px;
+}
+
+.crew-connected-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #1e293b;
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+}
+
+.crew-connected-title {
+  font: 10px 'Press Start 2P', monospace;
+  color: #38bdf8;
+  letter-spacing: 1px;
+}
+
+.crew-connected-count {
+  font: 10px 'Press Start 2P', monospace;
+  color: #f1f5f9;
+}
+
+.crew-connected-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.crew-connected-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #151e33;
+  border: 1px solid #24304b;
+  border-radius: 4px;
+  padding: 10px 12px;
+  transition: border-color 0.15s ease;
+}
+
+.crew-connected-item.is-me {
+  border-color: var(--accent);
+  background: #182647;
+  border-left: 4px solid var(--accent);
+}
+
+.crew-connected-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 4px;
+  background: #1e293b;
+  border: 1px solid #475569;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 11px 'Press Start 2P', monospace;
+  color: #38bdf8;
+  flex-shrink: 0;
+}
+
+.crew-connected-item.is-me .crew-connected-avatar {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: #38bdf8;
+}
+
+.crew-connected-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex-grow: 1;
+}
+
+.crew-connected-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.crew-connected-name {
+  font-weight: 600;
+  font-size: 14px;
+  color: #f8fafc;
+}
+
+.crew-badge-you {
+  font: 8px 'Press Start 2P', monospace;
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid #38bdf8;
+  color: #38bdf8;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.crew-badge-host {
+  font: 8px 'Press Start 2P', monospace;
+  background: rgba(251, 191, 36, 0.15);
+  border: 1px solid #fbbf24;
+  color: #fbbf24;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.crew-connected-status {
+  font-size: 12px;
+}
+
+.status-done {
+  color: #34d399;
+  font-weight: 500;
+}
+
+.status-ready {
+  color: #94a3b8;
+}
+
+.crew-start-panel {
+  background: linear-gradient(180deg, #101a33 0%, #0a1122 100%);
+  border: 1px solid #2e3d5e;
+  border-radius: 6px;
+  padding: 18px 16px;
+  text-align: center;
+  margin-top: 4px;
+}
+
+.crew-start-btn {
+  width: 100%;
+  padding: 16px !important;
+  font: 13px 'Press Start 2P', monospace !important;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
+.crew-start-explainer {
+  font-size: 13px;
+  color: #94a3b8;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.crew-quiz-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #1e293b;
+}
+
+.crew-lobby-toggle-btn {
+  font: 9px 'Press Start 2P', monospace !important;
+  color: #38bdf8 !important;
+  padding: 6px 10px !important;
 }
 
 

@@ -9,7 +9,7 @@ import { getDbPath, openDatabase, resolveProjectRoot, seedPacksAndQuestions } fr
 import { createCrew, getCrewState, submitCrewAnswer } from './crew';
 import { injectOgMetaTags } from './og';
 import { AnswerRateLimiter, getClientIp, resolveDeviceId } from './security';
-import { getDailySoloState, getUtcDateString, isLaunchSetMode, listPublishedPacks, submitSoloAnswer } from './solo';
+import { getDailySoloState, getUtcDateString, getVoteCounts, isLaunchSetMode, listPublishedPacks, submitSoloAnswer } from './solo';
 
 const PackIdSchema = z.enum([
   'the_mix',
@@ -72,6 +72,12 @@ export function createApp(db: Database.Database, options?: { rateLimitPerMin?: n
       .prepare('SELECT COUNT(*) as crewCount FROM crews')
       .get() as { crewCount: number };
 
+    let baseVoteCount = 0;
+    try {
+      const row = db.prepare('SELECT COALESCE(SUM(total_base_votes), 0) as cnt FROM question_base_stats').get() as { cnt: number };
+      baseVoteCount = row?.cnt ?? 0;
+    } catch {}
+
     res.json({
       ok: true,
       launchSetMode: isLaunchSetMode(),
@@ -79,9 +85,51 @@ export function createApp(db: Database.Database, options?: { rateLimitPerMin?: n
       packs: packCount,
       questions: questionCount,
       populationVotes: voteCount,
+      organicVotes: voteCount,
+      baseVotes: baseVoteCount,
+      totalVotes: voteCount + baseVoteCount,
       crews: crewCount,
+      istDate: getUtcDateString(),
       utcDate: getUtcDateString(),
     });
+  });
+
+  // GET /api/analytics/real-votes (Admin endpoint: separates real organic player answers from base stats)
+  app.get('/api/analytics/real-votes', (_req: Request, res: Response) => {
+    try {
+      const questions = db
+        .prepare('SELECT id, pack_id, prompt FROM questions ORDER BY pack_id, sort_order')
+        .all() as { id: string; pack_id: string; prompt: string }[];
+
+      const realVotesTotal = (
+        db.prepare('SELECT COUNT(*) as cnt FROM population_votes').get() as { cnt: number }
+      ).cnt;
+
+      const data = questions.map((q) => {
+        const realCounts = getVoteCounts(db, q.id, { organicOnly: true });
+        const combinedCounts = getVoteCounts(db, q.id);
+        const totalReal = realCounts[0] + realCounts[1] + realCounts[2] + realCounts[3];
+        const totalCombined = combinedCounts[0] + combinedCounts[1] + combinedCounts[2] + combinedCounts[3];
+        return {
+          questionId: q.id,
+          packId: q.pack_id,
+          prompt: q.prompt,
+          realVotes: realCounts,
+          totalReal,
+          combinedVotes: combinedCounts,
+          totalCombined,
+        };
+      });
+
+      res.json({
+        ok: true,
+        totalRealPlayerVotes: realVotesTotal,
+        totalQuestions: questions.length,
+        questions: data,
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
   });
 
   // GET /api/packs
@@ -90,6 +138,7 @@ export function createApp(db: Database.Database, options?: { rateLimitPerMin?: n
     const packs = listPublishedPacks(db, deviceId);
     res.json({
       deviceId,
+      istDate: getUtcDateString(),
       utcDate: getUtcDateString(),
       launchSetMode: isLaunchSetMode(),
       packs,
@@ -130,22 +179,32 @@ export function createApp(db: Database.Database, options?: { rateLimitPerMin?: n
       return;
     }
 
-    // Confirm date matches current UTC date (or allow exact date if client already started a run on it)
-    const currentUtcDate = getUtcDateString();
-    const targetDate = parsed.data.date;
-    if (targetDate !== currentUtcDate) {
-      // Allow finishing an in-progress run started just before UTC midnight, otherwise reject stale dates
-      const inProgress = db
-        .prepare(
-          'SELECT 1 FROM solo_runs WHERE device_id = ? AND pack_id = ? AND challenge_date = ?'
-        )
-        .get(deviceId, parsed.data.packId, targetDate);
-      if (!inProgress) {
-        res.status(409).json({
-          error: 'Daily set has reset for the new UTC day. Reloading today’s questions.',
-          currentUtcDate,
-        });
-        return;
+    // Confirm date matches current IST challenge date (or allow finishing an in-progress run)
+    const currentIstDate = getUtcDateString();
+    let targetDate = parsed.data.date;
+    if (targetDate !== currentIstDate) {
+      // Check if the question belongs to today's active set for this pack
+      const todayState = getDailySoloState(db, parsed.data.packId, deviceId, currentIstDate, false);
+      const isInTodaySet = todayState?.questions.some((q) => q.id === parsed.data.questionId);
+      if (isInTodaySet) {
+        // Transparently align date with today's IST challenge date so timezone/client drift never blocks play
+        targetDate = currentIstDate;
+      } else {
+        // Allow finishing an in-progress run started on targetDate
+        const inProgress = db
+          .prepare(
+            'SELECT 1 FROM solo_runs WHERE device_id = ? AND pack_id = ? AND challenge_date = ?'
+          )
+          .get(deviceId, parsed.data.packId, targetDate);
+        if (!inProgress) {
+          res.status(409).json({
+            error: 'Daily set has reset for the new IST day. Reloading today’s questions.',
+            currentDate: currentIstDate,
+            currentIstDate,
+            currentUtcDate: currentIstDate,
+          });
+          return;
+        }
       }
     }
 
@@ -367,7 +426,7 @@ async function startServer() {
   const port = Number(process.env.PORT || 3000);
   app.listen(port, '0.0.0.0', () => {
     console.log(
-      `BRAINPRINT listening on http://localhost:${port} (or http://127.0.0.1:${port}) (env=${isProd ? 'production' : 'development'}, db=${getDbPath()}, seeded=${seeded.packs} packs/${seeded.questions} questions)`
+      `BRAINPRINT listening on http://0.0.0.0:${port} (env=${isProd ? 'production' : 'development'}, db=${getDbPath()}, seeded=${seeded.packs} packs/${seeded.questions} questions)`
     );
   });
 }

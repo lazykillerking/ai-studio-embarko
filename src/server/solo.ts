@@ -41,6 +41,7 @@ export function getUtcDateString(date = new Date()): string {
   const ist = getIstDate(date);
   return ist.toISOString().slice(0, 10);
 }
+export const getIstDateString = getUtcDateString;
 
 export function getNextUtcResetIso(date = new Date()): string {
   const ist = getIstDate(date);
@@ -49,6 +50,7 @@ export function getNextUtcResetIso(date = new Date()): string {
     Date.UTC(ist.getUTCFullYear(), ist.getUTCMonth(), ist.getUTCDate() + 1, 0, 0, 0) - IST_OFFSET_MS;
   return new Date(nextIstMidnightUtcTime).toISOString();
 }
+export const getNextIstResetIso = getNextUtcResetIso;
 
 export function isLaunchSetMode(): boolean {
   return process.env.LAUNCH_SET_MODE === 'true';
@@ -566,7 +568,11 @@ export function getDailySoloState(
   };
 }
 
-function getVoteCounts(db: Database.Database, questionId: string): [number, number, number, number] {
+export function getVoteCounts(
+  db: Database.Database,
+  questionId: string,
+  options?: { organicOnly?: boolean }
+): [number, number, number, number] {
   const rows = db
     .prepare(
       `SELECT option_index, COUNT(*) as cnt
@@ -581,6 +587,39 @@ function getVoteCounts(db: Database.Database, questionId: string): [number, numb
       counts[r.option_index] = r.cnt;
     }
   }
+
+  // If requesting only real organic player answers:
+  if (options?.organicOnly) {
+    return counts;
+  }
+
+  // Otherwise, layer on top of the calibrated question baseline statistics:
+  try {
+    const base = db
+      .prepare(
+        `SELECT base_count_0, base_count_1, base_count_2, base_count_3
+         FROM question_base_stats
+         WHERE question_id = ?`
+      )
+      .get(questionId) as
+      | {
+          base_count_0: number;
+          base_count_1: number;
+          base_count_2: number;
+          base_count_3: number;
+        }
+      | undefined;
+
+    if (base) {
+      counts[0] += base.base_count_0;
+      counts[1] += base.base_count_1;
+      counts[2] += base.base_count_2;
+      counts[3] += base.base_count_3;
+    }
+  } catch {
+    // If table hasn't migrated yet, return organic counts safely
+  }
+
   return counts;
 }
 

@@ -1,15 +1,6 @@
 import { useEffect, useState } from 'react';
 import { sound } from './audio';
 import { CrewVerdictView } from './CrewVerdictView';
-import { VideoControls } from './VideoControls';
-import {
-  NameCardOverlay,
-  EmbarkoPromptStepOverlay,
-  EmbarkoDeployStepOverlay,
-  EndCardOverlay,
-  CrewLobbyInviteOverlay,
-} from './VideoOverlays';
-import { MOCK_SCRIPT_CREW_VERDICT } from './demoPresets';
 
 type Pack = { id: string; name: string };
 type Question = { id: string; prompt: string; options: { text: string }[] };
@@ -791,12 +782,18 @@ function PixelAvatar({ id }: { id: string }) {
   );
 }
 
+const getIstDateString = (date = new Date()): string => {
+  const ist = new Date(date.getTime() + 5.5 * 60 * 60 * 1000);
+  return ist.toISOString().slice(0, 10);
+};
+
 export default function App() {
   const [packs, setPacks] = useState<Pack[]>([]);
   const [pack, setPack] = useState('the_mix');
   const [view, setView] = useState<'home' | 'play' | 'reveal' | 'done' | 'crew'>('home');
   const [qs, setQs] = useState<Question[]>([]);
   const [at, setAt] = useState(0);
+  const [challengeDate, setChallengeDate] = useState<string>('');
   const [reveal, setReveal] = useState<any>(null);
   const [result, setResult] = useState<any>(null);
   const [busy, setBusy] = useState(false);
@@ -807,6 +804,8 @@ export default function App() {
   const [crew, setCrew] = useState<any>(null);
   const [crewAt, setCrewAt] = useState(0);
   const [crewSetup, setCrewSetup] = useState(false);
+  const [crewInQuiz, setCrewInQuiz] = useState(false);
+  const [copiedType, setCopiedType] = useState<'code' | 'link' | null>(null);
   const [setupMode, setSetupMode] = useState<'themed' | 'mixed' | 'join'>('themed');
   const [nickname, setNickname] = useState(() => {
     try {
@@ -817,6 +816,21 @@ export default function App() {
   });
   const [crewName, setCrewName] = useState('');
 
+  const copyCrewCode = () => {
+    sound.playSelect();
+    navigator.clipboard.writeText(crewCode);
+    setCopiedType('code');
+    setTimeout(() => setCopiedType(null), 2500);
+  };
+
+  const copyCrewLink = () => {
+    sound.playSelect();
+    const link = `${window.location.origin}/crew/${crewCode}`;
+    navigator.clipboard.writeText(link);
+    setCopiedType('link');
+    setTimeout(() => setCopiedType(null), 2500);
+  };
+
   // Track answered question and user choice for reveal screen inspection
   const [lastAnsweredQ, setLastAnsweredQ] = useState<Question | null>(null);
   const [lastChosenIndex, setLastChosenIndex] = useState<number | null>(null);
@@ -825,18 +839,6 @@ export default function App() {
   // Audio mute states
   const [musicMuted, setMusicMuted] = useState(sound.getMusicMuted());
   const [sfxMuted, setSfxMuted] = useState(sound.getSfxMuted());
-
-  // Video script director & demo overlays
-  const [currentVideoScene, setCurrentVideoScene] = useState<string>('home');
-  const [showLiveBadge, setShowLiveBadge] = useState<boolean>(true);
-  const [nameCardVisible, setNameCardVisible] = useState<boolean>(false);
-  const [promptStepVisible, setPromptStepVisible] = useState<boolean>(false);
-  const [deployStepVisible, setDeployStepVisible] = useState<boolean>(false);
-  const [crewLobbyVisible, setCrewLobbyVisible] = useState<boolean>(false);
-  const [endCardVisible, setEndCardVisible] = useState<boolean>(false);
-  const [crewVerdictTabOverride, setCrewVerdictTabOverride] = useState<'overview' | 'roster' | 'chemistry' | 'awards'>('overview');
-  const [transitionKey, setTransitionKey] = useState<number>(0);
-  const [scanlineFlash, setScanlineFlash] = useState<boolean>(false);
 
   // Initialize audio on first user gesture
   useEffect(() => {
@@ -900,6 +902,7 @@ export default function App() {
       memberCount: d.memberCount ?? d.crew?.memberCount ?? d.members?.length ?? 0,
       completedCount: d.completedCount ?? d.crew?.completedCount ?? 0,
       questions: crewQuestions,
+      members: d.members || [],
       crew: {
         ...d.crew,
         questions: crewQuestions,
@@ -918,12 +921,13 @@ export default function App() {
       setCrewCode(match[1].toUpperCase());
       setSetupMode('join');
       setCrewSetup(true);
+      setCrewInQuiz(false);
     }
   }, []);
 
   useEffect(() => {
     if (view !== 'crew' || !crewCode) return;
-    const t = setInterval(() => loadCrew(crewCode).catch(() => { }), 5000);
+    const t = setInterval(() => loadCrew(crewCode).catch(() => { }), 3000);
     return () => clearInterval(t);
   }, [view, crewCode]);
 
@@ -957,6 +961,7 @@ export default function App() {
       const d = await r.json();
       if (!r.ok) throw Error(d.error || 'Could not start');
       setQs(d.questions);
+      setChallengeDate(d.date || getIstDateString());
       const isDone = !replay && Boolean(d.completed || d.resume?.completed_at);
       const resData = d.finalResult || d.result || null;
       setAt(replay ? 0 : d.answerRecords?.length || d.resume?.answer_records?.length || 0);
@@ -980,165 +985,6 @@ export default function App() {
     startWithPack('the_mix');
   };
 
-  const jumpToVideoScene = (sceneId: string) => {
-    setCurrentVideoScene(sceneId);
-    setTransitionKey((k) => k + 1);
-    setScanlineFlash(true);
-    setTimeout(() => setScanlineFlash(false), 380);
-    setNameCardVisible(false);
-    setPromptStepVisible(false);
-    setDeployStepVisible(false);
-    setCrewLobbyVisible(false);
-    setEndCardVisible(false);
-
-    if (sceneId === 'hook') {
-      // 0:00 - Awards screen flashing WALKING RED FLAG: PETER
-      setCrew({
-        crew: { name: 'GRIFFIN SQUAD', mode: 'mixed', packId: 'the_mix', memberCount: 3, completed: true },
-        board: {
-          verdict: MOCK_SCRIPT_CREW_VERDICT,
-          crewSyncPercent: 42,
-          questions: [],
-        },
-        me: { nickname: 'Peter', completed: true },
-      });
-      setCrewAt(7);
-      setCrewCode('PETER6');
-      setCrewVerdictTabOverride('awards');
-      setView('crew');
-    } else if (sceneId === 'part1') {
-      // 0:05 - Name card Swastik Arora then cut to home screen
-      setView('home');
-      setNameCardVisible(true);
-    } else if (sceneId === 'part2_play') {
-      // 0:11 - Rapid-fire questions + 30-sec shot clock (Show as final question SIGNAL 7 / 7)
-      setQs([
-        { id: 'prev_1', prompt: '', options: [] },
-        { id: 'prev_2', prompt: '', options: [] },
-        { id: 'prev_3', prompt: '', options: [] },
-        { id: 'prev_4', prompt: '', options: [] },
-        { id: 'prev_5', prompt: '', options: [] },
-        { id: 'prev_6', prompt: '', options: [] },
-        {
-          id: 'demo_q1',
-          prompt: 'You see a red button that says "DO NOT PRESS UNDER ANY CIRCUMSTANCES". What do you do?',
-          options: [
-            { text: 'Read the warning label carefully and walk away' },
-            { text: 'Immediately press it with both hands just to see what happens' },
-            { text: 'Convince someone else to press it while you film' },
-            { text: 'Calculate the probability of an explosion first' },
-          ],
-        },
-      ]);
-      setAt(6);
-      setSeconds(30);
-      setView('play');
-    } else if (sceneId === 'part2_reveal') {
-      // 0:14 - Crowd % reveal (Dumbest answer = rarest outlier at 8%, normal safe answer = 62%)
-      const demoQ = {
-        id: 'demo_q1',
-        prompt: 'You see a red button that says "DO NOT PRESS UNDER ANY CIRCUMSTANCES". What do you do?',
-        options: [
-          { text: 'Read the warning label carefully and walk away' },
-          { text: 'Immediately press it with both hands just to see what happens' },
-          { text: 'Convince someone else to press it while you film' },
-          { text: 'Calculate the probability of an explosion first' },
-        ],
-      };
-      setLastAnsweredQ(demoQ);
-      setLastChosenIndex(1);
-      setInspectedOptionIndex(1);
-      setAt(6);
-      setReveal({
-        tier: 'CHAOTIC OUTLIER',
-        points: 48,
-        overthinker: false,
-        sampleSize: 1420,
-        distribution: [62, 8, 18, 12],
-        bars: [{ votes: 880 }, { votes: 114 }, { votes: 255 }, { votes: 171 }],
-        verdict: 'You clicked the dumbest answer on purpose. Pure chaotic instinct over self-preservation.',
-      });
-      setView('reveal');
-    } else if (sceneId === 'part2_spark') {
-      // 0:17 - The Spark slamming in with axis sliders
-      setResult({
-        totalPoints: 245,
-        scoreTitle: 'UNHINGED PROVOCATEUR',
-        archetype: {
-          id: 'the_spark',
-          name: 'THE SPARK',
-          oneLineTrait: 'First to say "trust me" before an iconic bad decision',
-        },
-        sliders: [86, 64, 92],
-        axes: {
-          plan_chaos: 86,
-          solo_crew: 64,
-          logic_instinct: 92,
-        },
-        verdict: {
-          headlineStamp: 'REWARDED YOUR CHAOS',
-          heat: 5,
-          compliment: 'You literally clicked the dumbest answers on purpose, and the algorithm crowned you for it.',
-          roast: 'Your decision-making process belongs in an aviation disaster report.',
-        },
-      });
-      setView('done');
-    } else if (sceneId === 'part3') {
-      // 0:20 - Step 1: Get Embarko prompt
-      setPromptStepVisible(true);
-    } else if (sceneId === 'part4') {
-      // 0:26 - Going Live: Paste. Wait. Live.
-      setDeployStepVisible(true);
-    } else if (sceneId === 'part5_setup') {
-      // 0:32 - Crew Mode Setup (Stewie starting GRIFFIN SQUAD)
-      setView('home');
-      setPack('campus_chaos');
-      setCrewName('GRIFFIN SQUAD');
-      setNickname('Stewie');
-      setSetupMode('themed');
-      setCrewSetup(true);
-    } else if (sceneId === 'part5_lobby') {
-      // 0:33 - Room Code & Share Invite Link
-      setView('home');
-      setCrewSetup(false);
-      setCrewCode('PETER6');
-      setCrewLobbyVisible(true);
-    } else if (sceneId === 'part5_matrix') {
-      // 0:33 - Crew Chemistry Matrix
-      setCrew({
-        crew: { name: 'GRIFFIN SQUAD', mode: 'mixed', packId: 'the_mix', memberCount: 3, completed: true },
-        board: {
-          verdict: MOCK_SCRIPT_CREW_VERDICT,
-          crewSyncPercent: 42,
-          questions: [],
-        },
-        me: { nickname: 'Peter', completed: true },
-      });
-      setCrewAt(7);
-      setCrewCode('PETER6');
-      setCrewVerdictTabOverride('chemistry');
-      setView('crew');
-    } else if (sceneId === 'part5_awards') {
-      // 0:37 - Snap zoom onto Walking Red Flag: Peter
-      setCrew({
-        crew: { name: 'GRIFFIN SQUAD', mode: 'mixed', packId: 'the_mix', memberCount: 3, completed: true },
-        board: {
-          verdict: MOCK_SCRIPT_CREW_VERDICT,
-          crewSyncPercent: 42,
-          questions: [],
-        },
-        me: { nickname: 'Peter', completed: true },
-      });
-      setCrewAt(7);
-      setCrewCode('PETER6');
-      setCrewVerdictTabOverride('awards');
-      setView('crew');
-    } else if (sceneId === 'part6') {
-      // 0:41 - End Card CTA
-      setEndCardVisible(true);
-    }
-  };
-
   const answer = async (optionIndex: number) => {
     if (busy) return;
     sound.playAnswer();
@@ -1150,113 +996,7 @@ export default function App() {
     setLastChosenIndex(optionIndex);
     setInspectedOptionIndex(optionIndex);
 
-    // If answering the demo question from the Video Director, dynamically match whatever option you actually click!
-    if (currentQ.id === 'demo_q1') {
-      setTimeout(() => {
-        const optionPresets = [
-          {
-            tier: 'PREDICTABLE SHELTER',
-            points: 15,
-            distribution: [62, 8, 18, 12],
-            bars: [{ votes: 880 }, { votes: 114 }, { votes: 255 }, { votes: 171 }],
-            verdict: 'You chose cautious self-preservation and walked away in one piece.',
-            archetypeId: 'the_architect',
-            archetypeName: 'THE ARCHITECT',
-            trait: 'Blueprints every exit before entering the room',
-            sliders: [18, 24, 15],
-            stamp: 'CAUTION REWARDED',
-            heat: 2,
-            compliment: 'You read the warning, respected the boundary, and survived.',
-            roast: 'You treat an arcade cabinet like an OSHA inspection hazard.',
-          },
-          {
-            tier: 'CHAOTIC OUTLIER',
-            points: 48,
-            distribution: [62, 8, 18, 12],
-            bars: [{ votes: 880 }, { votes: 114 }, { votes: 255 }, { votes: 171 }],
-            verdict: 'You clicked the dumbest answer on purpose. Pure chaotic instinct over self-preservation.',
-            archetypeId: 'the_spark',
-            archetypeName: 'THE SPARK',
-            trait: 'First to say "trust me" before an iconic bad decision',
-            sliders: [86, 64, 92],
-            stamp: 'REWARDED YOUR CHAOS',
-            heat: 5,
-            compliment: 'You literally clicked the dumbest answers on purpose, and the algorithm crowned you for it.',
-            roast: 'Your decision-making process belongs in an aviation disaster report.',
-          },
-          {
-            tier: 'UNUSUAL STRATEGIST',
-            points: 35,
-            distribution: [62, 8, 18, 12],
-            bars: [{ votes: 880 }, { votes: 114 }, { votes: 255 }, { votes: 171 }],
-            verdict: 'You outsourced the danger and kept the camera rolling.',
-            archetypeId: 'the_plot_twister',
-            archetypeName: 'THE PLOT TWISTER',
-            trait: 'Pivots the whole room into an unscripted reality show',
-            sliders: [72, 68, 48],
-            stamp: 'AGENT OF CHAOS',
-            heat: 4,
-            compliment: 'Calculated mischief with zero personal collateral damage.',
-            roast: 'You would sell tickets to your own house fire.',
-          },
-          {
-            tier: 'COLD CALCULATOR',
-            points: 40,
-            distribution: [62, 8, 18, 12],
-            bars: [{ votes: 880 }, { votes: 114 }, { votes: 255 }, { votes: 171 }],
-            verdict: 'You brought statistical modeling to an imminent explosion.',
-            archetypeId: 'the_lone_oracle',
-            archetypeName: 'THE LONE ORACLE',
-            trait: 'Quietly predicts the plot twist three scenes early',
-            sliders: [15, 12, 10],
-            stamp: 'LOGIC PURIST',
-            heat: 3,
-            compliment: 'Refused to act until the math was indisputable.',
-            roast: 'You would ask for the documentation during an asteroid impact.',
-          },
-        ];
-
-        const p = optionPresets[optionIndex] || optionPresets[1];
-
-        setReveal({
-          tier: p.tier,
-          points: p.points,
-          overthinker: false,
-          sampleSize: 1420,
-          distribution: p.distribution,
-          bars: p.bars,
-          verdict: p.verdict,
-        });
-
-        setResult({
-          totalPoints: 200 + p.points,
-          scoreTitle: p.archetypeName,
-          archetype: {
-            id: p.archetypeId,
-            name: p.archetypeName,
-            oneLineTrait: p.trait,
-          },
-          sliders: p.sliders,
-          axes: {
-            plan_chaos: p.sliders[0],
-            solo_crew: p.sliders[1],
-            logic_instinct: p.sliders[2],
-          },
-          verdict: {
-            headlineStamp: p.stamp,
-            heat: p.heat,
-            compliment: p.compliment,
-            roast: p.roast,
-          },
-        });
-
-        setView('reveal');
-        sound.playReveal();
-        setBusy(false);
-      }, 350);
-      return;
-    }
-
+    const sendDate = challengeDate || getIstDateString();
     try {
       const r = await fetch('/api/solo/answer', {
         method: 'POST',
@@ -1264,14 +1004,21 @@ export default function App() {
         body: JSON.stringify({
           deviceId: device(),
           packId: pack,
-          date: new Date().toISOString().slice(0, 10),
+          date: sendDate,
           questionId: currentQ.id,
           optionIndex,
           overthinker: seconds === 0,
         }),
       });
       const d = await r.json();
-      if (!r.ok) throw Error(d.error || 'Could not save answer');
+      if (!r.ok) {
+        if (r.status === 409 || d.error?.includes('reset')) {
+          setErr('Daily set reset for the new IST day. Reloading today’s questions...');
+          await startWithPack(pack);
+          return;
+        }
+        throw Error(d.error || 'Could not save answer');
+      }
       const revealPayload = d.reveal || d;
       setReveal(revealPayload);
       if (d.finalResult || d.result) {
@@ -1304,6 +1051,7 @@ export default function App() {
     setCrewName('');
     setNickname('');
     setCrewSetup(true);
+    setCrewInQuiz(false);
   };
 
   const submitCrewSetup = async () => {
@@ -1319,15 +1067,8 @@ export default function App() {
       }
       if (setupMode === 'join') {
         setCrewSetup(false);
+        setCrewInQuiz(false);
         await loadCrew(crewCode, activeNick);
-        return;
-      }
-      if (currentVideoScene === 'part5_setup') {
-        // Transition to room code & invite link lobby window
-        setCrewSetup(false);
-        setCrewCode('PETER6');
-        setCrewLobbyVisible(true);
-        setBusy(false);
         return;
       }
       const r = await fetch('/api/crews', {
@@ -1346,6 +1087,7 @@ export default function App() {
       if (!r.ok) throw Error(d.error || 'Could not create crew');
       history.pushState({}, '', `/crew/${d.code}`);
       setCrewSetup(false);
+      setCrewInQuiz(false);
       await loadCrew(d.code, activeNick);
     } catch (e: any) {
       setErr(e.message);
@@ -1592,85 +1334,6 @@ export default function App() {
 
   return (
     <main data-theme={pack}>
-      {/* Corner badge for script: Live on Embarko */}
-      {showLiveBadge && (
-        <div
-          style={{
-            position: 'fixed',
-            top: '12px',
-            right: '12px',
-            zIndex: 8000,
-            background: 'rgba(52, 211, 153, 0.15)',
-            border: '1px solid #34d399',
-            borderRadius: '20px',
-            padding: '4px 10px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            boxShadow: '0 0 15px rgba(52, 211, 153, 0.3)',
-            backdropFilter: 'blur(6px)',
-          }}
-        >
-          <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#34d399', display: 'inline-block' }} />
-          <span style={{ font: "9px 'Press Start 2P', monospace", color: '#34d399', letterSpacing: '0.5px' }}>
-            LIVE ON EMBARKO
-          </span>
-        </div>
-      )}
-
-      {/* Script Video Overlays */}
-      {nameCardVisible && <NameCardOverlay onClose={() => setNameCardVisible(false)} />}
-      {promptStepVisible && (
-        <EmbarkoPromptStepOverlay
-          onClose={() => setPromptStepVisible(false)}
-          onNext={() => {
-            setPromptStepVisible(false);
-            setDeployStepVisible(true);
-          }}
-        />
-      )}
-      {deployStepVisible && (
-        <EmbarkoDeployStepOverlay
-          onClose={() => setDeployStepVisible(false)}
-          onNext={() => {
-            setDeployStepVisible(false);
-            jumpToVideoScene('part5_setup');
-          }}
-        />
-      )}
-      {crewLobbyVisible && (
-        <CrewLobbyInviteOverlay
-          roomCode="PETER6"
-          crewName="GRIFFIN SQUAD"
-          creatorName="Stewie"
-          onClose={() => setCrewLobbyVisible(false)}
-          onStart={() => {
-            setCrewLobbyVisible(false);
-            jumpToVideoScene('part5_matrix');
-          }}
-        />
-      )}
-      {endCardVisible && <EndCardOverlay onClose={() => setEndCardVisible(false)} />}
-
-      {/* Video Director Floater */}
-      <VideoControls
-        currentScene={currentVideoScene}
-        onSelectScene={jumpToVideoScene}
-        showLiveBadge={showLiveBadge}
-        setShowLiveBadge={setShowLiveBadge}
-        nameCardVisible={nameCardVisible}
-        setNameCardVisible={setNameCardVisible}
-        endCardVisible={endCardVisible}
-        setEndCardVisible={setEndCardVisible}
-        onReset={() => {
-          setView('home');
-          setNameCardVisible(false);
-          setPromptStepVisible(false);
-          setDeployStepVisible(false);
-          setEndCardVisible(false);
-        }}
-      />
-
       <div className="scene" aria-hidden="true">
         <div className="sun" />
         <div className="grid" />
@@ -1715,7 +1378,7 @@ export default function App() {
         </div>
       </header>
 
-      <section key={transitionKey} className="game scene-transition">
+      <section className="game">
         {view === 'home' && (
           <>
             <div className="eyebrow">
@@ -2155,65 +1818,292 @@ export default function App() {
 
         {view === 'crew' && crew && (
           <>
-            {!crew.board?.verdict && (
+            {/* If Crew Board is not yet unlocked */}
+            {!crew.board && (
               <>
-                <div className="eyebrow">
-                  <span>CREW SIGNAL // {crewCode}</span>
-                  <span>{(crew.crew?.packId || 'the_mix').replace('_', ' ').toUpperCase()}</span>
-                </div>
-                <h1>{crew.crew?.name || 'YOUR CREW'}</h1>
-                <p className="fine">
-                  {(crew.memberCount ?? crew.crew?.memberCount ?? 1)} of 12 Players Joined · Room Code: <strong>{crewCode}</strong>
-                </p>
+                {/* STATE A: CURRENT PLAYER HAS NOT COMPLETED ALL 7 QUESTIONS */}
+                {!((crew.completed ?? crew.crew?.completed ?? crew.me?.completed ?? false) || crewAt >= 7) && (
+                  <>
+                    {!crewInQuiz ? (
+                      /* A1. CREW ROOM / LOBBY WINDOW */
+                      <div className="crew-room-window">
+                        <div className="crew-room-topbar">
+                          <div className="crew-counter-badge" title="Connected Players">
+                            <span className="crew-counter-icon">👥</span>
+                            <span className="crew-counter-val">
+                              {(crew.members?.length ?? crew.memberCount ?? 1)}/12
+                            </span>
+                          </div>
+                          <div className="crew-theme-badge">
+                            {(crew.crew?.packId || 'the_mix').replace('_', ' ').toUpperCase()}
+                          </div>
+                        </div>
 
-                {import.meta.env.DEV && (
-                  <button className="textbtn" onClick={testFriend} disabled={busy}>
-                    TEST AS FRIEND #2
-                  </button>
+                        <div className="eyebrow">
+                          <span>CREW ROOM // {crewCode}</span>
+                          <span>LOBBY</span>
+                        </div>
+                        <h1>{crew.crew?.name || 'YOUR CREW'}</h1>
+
+                        {/* Room Join Code Card */}
+                        <div className="crew-room-code-card">
+                          <div className="crew-room-code-header">
+                            <span className="crew-room-code-label">ROOM JOIN CODE</span>
+                            <span className="crew-room-hint">Share this code or copy the invite link below</span>
+                          </div>
+                          <div className="crew-room-code-box">
+                            <span className="crew-room-code-digits">{crewCode}</span>
+                            <button
+                              type="button"
+                              className="crew-code-copy-btn"
+                              onClick={copyCrewCode}
+                            >
+                              {copiedType === 'code' ? '✓ COPIED' : 'COPY CODE'}
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Share / Copy Link Actions */}
+                        <div className="crew-room-actions">
+                          <button
+                            type="button"
+                            className="secondary crew-copy-link-btn"
+                            onClick={copyCrewLink}
+                          >
+                            {copiedType === 'link' ? '✓ LINK COPIED TO CLIPBOARD' : '🔗 COPY INVITE LINK'}
+                          </button>
+                          <button
+                            type="button"
+                            className="secondary crew-wa-btn"
+                            onClick={() =>
+                              window.open(
+                                'https://wa.me/?text=' +
+                                  encodeURIComponent(
+                                    `Join my BRAINPRINT crew! Room Code: ${crewCode}\n${window.location.origin}/crew/${crewCode}`
+                                  ),
+                                '_blank',
+                                'noopener'
+                              )
+                            }
+                          >
+                            💬 SHARE ON WHATSAPP
+                          </button>
+                        </div>
+
+                        {/* Connected Players Section */}
+                        <div className="crew-connected-card">
+                          <div className="crew-connected-header">
+                            <span className="crew-connected-title">CONNECTED PLAYERS</span>
+                            <span className="crew-connected-count">
+                              {(crew.members?.length ?? crew.memberCount ?? 1)} / 12
+                            </span>
+                          </div>
+                          <div className="crew-connected-list">
+                            {(crew.members || []).map((m: any, idx: number) => {
+                              const isHost = idx === 0;
+                              return (
+                                <div
+                                  key={m.memberId || idx}
+                                  className={`crew-connected-item ${m.isMe ? 'is-me' : ''}`}
+                                >
+                                  <div className="crew-connected-avatar">
+                                    {(m.nickname || 'P').slice(0, 2).toUpperCase()}
+                                  </div>
+                                  <div className="crew-connected-info">
+                                    <div className="crew-connected-name-row">
+                                      <span className="crew-connected-name">{m.nickname}</span>
+                                      {m.isMe && <span className="crew-badge-you">YOU</span>}
+                                      {isHost && <span className="crew-badge-host">HOST</span>}
+                                    </div>
+                                    <div className="crew-connected-status">
+                                      {m.completed ? (
+                                        <span className="status-done">✓ Finished (7/7)</span>
+                                      ) : (
+                                        <span className="status-ready">● Connected</span>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+
+                        {/* Independent Start Quiz Panel */}
+                        <div className="crew-start-panel">
+                          <button
+                            type="button"
+                            className="primary crew-start-btn"
+                            onClick={() => {
+                              sound.playSelect();
+                              setCrewInQuiz(true);
+                            }}
+                          >
+                            {crewAt > 0 ? `▶ CONTINUE MY QUIZ (${crewAt + 1}/7)` : '▶ START MY QUIZ'}
+                          </button>
+                          <p className="crew-start-explainer">
+                            ⚡ <strong>Independent Start:</strong> You can start whenever you want. Your start won't force or start the quiz for other players, and vice versa.
+                          </p>
+                        </div>
+
+                        {import.meta.env.DEV && (
+                          <button className="textbtn" onClick={testFriend} disabled={busy}>
+                            TEST AS FRIEND #2
+                          </button>
+                        )}
+                      </div>
+                    ) : (
+                      /* A2. ACTIVE CREW QUIZ VIEW */
+                      <>
+                        <div className="crew-quiz-header">
+                          <div className="crew-counter-badge" title="Connected Players">
+                            <span className="crew-counter-icon">👥</span>
+                            <span className="crew-counter-val">
+                              {(crew.members?.length ?? crew.memberCount ?? 1)}/12
+                            </span>
+                          </div>
+                          <button
+                            type="button"
+                            className="textbtn crew-lobby-toggle-btn"
+                            onClick={() => {
+                              sound.playSelect();
+                              setCrewInQuiz(false);
+                            }}
+                          >
+                            👥 CREW ROOM ({crewCode})
+                          </button>
+                        </div>
+
+                        <div className="eyebrow">SIGNAL {crewAt + 1} / 7</div>
+                        <h2>{(crew.crew?.questions || crew.questions)?.[crewAt]?.prompt}</h2>
+                        <div className="options">
+                          {(crew.crew?.questions || crew.questions)?.[crewAt]?.options?.map((o: any, i: number) => (
+                            <button key={i} onClick={() => crewAnswer(i)} disabled={busy}>
+                              <b>0{i + 1}</b>
+                              {o.text}
+                            </button>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </>
                 )}
-              </>
-            )}
 
-            {!crew.board?.verdict && !(crew.completed ?? crew.crew?.completed ?? crew.me?.completed) && crewAt < 7 && (
-              <>
-                <div className="eyebrow">SIGNAL {crewAt + 1} / 7</div>
-                <h2>{(crew.crew?.questions || crew.questions)?.[crewAt]?.prompt}</h2>
-                <div className="options">
-                  {(crew.crew?.questions || crew.questions)?.[crewAt]?.options?.map((o: any, i: number) => (
-                    <button key={i} onClick={() => crewAnswer(i)} disabled={busy}>
-                      <b>0{i + 1}</b>
-                      {o.text}
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
+                {/* STATE B: CURRENT PLAYER HAS COMPLETED ALL 7 QUESTIONS, WAITING FOR BOARD UNLOCK */}
+                {Boolean((crew.completed ?? crew.crew?.completed ?? crew.me?.completed ?? false) || crewAt >= 7) && (
+                  <div className="crew-room-window">
+                    <div className="crew-room-topbar">
+                      <div className="crew-counter-badge" title="Connected Players">
+                        <span className="crew-counter-icon">👥</span>
+                        <span className="crew-counter-val">
+                          {(crew.members?.length ?? crew.memberCount ?? 1)}/12
+                        </span>
+                      </div>
+                      <div className="crew-theme-badge">
+                        {(crew.crew?.packId || 'the_mix').replace('_', ' ').toUpperCase()}
+                      </div>
+                    </div>
 
-            {!crew.board && !(crew.completed ?? crew.crew?.completed ?? crew.me?.completed) && crewAt >= 7 && (
-              <>
-                <h2>WAITING FOR CREW ({crew.completedCount ?? crew.crew?.completedCount ?? 0} completed)</h2>
-                <p className="fine">Your answers are sealed until you finish all seven signals.</p>
-                <button className="secondary" onClick={() => navigator.clipboard.writeText(location.href)}>
-                  COPY INVITE LINK
-                </button>
-              </>
-            )}
+                    <div className="eyebrow">
+                      <span>CREW SIGNAL // {crewCode}</span>
+                      <span>WAITING FOR CREW</span>
+                    </div>
+                    <h1>WAITING FOR CREW</h1>
+                    <p className="fine">
+                      You've finished all 7 signals! ({crew.completedCount ?? crew.crew?.completedCount ?? 1} of {(crew.members?.length ?? crew.memberCount ?? 1)} completed). Your answers stay sealed until another player finishes.
+                    </p>
 
-            {!crew.board && (crew.completed ?? crew.crew?.completed ?? crew.me?.completed) && (crew.completedCount ?? crew.crew?.completedCount ?? 0) < 2 && (
-              <>
-                <h2>WAITING FOR CREW ({crew.completedCount ?? crew.crew?.completedCount ?? 0} joined)</h2>
-                <p className="fine">Your answers stay private until another player finishes.</p>
-                <button className="secondary" onClick={() => navigator.clipboard.writeText(location.href)}>
-                  COPY INVITE LINK
-                </button>
-                <button
-                  className="primary"
-                  onClick={() =>
-                    window.open('https://wa.me/?text=' + encodeURIComponent('Join my BRAINPRINT crew: ' + location.href), '_blank', 'noopener')
-                  }
-                >
-                  SHARE ON WHATSAPP
-                </button>
+                    {/* Room Join Code Card */}
+                    <div className="crew-room-code-card">
+                      <div className="crew-room-code-header">
+                        <span className="crew-room-code-label">ROOM JOIN CODE</span>
+                        <span className="crew-room-hint">Invite friends to unlock the squad verdict</span>
+                      </div>
+                      <div className="crew-room-code-box">
+                        <span className="crew-room-code-digits">{crewCode}</span>
+                        <button
+                          type="button"
+                          className="crew-code-copy-btn"
+                          onClick={copyCrewCode}
+                        >
+                          {copiedType === 'code' ? '✓ COPIED' : 'COPY CODE'}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Share / Copy Link Actions */}
+                    <div className="crew-room-actions">
+                      <button
+                        type="button"
+                        className="secondary crew-copy-link-btn"
+                        onClick={copyCrewLink}
+                      >
+                        {copiedType === 'link' ? '✓ LINK COPIED TO CLIPBOARD' : '🔗 COPY INVITE LINK'}
+                      </button>
+                      <button
+                        type="button"
+                        className="primary crew-wa-btn"
+                        onClick={() =>
+                          window.open(
+                            'https://wa.me/?text=' +
+                              encodeURIComponent(
+                                `Join my BRAINPRINT crew! Room Code: ${crewCode}\n${window.location.origin}/crew/${crewCode}`
+                              ),
+                            '_blank',
+                            'noopener'
+                          )
+                        }
+                      >
+                        💬 SHARE ON WHATSAPP
+                      </button>
+                    </div>
+
+                    {/* Connected Players Section */}
+                    <div className="crew-connected-card">
+                      <div className="crew-connected-header">
+                        <span className="crew-connected-title">CONNECTED PLAYERS</span>
+                        <span className="crew-connected-count">
+                          {(crew.members?.length ?? crew.memberCount ?? 1)} / 12
+                        </span>
+                      </div>
+                      <div className="crew-connected-list">
+                        {(crew.members || []).map((m: any, idx: number) => {
+                          const isHost = idx === 0;
+                          return (
+                            <div
+                              key={m.memberId || idx}
+                              className={`crew-connected-item ${m.isMe ? 'is-me' : ''}`}
+                            >
+                              <div className="crew-connected-avatar">
+                                {(m.nickname || 'P').slice(0, 2).toUpperCase()}
+                              </div>
+                              <div className="crew-connected-info">
+                                <div className="crew-connected-name-row">
+                                  <span className="crew-connected-name">{m.nickname}</span>
+                                  {m.isMe && <span className="crew-badge-you">YOU</span>}
+                                  {isHost && <span className="crew-badge-host">HOST</span>}
+                                </div>
+                                <div className="crew-connected-status">
+                                  {m.completed ? (
+                                    <span className="status-done">✓ Finished (7/7)</span>
+                                  ) : (
+                                    <span className="status-ready">⏳ Answering...</span>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {import.meta.env.DEV && (
+                      <button className="textbtn" onClick={testFriend} disabled={busy}>
+                        TEST AS FRIEND #2
+                      </button>
+                    )}
+                  </div>
+                )}
               </>
             )}
 
@@ -2225,7 +2115,6 @@ export default function App() {
                     verdict={crew.board.verdict}
                     myNickname={crew.me?.nickname}
                     myDeviceId={device()}
-                    tabOverride={crewVerdictTabOverride}
                     onShare={shareCrew}
                     onDownload={downloadCrew}
                     onCopyLink={() => {

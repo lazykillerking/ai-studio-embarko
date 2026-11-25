@@ -71,7 +71,7 @@ function loadVerdicts() {
   cachedVerdicts = JSON.parse(raw);
   return cachedVerdicts;
 }
-function seedPacksAndQuestions(db) {
+function seedPacksAndQuestions(db, options) {
   const packFiles = loadPackFiles();
   const now = (/* @__PURE__ */ new Date()).toISOString();
   const upsertPack = db.prepare(`
@@ -133,6 +133,41 @@ function seedPacksAndQuestions(db) {
         });
         questionCount += 1;
       });
+    }
+    const baselinePath = path.resolve(resolveProjectRoot(), "data", "question_baseline_stats.json");
+    if (!options?.skipBaseStats && fs.existsSync(baselinePath)) {
+      try {
+        const raw = fs.readFileSync(baselinePath, "utf8");
+        const baselines = JSON.parse(raw);
+        const upsertBase = db.prepare(`
+          INSERT INTO question_base_stats (
+            question_id, base_count_0, base_count_1, base_count_2, base_count_3, total_base_votes, created_at
+          )
+          VALUES (
+            @question_id, @base_count_0, @base_count_1, @base_count_2, @base_count_3, @total_base_votes, @created_at
+          )
+          ON CONFLICT(question_id) DO UPDATE SET
+            base_count_0 = excluded.base_count_0,
+            base_count_1 = excluded.base_count_1,
+            base_count_2 = excluded.base_count_2,
+            base_count_3 = excluded.base_count_3,
+            total_base_votes = excluded.total_base_votes
+        `);
+        for (const [qid, b] of Object.entries(baselines)) {
+          const item = b;
+          upsertBase.run({
+            question_id: qid,
+            base_count_0: item.votes[0],
+            base_count_1: item.votes[1],
+            base_count_2: item.votes[2],
+            base_count_3: item.votes[3],
+            total_base_votes: item.totalVotes,
+            created_at: now
+          });
+        }
+      } catch (err) {
+        console.error("Failed to seed question_base_stats:", err);
+      }
     }
   });
   tx();
@@ -2526,7 +2561,7 @@ function getDailySoloState(db, packId, deviceId, dateStr = getUtcDateString(), r
     finalResult: existingRun ? buildFinalResultFromRun(db, existingRun) : null
   };
 }
-function getVoteCounts(db, questionId) {
+function getVoteCounts(db, questionId, options) {
   const rows = db.prepare(
     `SELECT option_index, COUNT(*) as cnt
        FROM population_votes
@@ -2538,6 +2573,23 @@ function getVoteCounts(db, questionId) {
     if (r.option_index >= 0 && r.option_index <= 3) {
       counts[r.option_index] = r.cnt;
     }
+  }
+  if (options?.organicOnly) {
+    return counts;
+  }
+  try {
+    const base = db.prepare(
+      `SELECT base_count_0, base_count_1, base_count_2, base_count_3
+         FROM question_base_stats
+         WHERE question_id = ?`
+    ).get(questionId);
+    if (base) {
+      counts[0] += base.base_count_0;
+      counts[1] += base.base_count_1;
+      counts[2] += base.base_count_2;
+      counts[3] += base.base_count_3;
+    }
+  } catch {
   }
   return counts;
 }
@@ -3177,6 +3229,12 @@ function createApp(db, options) {
     const { questionCount } = db.prepare("SELECT COUNT(*) as questionCount FROM questions WHERE status = 'published'").get();
     const { voteCount } = db.prepare("SELECT COUNT(*) as voteCount FROM population_votes").get();
     const { crewCount } = db.prepare("SELECT COUNT(*) as crewCount FROM crews").get();
+    let baseVoteCount = 0;
+    try {
+      const row = db.prepare("SELECT COALESCE(SUM(total_base_votes), 0) as cnt FROM question_base_stats").get();
+      baseVoteCount = row?.cnt ?? 0;
+    } catch {
+    }
     res.json({
       ok: true,
       launchSetMode: isLaunchSetMode(),
@@ -3184,15 +3242,49 @@ function createApp(db, options) {
       packs: packCount,
       questions: questionCount,
       populationVotes: voteCount,
+      organicVotes: voteCount,
+      baseVotes: baseVoteCount,
+      totalVotes: voteCount + baseVoteCount,
       crews: crewCount,
+      istDate: getUtcDateString(),
       utcDate: getUtcDateString()
     });
+  });
+  app.get("/api/analytics/real-votes", (_req, res) => {
+    try {
+      const questions = db.prepare("SELECT id, pack_id, prompt FROM questions ORDER BY pack_id, sort_order").all();
+      const realVotesTotal = db.prepare("SELECT COUNT(*) as cnt FROM population_votes").get().cnt;
+      const data = questions.map((q) => {
+        const realCounts = getVoteCounts(db, q.id, { organicOnly: true });
+        const combinedCounts = getVoteCounts(db, q.id);
+        const totalReal = realCounts[0] + realCounts[1] + realCounts[2] + realCounts[3];
+        const totalCombined = combinedCounts[0] + combinedCounts[1] + combinedCounts[2] + combinedCounts[3];
+        return {
+          questionId: q.id,
+          packId: q.pack_id,
+          prompt: q.prompt,
+          realVotes: realCounts,
+          totalReal,
+          combinedVotes: combinedCounts,
+          totalCombined
+        };
+      });
+      res.json({
+        ok: true,
+        totalRealPlayerVotes: realVotesTotal,
+        totalQuestions: questions.length,
+        questions: data
+      });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
   });
   app.get("/api/packs", (req, res) => {
     const deviceId = resolveDeviceId(req, res);
     const packs = listPublishedPacks(db, deviceId);
     res.json({
       deviceId,
+      istDate: getUtcDateString(),
       utcDate: getUtcDateString(),
       launchSetMode: isLaunchSetMode(),
       packs
@@ -3227,18 +3319,26 @@ function createApp(db, options) {
       res.status(429).json({ error: "Too many submissions. Please slow down." });
       return;
     }
-    const currentUtcDate = getUtcDateString();
-    const targetDate = parsed.data.date;
-    if (targetDate !== currentUtcDate) {
-      const inProgress = db.prepare(
-        "SELECT 1 FROM solo_runs WHERE device_id = ? AND pack_id = ? AND challenge_date = ?"
-      ).get(deviceId, parsed.data.packId, targetDate);
-      if (!inProgress) {
-        res.status(409).json({
-          error: "Daily set has reset for the new UTC day. Reloading today\u2019s questions.",
-          currentUtcDate
-        });
-        return;
+    const currentIstDate = getUtcDateString();
+    let targetDate = parsed.data.date;
+    if (targetDate !== currentIstDate) {
+      const todayState = getDailySoloState(db, parsed.data.packId, deviceId, currentIstDate, false);
+      const isInTodaySet = todayState?.questions.some((q) => q.id === parsed.data.questionId);
+      if (isInTodaySet) {
+        targetDate = currentIstDate;
+      } else {
+        const inProgress = db.prepare(
+          "SELECT 1 FROM solo_runs WHERE device_id = ? AND pack_id = ? AND challenge_date = ?"
+        ).get(deviceId, parsed.data.packId, targetDate);
+        if (!inProgress) {
+          res.status(409).json({
+            error: "Daily set has reset for the new IST day. Reloading today\u2019s questions.",
+            currentDate: currentIstDate,
+            currentIstDate,
+            currentUtcDate: currentIstDate
+          });
+          return;
+        }
       }
     }
     try {
@@ -3424,7 +3524,7 @@ async function startServer() {
   const port = Number(process.env.PORT || 3e3);
   app.listen(port, "0.0.0.0", () => {
     console.log(
-      `BRAINPRINT listening on http://localhost:${port} (or http://127.0.0.1:${port}) (env=${isProd ? "production" : "development"}, db=${getDbPath()}, seeded=${seeded.packs} packs/${seeded.questions} questions)`
+      `BRAINPRINT listening on http://0.0.0.0:${port} (env=${isProd ? "production" : "development"}, db=${getDbPath()}, seeded=${seeded.packs} packs/${seeded.questions} questions)`
     );
   });
 }

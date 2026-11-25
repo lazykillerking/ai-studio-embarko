@@ -110,7 +110,10 @@ export function loadVerdicts(): VerdictsFileSchema {
  * Idempotently upserts all packs and questions from /data/packs/*.json.
  * Preserves existing votes, daily sets, solo runs, and crews.
  */
-export function seedPacksAndQuestions(db: Database.Database): { packs: number; questions: number } {
+export function seedPacksAndQuestions(
+  db: Database.Database,
+  options?: { skipBaseStats?: boolean }
+): { packs: number; questions: number } {
   const packFiles = loadPackFiles();
   const now = new Date().toISOString();
 
@@ -178,6 +181,47 @@ export function seedPacksAndQuestions(db: Database.Database): { packs: number; q
         });
         questionCount += 1;
       });
+    }
+
+    // Upsert calibrated question baseline statistics if present
+    const baselinePath = path.resolve(resolveProjectRoot(), 'data', 'question_baseline_stats.json');
+    if (!options?.skipBaseStats && fs.existsSync(baselinePath)) {
+      try {
+        const raw = fs.readFileSync(baselinePath, 'utf8');
+        const baselines = JSON.parse(raw);
+        const upsertBase = db.prepare(`
+          INSERT INTO question_base_stats (
+            question_id, base_count_0, base_count_1, base_count_2, base_count_3, total_base_votes, created_at
+          )
+          VALUES (
+            @question_id, @base_count_0, @base_count_1, @base_count_2, @base_count_3, @total_base_votes, @created_at
+          )
+          ON CONFLICT(question_id) DO UPDATE SET
+            base_count_0 = excluded.base_count_0,
+            base_count_1 = excluded.base_count_1,
+            base_count_2 = excluded.base_count_2,
+            base_count_3 = excluded.base_count_3,
+            total_base_votes = excluded.total_base_votes
+        `);
+
+        for (const [qid, b] of Object.entries(baselines)) {
+          const item = b as {
+            votes: [number, number, number, number];
+            totalVotes: number;
+          };
+          upsertBase.run({
+            question_id: qid,
+            base_count_0: item.votes[0],
+            base_count_1: item.votes[1],
+            base_count_2: item.votes[2],
+            base_count_3: item.votes[3],
+            total_base_votes: item.totalVotes,
+            created_at: now,
+          });
+        }
+      } catch (err) {
+        console.error('Failed to seed question_base_stats:', err);
+      }
     }
   });
   tx();

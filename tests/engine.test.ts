@@ -13,14 +13,15 @@ import { loadVerdicts, openDatabase, seedPacksAndQuestions } from '../src/server
 import {
   getDailySoloState,
   getOrCreateDailySet,
+  getVoteCounts,
   submitSoloAnswer,
 } from '../src/server/solo';
 import { createCrew, getCrewState, submitCrewAnswer } from '../src/server/crew';
 import { AnswerRateLimiter, escapeHtml, sanitizeUserText } from '../src/server/security';
 
-function makeTestDb() {
+function makeTestDb(options?: { withBaseStats?: boolean }) {
   const db = openDatabase(':memory:');
-  seedPacksAndQuestions(db);
+  seedPacksAndQuestions(db, { skipBaseStats: !options?.withBaseStats });
   return db;
 }
 
@@ -545,6 +546,119 @@ describe('6. Question bank refactor: The Mix aggregate mode & dedicated packs', 
     for (const count of Object.values(packCounts)) {
       expect(count).toBeLessThanOrEqual(3);
     }
+    db.close();
+  });
+
+  it('layers real player votes on top of question baseline stats (>55 players) while keeping organic votes separate', () => {
+    const db = makeTestDb({ withBaseStats: true });
+    const date = '2026-11-25';
+    const qids = getOrCreateDailySet(db, 'campus_chaos', date, false);
+    const qid = qids[0];
+
+    // 1. Initial base counts should exist and sum > 55
+    const baseCounts = getVoteCounts(db, qid);
+    const totalBase = baseCounts[0] + baseCounts[1] + baseCounts[2] + baseCounts[3];
+    expect(totalBase).toBeGreaterThan(55);
+
+    // 2. Organic counts should initially be zero
+    const organicInitial = getVoteCounts(db, qid, { organicOnly: true });
+    expect(organicInitial).toEqual([0, 0, 0, 0]);
+
+    // 3. When a real player answers Option 2
+    const realPlayerId = crypto.randomUUID();
+    const result = submitSoloAnswer(db, {
+      deviceId: realPlayerId,
+      packId: 'campus_chaos',
+      date,
+      questionId: qid,
+      optionIndex: 2,
+    });
+
+    // Reveal shows percentages enabled and sample size > 55
+    expect(result.reveal.showPercentages).toBe(true);
+    expect(result.reveal.sampleSize).toBe(totalBase + 1);
+    expect(result.reveal.bars[2].isChosen).toBe(true);
+
+    // 4. Combined count incremented by 1 on Option 2
+    const combinedAfter = getVoteCounts(db, qid);
+    expect(combinedAfter[2]).toBe(baseCounts[2] + 1);
+
+    // 5. Organic count only records the real answer
+    const organicAfter = getVoteCounts(db, qid, { organicOnly: true });
+    expect(organicAfter).toEqual([0, 0, 1, 0]);
+
+    db.close();
+  });
+
+  it('supports independent quiz start and answers per player in crew mode', () => {
+    const db = makeTestDb();
+    const hostDevice = crypto.randomUUID();
+    const guest1Device = crypto.randomUUID();
+    const guest2Device = crypto.randomUUID();
+
+    const crewCreated = createCrew(db, {
+      deviceId: hostDevice,
+      nickname: 'Captain Alex',
+      mode: 'themed',
+      packId: 'campus_chaos',
+    });
+    const code = crewCreated.code;
+
+    // Check initial room state: 1 member connected
+    const stateInitial = getCrewState(db, code, hostDevice);
+    expect(stateInitial).not.toBeNull();
+    expect(stateInitial?.members).toHaveLength(1);
+    expect(stateInitial?.members[0].nickname).toBe('Captain Alex');
+    expect(stateInitial?.members[0].isMe).toBe(true);
+    expect(stateInitial?.memberCount).toBe(1);
+
+    // Guest 1 joins room
+    const stateGuest1 = submitCrewAnswer(db, {
+      code,
+      deviceId: guest1Device,
+      nickname: 'Sammy',
+    });
+    expect(stateGuest1.members).toHaveLength(2);
+    expect(stateGuest1.memberCount).toBe(2);
+
+    // Guest 2 joins room
+    const stateGuest2 = submitCrewAnswer(db, {
+      code,
+      deviceId: guest2Device,
+      nickname: 'Taylor',
+    });
+    expect(stateGuest2.members).toHaveLength(3);
+    expect(stateGuest2.memberCount).toBe(3);
+
+    // Guest 1 answers questions independently at their own time without host having started
+    const questions = stateGuest1.questions;
+    expect(questions).toHaveLength(7);
+
+    // Guest 1 answers 3 questions
+    for (let i = 0; i < 3; i++) {
+      submitCrewAnswer(db, {
+        code,
+        deviceId: guest1Device,
+        questionId: questions[i].id,
+        optionIndex: i % 4,
+      });
+    }
+
+    // Host has answered 0 questions and is still in lobby
+    const hostStateCheck = getCrewState(db, code, hostDevice);
+    expect(hostStateCheck?.me.answeredCount).toBe(0);
+    expect(hostStateCheck?.me.completed).toBe(false);
+
+    // Guest 1 has answered 3 questions
+    const guest1StateCheck = getCrewState(db, code, guest1Device);
+    expect(guest1StateCheck?.me.answeredCount).toBe(3);
+    expect(guest1StateCheck?.me.completed).toBe(false);
+
+    // Guest 2 has answered 0 questions
+    const guest2StateCheck = getCrewState(db, code, guest2Device);
+    expect(guest2StateCheck?.me.answeredCount).toBe(0);
+    expect(guest2StateCheck?.me.completed).toBe(false);
+
     db.close();
   });
 });

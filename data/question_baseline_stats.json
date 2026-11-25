@@ -1,0 +1,4257 @@
+{
+  "cc_001": {
+    "questionId": "cc_001",
+    "packId": "campus_chaos",
+    "totalVotes": 194,
+    "votes": [
+      56,
+      95,
+      14,
+      29
+    ],
+    "percentages": [
+      29,
+      49,
+      7,
+      15
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "FAMILIAR",
+      "WILDCARD",
+      "OUTLIER"
+    ]
+  },
+  "cc_002": {
+    "questionId": "cc_002",
+    "packId": "campus_chaos",
+    "totalVotes": 149,
+    "votes": [
+      42,
+      27,
+      71,
+      9
+    ],
+    "percentages": [
+      28,
+      18,
+      48,
+      6
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "OUTLIER",
+      "FAMILIAR",
+      "WILDCARD"
+    ]
+  },
+  "cc_003": {
+    "questionId": "cc_003",
+    "packId": "campus_chaos",
+    "totalVotes": 189,
+    "votes": [
+      55,
+      11,
+      87,
+      36
+    ],
+    "percentages": [
+      29,
+      6,
+      46,
+      19
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "WILDCARD",
+      "FAMILIAR",
+      "OUTLIER"
+    ]
+  },
+  "cc_004": {
+    "questionId": "cc_004",
+    "packId": "campus_chaos",
+    "totalVotes": 146,
+    "votes": [
+      38,
+      12,
+      76,
+      20
+    ],
+    "percentages": [
+      26,
+      8,
+      52,
+      14
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "WILDCARD",
+      "FAMILIAR",
+      "OUTLIER"
+    ]
+  },
+  "cc_005": {
+    "questionId": "cc_005",
+    "packId": "campus_chaos",
+    "totalVotes": 118,
+    "votes": [
+      52,
+      9,
+      37,
+      20
+    ],
+    "percentages": [
+      44,
+      8,
+      31,
+      17
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL",
+      "OUTLIER"
+    ]
+  },
+  "cc_006": {
+    "questionId": "cc_006",
+    "packId": "campus_chaos",
+    "totalVotes": 97,
+    "votes": [
+      28,
+      15,
+      46,
+      8
+    ],
+    "percentages": [
+      29,
+      15,
+      47,
+      8
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "OUTLIER",
+      "FAMILIAR",
+      "WILDCARD"
+    ]
+  },
+  "cc_007": {
+    "questionId": "cc_007",
+    "packId": "campus_chaos",
+    "totalVotes": 98,
+    "votes": [
+      49,
+      6,
+      28,
+      15
+    ],
+    "percentages": [
+      50,
+      6,
+      29,
+      15
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL",
+      "OUTLIER"
+    ]
+  },
+  "cc_008": {
+    "questionId": "cc_008",
+    "packId": "campus_chaos",
+    "totalVotes": 153,
+    "votes": [
+      84,
+      15,
+      40,
+      14
+    ],
+    "percentages": [
+      55,
+      10,
+      26,
+      9
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL",
+      "WILDCARD"
+    ]
+  },
+  "cc_009": {
+    "questionId": "cc_009",
+    "packId": "campus_chaos",
+    "totalVotes": 89,
+    "votes": [
+      49,
+      8,
+      23,
+      9
+    ],
+    "percentages": [
+      55,
+      9,
+      26,
+      10
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL",
+      "WILDCARD"
+    ]
+  },
+  "cc_010": {
+    "questionId": "cc_010",
+    "packId": "campus_chaos",
+    "totalVotes": 149,
+    "votes": [
+      46,
+      13,
+      65,
+      25
+    ],
+    "percentages": [
+      31,
+      9,
+      44,
+      17
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "WILDCARD",
+      "FAMILIAR",
+      "OUTLIER"
+    ]
+  },
+  "cc_011": {
+    "questionId": "cc_011",
+    "packId": "campus_chaos",
+    "totalVotes": 129,
+    "votes": [
+      37,
+      13,
+      58,
+      21
+    ],
+    "percentages": [
+      29,
+      10,
+      45,
+      16
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "WILDCARD",
+      "FAMILIAR",
+      "OUTLIER"
+    ]
+  },
+  "cc_012": {
+    "questionId": "cc_012",
+    "packId": "campus_chaos",
+    "totalVotes": 135,
+    "votes": [
+      32,
+      74,
+      18,
+      11
+    ],
+    "percentages": [
+      24,
+      55,
+      13,
+      8
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "FAMILIAR",
+      "OUTLIER",
+      "WILDCARD"
+    ]
+  },
+  "cc_013": {
+    "questionId": "cc_013",
+    "packId": "campus_chaos",
+    "totalVotes": 211,
+    "votes": [
+      55,
+      38,
+      105,
+      13
+    ],
+    "percentages": [
+      26,
+      18,
+      50,
+      6
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "OUTLIER",
+      "FAMILIAR",
+      "WILDCARD"
+    ]
+  },
+  "cc_014": {
+    "questionId": "cc_014",
+    "packId": "campus_chaos",
+    "totalVotes": 121,
+    "votes": [
+      70,
+      8,
+      31,
+      12
+    ],
+    "percentages": [
+      58,
+      7,
+      26,
+      10
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL",
+      "WILDCARD"
+    ]
+  },
+  "cc_015": {
+    "questionId": "cc_015",
+    "packId": "campus_chaos",
+    "totalVotes": 134,
+    "votes": [
+      32,
+      12,
+      75,
+      15
+    ],
+    "percentages": [
+      24,
+      9,
+      56,
+      11
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "WILDCARD",
+      "FAMILIAR",
+      "WILDCARD"
+    ]
+  },
+  "tm_001": {
+    "questionId": "tm_001",
+    "packId": "everyday_life",
+    "totalVotes": 158,
+    "votes": [
+      78,
+      11,
+      44,
+      25
+    ],
+    "percentages": [
+      49,
+      7,
+      28,
+      16
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL",
+      "OUTLIER"
+    ]
+  },
+  "tm_002": {
+    "questionId": "tm_002",
+    "packId": "everyday_life",
+    "totalVotes": 215,
+    "votes": [
+      100,
+      37,
+      56,
+      22
+    ],
+    "percentages": [
+      47,
+      17,
+      26,
+      10
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "OUTLIER",
+      "UNUSUAL",
+      "WILDCARD"
+    ]
+  },
+  "tm_003": {
+    "questionId": "tm_003",
+    "packId": "everyday_life",
+    "totalVotes": 155,
+    "votes": [
+      69,
+      14,
+      29,
+      43
+    ],
+    "percentages": [
+      45,
+      9,
+      19,
+      28
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "OUTLIER",
+      "UNUSUAL"
+    ]
+  },
+  "tm_004": {
+    "questionId": "tm_004",
+    "packId": "everyday_life",
+    "totalVotes": 137,
+    "votes": [
+      70,
+      8,
+      38,
+      21
+    ],
+    "percentages": [
+      51,
+      6,
+      28,
+      15
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL",
+      "OUTLIER"
+    ]
+  },
+  "tm_005": {
+    "questionId": "tm_005",
+    "packId": "everyday_life",
+    "totalVotes": 179,
+    "votes": [
+      52,
+      25,
+      91,
+      11
+    ],
+    "percentages": [
+      29,
+      14,
+      51,
+      6
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "OUTLIER",
+      "FAMILIAR",
+      "WILDCARD"
+    ]
+  },
+  "tm_006": {
+    "questionId": "tm_006",
+    "packId": "everyday_life",
+    "totalVotes": 95,
+    "votes": [
+      29,
+      10,
+      40,
+      16
+    ],
+    "percentages": [
+      31,
+      11,
+      42,
+      17
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "WILDCARD",
+      "FAMILIAR",
+      "OUTLIER"
+    ]
+  },
+  "tm_007": {
+    "questionId": "tm_007",
+    "packId": "everyday_life",
+    "totalVotes": 75,
+    "votes": [
+      44,
+      7,
+      16,
+      8
+    ],
+    "percentages": [
+      59,
+      9,
+      21,
+      11
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "OUTLIER",
+      "WILDCARD"
+    ]
+  },
+  "tm_008": {
+    "questionId": "tm_008",
+    "packId": "everyday_life",
+    "totalVotes": 141,
+    "votes": [
+      39,
+      8,
+      71,
+      23
+    ],
+    "percentages": [
+      28,
+      6,
+      50,
+      16
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "WILDCARD",
+      "FAMILIAR",
+      "OUTLIER"
+    ]
+  },
+  "tm_009": {
+    "questionId": "tm_009",
+    "packId": "everyday_life",
+    "totalVotes": 143,
+    "votes": [
+      70,
+      10,
+      40,
+      23
+    ],
+    "percentages": [
+      49,
+      7,
+      28,
+      16
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL",
+      "OUTLIER"
+    ]
+  },
+  "tm_010": {
+    "questionId": "tm_010",
+    "packId": "everyday_life",
+    "totalVotes": 212,
+    "votes": [
+      121,
+      53,
+      17,
+      21
+    ],
+    "percentages": [
+      57,
+      25,
+      8,
+      10
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "UNUSUAL",
+      "WILDCARD",
+      "WILDCARD"
+    ]
+  },
+  "tm_011": {
+    "questionId": "tm_011",
+    "packId": "everyday_life",
+    "totalVotes": 147,
+    "votes": [
+      70,
+      9,
+      46,
+      22
+    ],
+    "percentages": [
+      48,
+      6,
+      31,
+      15
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL",
+      "OUTLIER"
+    ]
+  },
+  "tm_012": {
+    "questionId": "tm_012",
+    "packId": "everyday_life",
+    "totalVotes": 175,
+    "votes": [
+      76,
+      30,
+      51,
+      18
+    ],
+    "percentages": [
+      43,
+      17,
+      29,
+      10
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "OUTLIER",
+      "UNUSUAL",
+      "WILDCARD"
+    ]
+  },
+  "tm_013": {
+    "questionId": "tm_013",
+    "packId": "everyday_life",
+    "totalVotes": 126,
+    "votes": [
+      77,
+      26,
+      8,
+      15
+    ],
+    "percentages": [
+      61,
+      21,
+      6,
+      12
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "OUTLIER",
+      "WILDCARD",
+      "OUTLIER"
+    ]
+  },
+  "tm_014": {
+    "questionId": "tm_014",
+    "packId": "everyday_life",
+    "totalVotes": 153,
+    "votes": [
+      91,
+      17,
+      34,
+      11
+    ],
+    "percentages": [
+      59,
+      11,
+      22,
+      7
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL",
+      "WILDCARD"
+    ]
+  },
+  "tm_015": {
+    "questionId": "tm_015",
+    "packId": "everyday_life",
+    "totalVotes": 182,
+    "votes": [
+      51,
+      35,
+      16,
+      80
+    ],
+    "percentages": [
+      28,
+      19,
+      9,
+      44
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "OUTLIER",
+      "WILDCARD",
+      "FAMILIAR"
+    ]
+  },
+  "mm_001": {
+    "questionId": "mm_001",
+    "packId": "moral_mayhem",
+    "totalVotes": 102,
+    "votes": [
+      45,
+      10,
+      15,
+      32
+    ],
+    "percentages": [
+      44,
+      10,
+      15,
+      31
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "OUTLIER",
+      "UNUSUAL"
+    ]
+  },
+  "mm_002": {
+    "questionId": "mm_002",
+    "packId": "moral_mayhem",
+    "totalVotes": 72,
+    "votes": [
+      34,
+      7,
+      19,
+      12
+    ],
+    "percentages": [
+      47,
+      10,
+      26,
+      17
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL",
+      "OUTLIER"
+    ]
+  },
+  "mm_003": {
+    "questionId": "mm_003",
+    "packId": "moral_mayhem",
+    "totalVotes": 172,
+    "votes": [
+      12,
+      96,
+      40,
+      24
+    ],
+    "percentages": [
+      7,
+      56,
+      23,
+      14
+    ],
+    "tiers": [
+      "WILDCARD",
+      "FAMILIAR",
+      "UNUSUAL",
+      "OUTLIER"
+    ]
+  },
+  "mm_004": {
+    "questionId": "mm_004",
+    "packId": "moral_mayhem",
+    "totalVotes": 187,
+    "votes": [
+      45,
+      110,
+      13,
+      19
+    ],
+    "percentages": [
+      24,
+      59,
+      7,
+      10
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "FAMILIAR",
+      "WILDCARD",
+      "WILDCARD"
+    ]
+  },
+  "mm_005": {
+    "questionId": "mm_005",
+    "packId": "moral_mayhem",
+    "totalVotes": 170,
+    "votes": [
+      102,
+      36,
+      10,
+      22
+    ],
+    "percentages": [
+      60,
+      21,
+      6,
+      13
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "OUTLIER",
+      "WILDCARD",
+      "OUTLIER"
+    ]
+  },
+  "mm_006": {
+    "questionId": "mm_006",
+    "packId": "moral_mayhem",
+    "totalVotes": 88,
+    "votes": [
+      12,
+      7,
+      47,
+      22
+    ],
+    "percentages": [
+      14,
+      8,
+      53,
+      25
+    ],
+    "tiers": [
+      "OUTLIER",
+      "WILDCARD",
+      "FAMILIAR",
+      "UNUSUAL"
+    ]
+  },
+  "mm_007": {
+    "questionId": "mm_007",
+    "packId": "moral_mayhem",
+    "totalVotes": 105,
+    "votes": [
+      24,
+      55,
+      11,
+      15
+    ],
+    "percentages": [
+      23,
+      52,
+      10,
+      14
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "FAMILIAR",
+      "WILDCARD",
+      "OUTLIER"
+    ]
+  },
+  "mm_008": {
+    "questionId": "mm_008",
+    "packId": "moral_mayhem",
+    "totalVotes": 135,
+    "votes": [
+      8,
+      83,
+      30,
+      14
+    ],
+    "percentages": [
+      6,
+      61,
+      22,
+      10
+    ],
+    "tiers": [
+      "WILDCARD",
+      "FAMILIAR",
+      "UNUSUAL",
+      "WILDCARD"
+    ]
+  },
+  "mm_009": {
+    "questionId": "mm_009",
+    "packId": "moral_mayhem",
+    "totalVotes": 132,
+    "votes": [
+      11,
+      66,
+      21,
+      34
+    ],
+    "percentages": [
+      8,
+      50,
+      16,
+      26
+    ],
+    "tiers": [
+      "WILDCARD",
+      "FAMILIAR",
+      "OUTLIER",
+      "UNUSUAL"
+    ]
+  },
+  "mm_010": {
+    "questionId": "mm_010",
+    "packId": "moral_mayhem",
+    "totalVotes": 220,
+    "votes": [
+      24,
+      13,
+      46,
+      137
+    ],
+    "percentages": [
+      11,
+      6,
+      21,
+      62
+    ],
+    "tiers": [
+      "WILDCARD",
+      "WILDCARD",
+      "OUTLIER",
+      "FAMILIAR"
+    ]
+  },
+  "mm_011": {
+    "questionId": "mm_011",
+    "packId": "moral_mayhem",
+    "totalVotes": 108,
+    "votes": [
+      11,
+      48,
+      32,
+      17
+    ],
+    "percentages": [
+      10,
+      44,
+      30,
+      16
+    ],
+    "tiers": [
+      "WILDCARD",
+      "FAMILIAR",
+      "UNUSUAL",
+      "OUTLIER"
+    ]
+  },
+  "mm_012": {
+    "questionId": "mm_012",
+    "packId": "moral_mayhem",
+    "totalVotes": 121,
+    "votes": [
+      12,
+      29,
+      11,
+      69
+    ],
+    "percentages": [
+      10,
+      24,
+      9,
+      57
+    ],
+    "tiers": [
+      "WILDCARD",
+      "UNUSUAL",
+      "WILDCARD",
+      "FAMILIAR"
+    ]
+  },
+  "mm_013": {
+    "questionId": "mm_013",
+    "packId": "moral_mayhem",
+    "totalVotes": 127,
+    "votes": [
+      13,
+      28,
+      11,
+      75
+    ],
+    "percentages": [
+      10,
+      22,
+      9,
+      59
+    ],
+    "tiers": [
+      "WILDCARD",
+      "UNUSUAL",
+      "WILDCARD",
+      "FAMILIAR"
+    ]
+  },
+  "mm_014": {
+    "questionId": "mm_014",
+    "packId": "moral_mayhem",
+    "totalVotes": 183,
+    "votes": [
+      27,
+      55,
+      18,
+      83
+    ],
+    "percentages": [
+      15,
+      30,
+      10,
+      45
+    ],
+    "tiers": [
+      "OUTLIER",
+      "UNUSUAL",
+      "WILDCARD",
+      "FAMILIAR"
+    ]
+  },
+  "mm_015": {
+    "questionId": "mm_015",
+    "packId": "moral_mayhem",
+    "totalVotes": 207,
+    "votes": [
+      23,
+      122,
+      50,
+      12
+    ],
+    "percentages": [
+      11,
+      59,
+      24,
+      6
+    ],
+    "tiers": [
+      "WILDCARD",
+      "FAMILIAR",
+      "UNUSUAL",
+      "WILDCARD"
+    ]
+  },
+  "mm_016": {
+    "questionId": "mm_016",
+    "packId": "moral_mayhem",
+    "totalVotes": 218,
+    "votes": [
+      105,
+      13,
+      61,
+      39
+    ],
+    "percentages": [
+      48,
+      6,
+      28,
+      18
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL",
+      "OUTLIER"
+    ]
+  },
+  "mm_017": {
+    "questionId": "mm_017",
+    "packId": "moral_mayhem",
+    "totalVotes": 208,
+    "votes": [
+      15,
+      120,
+      44,
+      29
+    ],
+    "percentages": [
+      7,
+      58,
+      21,
+      14
+    ],
+    "tiers": [
+      "WILDCARD",
+      "FAMILIAR",
+      "OUTLIER",
+      "OUTLIER"
+    ]
+  },
+  "mm_018": {
+    "questionId": "mm_018",
+    "packId": "moral_mayhem",
+    "totalVotes": 84,
+    "votes": [
+      7,
+      43,
+      22,
+      12
+    ],
+    "percentages": [
+      8,
+      51,
+      26,
+      14
+    ],
+    "tiers": [
+      "WILDCARD",
+      "FAMILIAR",
+      "UNUSUAL",
+      "OUTLIER"
+    ]
+  },
+  "mm_019": {
+    "questionId": "mm_019",
+    "packId": "moral_mayhem",
+    "totalVotes": 120,
+    "votes": [
+      61,
+      7,
+      32,
+      20
+    ],
+    "percentages": [
+      51,
+      6,
+      27,
+      17
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL",
+      "OUTLIER"
+    ]
+  },
+  "mm_020": {
+    "questionId": "mm_020",
+    "packId": "moral_mayhem",
+    "totalVotes": 99,
+    "votes": [
+      54,
+      9,
+      23,
+      13
+    ],
+    "percentages": [
+      55,
+      9,
+      23,
+      13
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL",
+      "OUTLIER"
+    ]
+  },
+  "mm_021": {
+    "questionId": "mm_021",
+    "packId": "moral_mayhem",
+    "totalVotes": 100,
+    "votes": [
+      14,
+      51,
+      10,
+      25
+    ],
+    "percentages": [
+      14,
+      51,
+      10,
+      25
+    ],
+    "tiers": [
+      "OUTLIER",
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL"
+    ]
+  },
+  "mm_022": {
+    "questionId": "mm_022",
+    "packId": "moral_mayhem",
+    "totalVotes": 161,
+    "votes": [
+      10,
+      72,
+      29,
+      50
+    ],
+    "percentages": [
+      6,
+      45,
+      18,
+      31
+    ],
+    "tiers": [
+      "WILDCARD",
+      "FAMILIAR",
+      "OUTLIER",
+      "UNUSUAL"
+    ]
+  },
+  "mm_023": {
+    "questionId": "mm_023",
+    "packId": "moral_mayhem",
+    "totalVotes": 69,
+    "votes": [
+      6,
+      30,
+      12,
+      21
+    ],
+    "percentages": [
+      9,
+      43,
+      17,
+      30
+    ],
+    "tiers": [
+      "WILDCARD",
+      "FAMILIAR",
+      "OUTLIER",
+      "UNUSUAL"
+    ]
+  },
+  "mm_024": {
+    "questionId": "mm_024",
+    "packId": "moral_mayhem",
+    "totalVotes": 172,
+    "votes": [
+      22,
+      17,
+      93,
+      40
+    ],
+    "percentages": [
+      13,
+      10,
+      54,
+      23
+    ],
+    "tiers": [
+      "OUTLIER",
+      "WILDCARD",
+      "FAMILIAR",
+      "UNUSUAL"
+    ]
+  },
+  "mm_025": {
+    "questionId": "mm_025",
+    "packId": "moral_mayhem",
+    "totalVotes": 110,
+    "votes": [
+      10,
+      21,
+      46,
+      33
+    ],
+    "percentages": [
+      9,
+      19,
+      42,
+      30
+    ],
+    "tiers": [
+      "WILDCARD",
+      "OUTLIER",
+      "FAMILIAR",
+      "UNUSUAL"
+    ]
+  },
+  "mm_026": {
+    "questionId": "mm_026",
+    "packId": "moral_mayhem",
+    "totalVotes": 201,
+    "votes": [
+      20,
+      87,
+      56,
+      38
+    ],
+    "percentages": [
+      10,
+      43,
+      28,
+      19
+    ],
+    "tiers": [
+      "WILDCARD",
+      "FAMILIAR",
+      "UNUSUAL",
+      "OUTLIER"
+    ]
+  },
+  "mm_027": {
+    "questionId": "mm_027",
+    "packId": "moral_mayhem",
+    "totalVotes": 88,
+    "votes": [
+      26,
+      7,
+      41,
+      14
+    ],
+    "percentages": [
+      30,
+      8,
+      47,
+      16
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "WILDCARD",
+      "FAMILIAR",
+      "OUTLIER"
+    ]
+  },
+  "mm_028": {
+    "questionId": "mm_028",
+    "packId": "moral_mayhem",
+    "totalVotes": 213,
+    "votes": [
+      40,
+      66,
+      19,
+      88
+    ],
+    "percentages": [
+      19,
+      31,
+      9,
+      41
+    ],
+    "tiers": [
+      "OUTLIER",
+      "UNUSUAL",
+      "WILDCARD",
+      "FAMILIAR"
+    ]
+  },
+  "mm_029": {
+    "questionId": "mm_029",
+    "packId": "moral_mayhem",
+    "totalVotes": 86,
+    "votes": [
+      9,
+      12,
+      43,
+      22
+    ],
+    "percentages": [
+      10,
+      14,
+      50,
+      26
+    ],
+    "tiers": [
+      "WILDCARD",
+      "OUTLIER",
+      "FAMILIAR",
+      "UNUSUAL"
+    ]
+  },
+  "mm_030": {
+    "questionId": "mm_030",
+    "packId": "moral_mayhem",
+    "totalVotes": 93,
+    "votes": [
+      26,
+      16,
+      9,
+      42
+    ],
+    "percentages": [
+      28,
+      17,
+      10,
+      45
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "OUTLIER",
+      "WILDCARD",
+      "FAMILIAR"
+    ]
+  },
+  "mm_031": {
+    "questionId": "mm_031",
+    "packId": "moral_mayhem",
+    "totalVotes": 67,
+    "votes": [
+      4,
+      40,
+      7,
+      16
+    ],
+    "percentages": [
+      6,
+      60,
+      10,
+      24
+    ],
+    "tiers": [
+      "WILDCARD",
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL"
+    ]
+  },
+  "mm_032": {
+    "questionId": "mm_032",
+    "packId": "moral_mayhem",
+    "totalVotes": 74,
+    "votes": [
+      20,
+      5,
+      35,
+      14
+    ],
+    "percentages": [
+      27,
+      7,
+      47,
+      19
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "WILDCARD",
+      "FAMILIAR",
+      "OUTLIER"
+    ]
+  },
+  "mm_033": {
+    "questionId": "mm_033",
+    "packId": "moral_mayhem",
+    "totalVotes": 127,
+    "votes": [
+      11,
+      13,
+      32,
+      71
+    ],
+    "percentages": [
+      9,
+      10,
+      25,
+      56
+    ],
+    "tiers": [
+      "WILDCARD",
+      "WILDCARD",
+      "UNUSUAL",
+      "FAMILIAR"
+    ]
+  },
+  "mm_034": {
+    "questionId": "mm_034",
+    "packId": "moral_mayhem",
+    "totalVotes": 88,
+    "votes": [
+      8,
+      23,
+      45,
+      12
+    ],
+    "percentages": [
+      9,
+      26,
+      51,
+      14
+    ],
+    "tiers": [
+      "WILDCARD",
+      "UNUSUAL",
+      "FAMILIAR",
+      "OUTLIER"
+    ]
+  },
+  "mm_035": {
+    "questionId": "mm_035",
+    "packId": "moral_mayhem",
+    "totalVotes": 207,
+    "votes": [
+      17,
+      121,
+      21,
+      48
+    ],
+    "percentages": [
+      8,
+      58,
+      10,
+      23
+    ],
+    "tiers": [
+      "WILDCARD",
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL"
+    ]
+  },
+  "mm_036": {
+    "questionId": "mm_036",
+    "packId": "moral_mayhem",
+    "totalVotes": 181,
+    "votes": [
+      16,
+      40,
+      20,
+      105
+    ],
+    "percentages": [
+      9,
+      22,
+      11,
+      58
+    ],
+    "tiers": [
+      "WILDCARD",
+      "UNUSUAL",
+      "WILDCARD",
+      "FAMILIAR"
+    ]
+  },
+  "mm_037": {
+    "questionId": "mm_037",
+    "packId": "moral_mayhem",
+    "totalVotes": 144,
+    "votes": [
+      39,
+      23,
+      68,
+      14
+    ],
+    "percentages": [
+      27,
+      16,
+      47,
+      10
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "OUTLIER",
+      "FAMILIAR",
+      "WILDCARD"
+    ]
+  },
+  "mm_038": {
+    "questionId": "mm_038",
+    "packId": "moral_mayhem",
+    "totalVotes": 123,
+    "votes": [
+      16,
+      31,
+      69,
+      7
+    ],
+    "percentages": [
+      13,
+      25,
+      56,
+      6
+    ],
+    "tiers": [
+      "OUTLIER",
+      "UNUSUAL",
+      "FAMILIAR",
+      "WILDCARD"
+    ]
+  },
+  "mm_039": {
+    "questionId": "mm_039",
+    "packId": "moral_mayhem",
+    "totalVotes": 220,
+    "votes": [
+      40,
+      94,
+      20,
+      66
+    ],
+    "percentages": [
+      18,
+      43,
+      9,
+      30
+    ],
+    "tiers": [
+      "OUTLIER",
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL"
+    ]
+  },
+  "mm_040": {
+    "questionId": "mm_040",
+    "packId": "moral_mayhem",
+    "totalVotes": 94,
+    "votes": [
+      24,
+      52,
+      7,
+      11
+    ],
+    "percentages": [
+      26,
+      55,
+      7,
+      12
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "FAMILIAR",
+      "WILDCARD",
+      "OUTLIER"
+    ]
+  },
+  "mm_041": {
+    "questionId": "mm_041",
+    "packId": "moral_mayhem",
+    "totalVotes": 201,
+    "votes": [
+      95,
+      32,
+      60,
+      14
+    ],
+    "percentages": [
+      47,
+      16,
+      30,
+      7
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "OUTLIER",
+      "UNUSUAL",
+      "WILDCARD"
+    ]
+  },
+  "mm_042": {
+    "questionId": "mm_042",
+    "packId": "moral_mayhem",
+    "totalVotes": 104,
+    "votes": [
+      16,
+      51,
+      7,
+      30
+    ],
+    "percentages": [
+      15,
+      49,
+      7,
+      29
+    ],
+    "tiers": [
+      "OUTLIER",
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL"
+    ]
+  },
+  "mm_043": {
+    "questionId": "mm_043",
+    "packId": "moral_mayhem",
+    "totalVotes": 92,
+    "votes": [
+      6,
+      56,
+      11,
+      19
+    ],
+    "percentages": [
+      7,
+      61,
+      12,
+      21
+    ],
+    "tiers": [
+      "WILDCARD",
+      "FAMILIAR",
+      "OUTLIER",
+      "OUTLIER"
+    ]
+  },
+  "mm_044": {
+    "questionId": "mm_044",
+    "packId": "moral_mayhem",
+    "totalVotes": 75,
+    "votes": [
+      35,
+      12,
+      23,
+      5
+    ],
+    "percentages": [
+      47,
+      16,
+      31,
+      7
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "OUTLIER",
+      "UNUSUAL",
+      "WILDCARD"
+    ]
+  },
+  "mm_045": {
+    "questionId": "mm_045",
+    "packId": "moral_mayhem",
+    "totalVotes": 201,
+    "votes": [
+      14,
+      121,
+      24,
+      42
+    ],
+    "percentages": [
+      7,
+      60,
+      12,
+      21
+    ],
+    "tiers": [
+      "WILDCARD",
+      "FAMILIAR",
+      "OUTLIER",
+      "OUTLIER"
+    ]
+  },
+  "mm_046": {
+    "questionId": "mm_046",
+    "packId": "moral_mayhem",
+    "totalVotes": 103,
+    "votes": [
+      6,
+      64,
+      9,
+      24
+    ],
+    "percentages": [
+      6,
+      62,
+      9,
+      23
+    ],
+    "tiers": [
+      "WILDCARD",
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL"
+    ]
+  },
+  "mm_047": {
+    "questionId": "mm_047",
+    "packId": "moral_mayhem",
+    "totalVotes": 121,
+    "votes": [
+      10,
+      16,
+      67,
+      28
+    ],
+    "percentages": [
+      8,
+      13,
+      55,
+      23
+    ],
+    "tiers": [
+      "WILDCARD",
+      "OUTLIER",
+      "FAMILIAR",
+      "UNUSUAL"
+    ]
+  },
+  "mm_048": {
+    "questionId": "mm_048",
+    "packId": "moral_mayhem",
+    "totalVotes": 186,
+    "votes": [
+      28,
+      58,
+      85,
+      15
+    ],
+    "percentages": [
+      15,
+      31,
+      46,
+      8
+    ],
+    "tiers": [
+      "OUTLIER",
+      "UNUSUAL",
+      "FAMILIAR",
+      "WILDCARD"
+    ]
+  },
+  "mm_049": {
+    "questionId": "mm_049",
+    "packId": "moral_mayhem",
+    "totalVotes": 102,
+    "votes": [
+      30,
+      47,
+      8,
+      17
+    ],
+    "percentages": [
+      29,
+      46,
+      8,
+      17
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "FAMILIAR",
+      "WILDCARD",
+      "OUTLIER"
+    ]
+  },
+  "mm_050": {
+    "questionId": "mm_050",
+    "packId": "moral_mayhem",
+    "totalVotes": 71,
+    "votes": [
+      17,
+      42,
+      6,
+      6
+    ],
+    "percentages": [
+      24,
+      59,
+      8,
+      8
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "FAMILIAR",
+      "WILDCARD",
+      "WILDCARD"
+    ]
+  },
+  "nc_001": {
+    "questionId": "nc_001",
+    "packId": "neon_coast",
+    "totalVotes": 102,
+    "votes": [
+      55,
+      13,
+      8,
+      26
+    ],
+    "percentages": [
+      54,
+      13,
+      8,
+      25
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "OUTLIER",
+      "WILDCARD",
+      "UNUSUAL"
+    ]
+  },
+  "nc_002": {
+    "questionId": "nc_002",
+    "packId": "neon_coast",
+    "totalVotes": 175,
+    "votes": [
+      44,
+      16,
+      92,
+      23
+    ],
+    "percentages": [
+      25,
+      9,
+      53,
+      13
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "WILDCARD",
+      "FAMILIAR",
+      "OUTLIER"
+    ]
+  },
+  "nc_003": {
+    "questionId": "nc_003",
+    "packId": "neon_coast",
+    "totalVotes": 195,
+    "votes": [
+      107,
+      20,
+      43,
+      25
+    ],
+    "percentages": [
+      55,
+      10,
+      22,
+      13
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL",
+      "OUTLIER"
+    ]
+  },
+  "nc_004": {
+    "questionId": "nc_004",
+    "packId": "neon_coast",
+    "totalVotes": 220,
+    "votes": [
+      57,
+      42,
+      108,
+      13
+    ],
+    "percentages": [
+      26,
+      19,
+      49,
+      6
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "OUTLIER",
+      "FAMILIAR",
+      "WILDCARD"
+    ]
+  },
+  "nc_005": {
+    "questionId": "nc_005",
+    "packId": "neon_coast",
+    "totalVotes": 74,
+    "votes": [
+      19,
+      4,
+      44,
+      7
+    ],
+    "percentages": [
+      26,
+      5,
+      59,
+      9
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "WILDCARD",
+      "FAMILIAR",
+      "WILDCARD"
+    ]
+  },
+  "nc_006": {
+    "questionId": "nc_006",
+    "packId": "neon_coast",
+    "totalVotes": 172,
+    "votes": [
+      53,
+      17,
+      69,
+      33
+    ],
+    "percentages": [
+      31,
+      10,
+      40,
+      19
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "WILDCARD",
+      "FAMILIAR",
+      "OUTLIER"
+    ]
+  },
+  "nc_007": {
+    "questionId": "nc_007",
+    "packId": "neon_coast",
+    "totalVotes": 195,
+    "votes": [
+      112,
+      12,
+      51,
+      20
+    ],
+    "percentages": [
+      57,
+      6,
+      26,
+      10
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL",
+      "WILDCARD"
+    ]
+  },
+  "nc_008": {
+    "questionId": "nc_008",
+    "packId": "neon_coast",
+    "totalVotes": 121,
+    "votes": [
+      28,
+      11,
+      65,
+      17
+    ],
+    "percentages": [
+      23,
+      9,
+      54,
+      14
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "WILDCARD",
+      "FAMILIAR",
+      "OUTLIER"
+    ]
+  },
+  "nc_009": {
+    "questionId": "nc_009",
+    "packId": "neon_coast",
+    "totalVotes": 151,
+    "votes": [
+      84,
+      18,
+      14,
+      35
+    ],
+    "percentages": [
+      56,
+      12,
+      9,
+      23
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "OUTLIER",
+      "WILDCARD",
+      "UNUSUAL"
+    ]
+  },
+  "nc_010": {
+    "questionId": "nc_010",
+    "packId": "neon_coast",
+    "totalVotes": 100,
+    "votes": [
+      26,
+      10,
+      48,
+      16
+    ],
+    "percentages": [
+      26,
+      10,
+      48,
+      16
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "WILDCARD",
+      "FAMILIAR",
+      "OUTLIER"
+    ]
+  },
+  "nc_011": {
+    "questionId": "nc_011",
+    "packId": "neon_coast",
+    "totalVotes": 148,
+    "votes": [
+      71,
+      22,
+      9,
+      46
+    ],
+    "percentages": [
+      48,
+      15,
+      6,
+      31
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "OUTLIER",
+      "WILDCARD",
+      "UNUSUAL"
+    ]
+  },
+  "nc_012": {
+    "questionId": "nc_012",
+    "packId": "neon_coast",
+    "totalVotes": 162,
+    "votes": [
+      36,
+      16,
+      95,
+      15
+    ],
+    "percentages": [
+      22,
+      10,
+      59,
+      9
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "WILDCARD",
+      "FAMILIAR",
+      "WILDCARD"
+    ]
+  },
+  "nc_013": {
+    "questionId": "nc_013",
+    "packId": "neon_coast",
+    "totalVotes": 89,
+    "votes": [
+      53,
+      6,
+      21,
+      9
+    ],
+    "percentages": [
+      60,
+      7,
+      24,
+      10
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL",
+      "WILDCARD"
+    ]
+  },
+  "nc_014": {
+    "questionId": "nc_014",
+    "packId": "neon_coast",
+    "totalVotes": 131,
+    "votes": [
+      76,
+      9,
+      34,
+      12
+    ],
+    "percentages": [
+      58,
+      7,
+      26,
+      9
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL",
+      "WILDCARD"
+    ]
+  },
+  "nc_015": {
+    "questionId": "nc_015",
+    "packId": "neon_coast",
+    "totalVotes": 108,
+    "votes": [
+      61,
+      26,
+      11,
+      10
+    ],
+    "percentages": [
+      56,
+      24,
+      10,
+      9
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "UNUSUAL",
+      "WILDCARD",
+      "WILDCARD"
+    ]
+  },
+  "pc_001": {
+    "questionId": "pc_001",
+    "packId": "pop_culture",
+    "totalVotes": 102,
+    "votes": [
+      58,
+      9,
+      26,
+      9
+    ],
+    "percentages": [
+      57,
+      9,
+      25,
+      9
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL",
+      "WILDCARD"
+    ]
+  },
+  "pc_002": {
+    "questionId": "pc_002",
+    "packId": "pop_culture",
+    "totalVotes": 121,
+    "votes": [
+      27,
+      16,
+      70,
+      8
+    ],
+    "percentages": [
+      22,
+      13,
+      58,
+      7
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "OUTLIER",
+      "FAMILIAR",
+      "WILDCARD"
+    ]
+  },
+  "pc_003": {
+    "questionId": "pc_003",
+    "packId": "pop_culture",
+    "totalVotes": 104,
+    "votes": [
+      61,
+      8,
+      23,
+      12
+    ],
+    "percentages": [
+      59,
+      8,
+      22,
+      12
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL",
+      "OUTLIER"
+    ]
+  },
+  "pc_004": {
+    "questionId": "pc_004",
+    "packId": "pop_culture",
+    "totalVotes": 177,
+    "votes": [
+      46,
+      34,
+      14,
+      83
+    ],
+    "percentages": [
+      26,
+      19,
+      8,
+      47
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "OUTLIER",
+      "WILDCARD",
+      "FAMILIAR"
+    ]
+  },
+  "pc_005": {
+    "questionId": "pc_005",
+    "packId": "pop_culture",
+    "totalVotes": 125,
+    "votes": [
+      31,
+      9,
+      74,
+      11
+    ],
+    "percentages": [
+      25,
+      7,
+      59,
+      9
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "WILDCARD",
+      "FAMILIAR",
+      "WILDCARD"
+    ]
+  },
+  "pc_006": {
+    "questionId": "pc_006",
+    "packId": "pop_culture",
+    "totalVotes": 120,
+    "votes": [
+      60,
+      32,
+      8,
+      20
+    ],
+    "percentages": [
+      50,
+      27,
+      7,
+      17
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "UNUSUAL",
+      "WILDCARD",
+      "OUTLIER"
+    ]
+  },
+  "pc_007": {
+    "questionId": "pc_007",
+    "packId": "pop_culture",
+    "totalVotes": 87,
+    "votes": [
+      14,
+      42,
+      8,
+      23
+    ],
+    "percentages": [
+      16,
+      48,
+      9,
+      26
+    ],
+    "tiers": [
+      "OUTLIER",
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL"
+    ]
+  },
+  "pc_008": {
+    "questionId": "pc_008",
+    "packId": "pop_culture",
+    "totalVotes": 99,
+    "votes": [
+      58,
+      6,
+      25,
+      10
+    ],
+    "percentages": [
+      59,
+      6,
+      25,
+      10
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL",
+      "WILDCARD"
+    ]
+  },
+  "pc_009": {
+    "questionId": "pc_009",
+    "packId": "pop_culture",
+    "totalVotes": 90,
+    "votes": [
+      11,
+      7,
+      20,
+      52
+    ],
+    "percentages": [
+      12,
+      8,
+      22,
+      58
+    ],
+    "tiers": [
+      "OUTLIER",
+      "WILDCARD",
+      "UNUSUAL",
+      "FAMILIAR"
+    ]
+  },
+  "pc_010": {
+    "questionId": "pc_010",
+    "packId": "pop_culture",
+    "totalVotes": 146,
+    "votes": [
+      67,
+      28,
+      9,
+      42
+    ],
+    "percentages": [
+      46,
+      19,
+      6,
+      29
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "OUTLIER",
+      "WILDCARD",
+      "UNUSUAL"
+    ]
+  },
+  "pc_011": {
+    "questionId": "pc_011",
+    "packId": "pop_culture",
+    "totalVotes": 76,
+    "votes": [
+      33,
+      14,
+      5,
+      24
+    ],
+    "percentages": [
+      43,
+      18,
+      7,
+      32
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "OUTLIER",
+      "WILDCARD",
+      "UNUSUAL"
+    ]
+  },
+  "pc_012": {
+    "questionId": "pc_012",
+    "packId": "pop_culture",
+    "totalVotes": 86,
+    "votes": [
+      22,
+      7,
+      48,
+      9
+    ],
+    "percentages": [
+      26,
+      8,
+      56,
+      10
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "WILDCARD",
+      "FAMILIAR",
+      "WILDCARD"
+    ]
+  },
+  "pc_013": {
+    "questionId": "pc_013",
+    "packId": "pop_culture",
+    "totalVotes": 164,
+    "votes": [
+      23,
+      88,
+      10,
+      43
+    ],
+    "percentages": [
+      14,
+      54,
+      6,
+      26
+    ],
+    "tiers": [
+      "OUTLIER",
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL"
+    ]
+  },
+  "pc_014": {
+    "questionId": "pc_014",
+    "packId": "pop_culture",
+    "totalVotes": 133,
+    "votes": [
+      78,
+      9,
+      33,
+      13
+    ],
+    "percentages": [
+      59,
+      7,
+      25,
+      10
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL",
+      "WILDCARD"
+    ]
+  },
+  "pc_015": {
+    "questionId": "pc_015",
+    "packId": "pop_culture",
+    "totalVotes": 109,
+    "votes": [
+      62,
+      11,
+      27,
+      9
+    ],
+    "percentages": [
+      57,
+      10,
+      25,
+      8
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL",
+      "WILDCARD"
+    ]
+  },
+  "pc_016": {
+    "questionId": "pc_016",
+    "packId": "pop_culture",
+    "totalVotes": 125,
+    "votes": [
+      63,
+      11,
+      33,
+      18
+    ],
+    "percentages": [
+      50,
+      9,
+      26,
+      14
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL",
+      "OUTLIER"
+    ]
+  },
+  "pc_017": {
+    "questionId": "pc_017",
+    "packId": "pop_culture",
+    "totalVotes": 89,
+    "votes": [
+      21,
+      8,
+      51,
+      9
+    ],
+    "percentages": [
+      24,
+      9,
+      57,
+      10
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "WILDCARD",
+      "FAMILIAR",
+      "WILDCARD"
+    ]
+  },
+  "pc_018": {
+    "questionId": "pc_018",
+    "packId": "pop_culture",
+    "totalVotes": 206,
+    "votes": [
+      122,
+      47,
+      14,
+      23
+    ],
+    "percentages": [
+      59,
+      23,
+      7,
+      11
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "UNUSUAL",
+      "WILDCARD",
+      "WILDCARD"
+    ]
+  },
+  "pc_019": {
+    "questionId": "pc_019",
+    "packId": "pop_culture",
+    "totalVotes": 216,
+    "votes": [
+      106,
+      17,
+      63,
+      30
+    ],
+    "percentages": [
+      49,
+      8,
+      29,
+      14
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL",
+      "OUTLIER"
+    ]
+  },
+  "pc_020": {
+    "questionId": "pc_020",
+    "packId": "pop_culture",
+    "totalVotes": 91,
+    "votes": [
+      55,
+      8,
+      7,
+      21
+    ],
+    "percentages": [
+      60,
+      9,
+      8,
+      23
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "WILDCARD",
+      "UNUSUAL"
+    ]
+  },
+  "pc_021": {
+    "questionId": "pc_021",
+    "packId": "pop_culture",
+    "totalVotes": 130,
+    "votes": [
+      79,
+      12,
+      9,
+      30
+    ],
+    "percentages": [
+      61,
+      9,
+      7,
+      23
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "WILDCARD",
+      "UNUSUAL"
+    ]
+  },
+  "pc_022": {
+    "questionId": "pc_022",
+    "packId": "pop_culture",
+    "totalVotes": 147,
+    "votes": [
+      31,
+      85,
+      12,
+      19
+    ],
+    "percentages": [
+      21,
+      58,
+      8,
+      13
+    ],
+    "tiers": [
+      "OUTLIER",
+      "FAMILIAR",
+      "WILDCARD",
+      "OUTLIER"
+    ]
+  },
+  "pc_023": {
+    "questionId": "pc_023",
+    "packId": "pop_culture",
+    "totalVotes": 178,
+    "votes": [
+      77,
+      30,
+      53,
+      18
+    ],
+    "percentages": [
+      43,
+      17,
+      30,
+      10
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "OUTLIER",
+      "UNUSUAL",
+      "WILDCARD"
+    ]
+  },
+  "pc_024": {
+    "questionId": "pc_024",
+    "packId": "pop_culture",
+    "totalVotes": 145,
+    "votes": [
+      20,
+      81,
+      12,
+      32
+    ],
+    "percentages": [
+      14,
+      56,
+      8,
+      22
+    ],
+    "tiers": [
+      "OUTLIER",
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL"
+    ]
+  },
+  "pc_025": {
+    "questionId": "pc_025",
+    "packId": "pop_culture",
+    "totalVotes": 71,
+    "votes": [
+      6,
+      34,
+      13,
+      18
+    ],
+    "percentages": [
+      8,
+      48,
+      18,
+      25
+    ],
+    "tiers": [
+      "WILDCARD",
+      "FAMILIAR",
+      "OUTLIER",
+      "UNUSUAL"
+    ]
+  },
+  "pc_026": {
+    "questionId": "pc_026",
+    "packId": "pop_culture",
+    "totalVotes": 106,
+    "votes": [
+      6,
+      29,
+      15,
+      56
+    ],
+    "percentages": [
+      6,
+      27,
+      14,
+      53
+    ],
+    "tiers": [
+      "WILDCARD",
+      "UNUSUAL",
+      "OUTLIER",
+      "FAMILIAR"
+    ]
+  },
+  "pc_027": {
+    "questionId": "pc_027",
+    "packId": "pop_culture",
+    "totalVotes": 217,
+    "votes": [
+      130,
+      17,
+      46,
+      24
+    ],
+    "percentages": [
+      60,
+      8,
+      21,
+      11
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "OUTLIER",
+      "WILDCARD"
+    ]
+  },
+  "pc_028": {
+    "questionId": "pc_028",
+    "packId": "pop_culture",
+    "totalVotes": 143,
+    "votes": [
+      90,
+      10,
+      13,
+      30
+    ],
+    "percentages": [
+      63,
+      7,
+      9,
+      21
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "WILDCARD",
+      "OUTLIER"
+    ]
+  },
+  "pc_029": {
+    "questionId": "pc_029",
+    "packId": "pop_culture",
+    "totalVotes": 182,
+    "votes": [
+      92,
+      27,
+      47,
+      16
+    ],
+    "percentages": [
+      51,
+      15,
+      26,
+      9
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "OUTLIER",
+      "UNUSUAL",
+      "WILDCARD"
+    ]
+  },
+  "pc_030": {
+    "questionId": "pc_030",
+    "packId": "pop_culture",
+    "totalVotes": 175,
+    "votes": [
+      92,
+      18,
+      23,
+      42
+    ],
+    "percentages": [
+      53,
+      10,
+      13,
+      24
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "OUTLIER",
+      "UNUSUAL"
+    ]
+  },
+  "pc_031": {
+    "questionId": "pc_031",
+    "packId": "pop_culture",
+    "totalVotes": 121,
+    "votes": [
+      55,
+      10,
+      34,
+      22
+    ],
+    "percentages": [
+      45,
+      8,
+      28,
+      18
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL",
+      "OUTLIER"
+    ]
+  },
+  "pc_032": {
+    "questionId": "pc_032",
+    "packId": "pop_culture",
+    "totalVotes": 144,
+    "votes": [
+      42,
+      70,
+      20,
+      12
+    ],
+    "percentages": [
+      29,
+      49,
+      14,
+      8
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "FAMILIAR",
+      "OUTLIER",
+      "WILDCARD"
+    ]
+  },
+  "pc_033": {
+    "questionId": "pc_033",
+    "packId": "pop_culture",
+    "totalVotes": 125,
+    "votes": [
+      55,
+      34,
+      13,
+      23
+    ],
+    "percentages": [
+      44,
+      27,
+      10,
+      18
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "UNUSUAL",
+      "WILDCARD",
+      "OUTLIER"
+    ]
+  },
+  "pc_034": {
+    "questionId": "pc_034",
+    "packId": "pop_culture",
+    "totalVotes": 213,
+    "votes": [
+      124,
+      23,
+      49,
+      17
+    ],
+    "percentages": [
+      58,
+      11,
+      23,
+      8
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL",
+      "WILDCARD"
+    ]
+  },
+  "pc_035": {
+    "questionId": "pc_035",
+    "packId": "pop_culture",
+    "totalVotes": 108,
+    "votes": [
+      47,
+      10,
+      30,
+      21
+    ],
+    "percentages": [
+      44,
+      9,
+      28,
+      19
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL",
+      "OUTLIER"
+    ]
+  },
+  "pc_036": {
+    "questionId": "pc_036",
+    "packId": "pop_culture",
+    "totalVotes": 147,
+    "votes": [
+      70,
+      9,
+      22,
+      46
+    ],
+    "percentages": [
+      48,
+      6,
+      15,
+      31
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "OUTLIER",
+      "UNUSUAL"
+    ]
+  },
+  "pc_037": {
+    "questionId": "pc_037",
+    "packId": "pop_culture",
+    "totalVotes": 160,
+    "votes": [
+      92,
+      10,
+      37,
+      21
+    ],
+    "percentages": [
+      57,
+      6,
+      23,
+      13
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL",
+      "OUTLIER"
+    ]
+  },
+  "pc_038": {
+    "questionId": "pc_038",
+    "packId": "pop_culture",
+    "totalVotes": 71,
+    "votes": [
+      32,
+      4,
+      22,
+      13
+    ],
+    "percentages": [
+      45,
+      6,
+      31,
+      18
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL",
+      "OUTLIER"
+    ]
+  },
+  "pc_039": {
+    "questionId": "pc_039",
+    "packId": "pop_culture",
+    "totalVotes": 158,
+    "votes": [
+      70,
+      14,
+      25,
+      49
+    ],
+    "percentages": [
+      44,
+      9,
+      16,
+      31
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "OUTLIER",
+      "UNUSUAL"
+    ]
+  },
+  "pc_040": {
+    "questionId": "pc_040",
+    "packId": "pop_culture",
+    "totalVotes": 195,
+    "votes": [
+      115,
+      12,
+      25,
+      43
+    ],
+    "percentages": [
+      59,
+      6,
+      13,
+      22
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "OUTLIER",
+      "UNUSUAL"
+    ]
+  },
+  "pc_041": {
+    "questionId": "pc_041",
+    "packId": "pop_culture",
+    "totalVotes": 140,
+    "votes": [
+      13,
+      35,
+      84,
+      8
+    ],
+    "percentages": [
+      9,
+      25,
+      60,
+      6
+    ],
+    "tiers": [
+      "WILDCARD",
+      "UNUSUAL",
+      "FAMILIAR",
+      "WILDCARD"
+    ]
+  },
+  "pc_042": {
+    "questionId": "pc_042",
+    "packId": "pop_culture",
+    "totalVotes": 69,
+    "votes": [
+      33,
+      6,
+      11,
+      19
+    ],
+    "percentages": [
+      48,
+      9,
+      16,
+      28
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "OUTLIER",
+      "UNUSUAL"
+    ]
+  },
+  "pc_043": {
+    "questionId": "pc_043",
+    "packId": "pop_culture",
+    "totalVotes": 186,
+    "votes": [
+      17,
+      102,
+      48,
+      19
+    ],
+    "percentages": [
+      9,
+      55,
+      26,
+      10
+    ],
+    "tiers": [
+      "WILDCARD",
+      "FAMILIAR",
+      "UNUSUAL",
+      "WILDCARD"
+    ]
+  },
+  "pc_044": {
+    "questionId": "pc_044",
+    "packId": "pop_culture",
+    "totalVotes": 159,
+    "votes": [
+      38,
+      17,
+      14,
+      90
+    ],
+    "percentages": [
+      24,
+      11,
+      9,
+      57
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "WILDCARD",
+      "WILDCARD",
+      "FAMILIAR"
+    ]
+  },
+  "pc_045": {
+    "questionId": "pc_045",
+    "packId": "pop_culture",
+    "totalVotes": 212,
+    "votes": [
+      64,
+      17,
+      95,
+      36
+    ],
+    "percentages": [
+      30,
+      8,
+      45,
+      17
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "WILDCARD",
+      "FAMILIAR",
+      "OUTLIER"
+    ]
+  },
+  "pc_046": {
+    "questionId": "pc_046",
+    "packId": "pop_culture",
+    "totalVotes": 147,
+    "votes": [
+      67,
+      24,
+      12,
+      44
+    ],
+    "percentages": [
+      46,
+      16,
+      8,
+      30
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "OUTLIER",
+      "WILDCARD",
+      "UNUSUAL"
+    ]
+  },
+  "pc_047": {
+    "questionId": "pc_047",
+    "packId": "pop_culture",
+    "totalVotes": 184,
+    "votes": [
+      108,
+      39,
+      13,
+      24
+    ],
+    "percentages": [
+      59,
+      21,
+      7,
+      13
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "OUTLIER",
+      "WILDCARD",
+      "OUTLIER"
+    ]
+  },
+  "pc_048": {
+    "questionId": "pc_048",
+    "packId": "pop_culture",
+    "totalVotes": 188,
+    "votes": [
+      105,
+      19,
+      45,
+      19
+    ],
+    "percentages": [
+      56,
+      10,
+      24,
+      10
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL",
+      "WILDCARD"
+    ]
+  },
+  "pc_049": {
+    "questionId": "pc_049",
+    "packId": "pop_culture",
+    "totalVotes": 209,
+    "votes": [
+      123,
+      19,
+      46,
+      21
+    ],
+    "percentages": [
+      59,
+      9,
+      22,
+      10
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL",
+      "WILDCARD"
+    ]
+  },
+  "pc_050": {
+    "questionId": "pc_050",
+    "packId": "pop_culture",
+    "totalVotes": 148,
+    "votes": [
+      21,
+      78,
+      34,
+      15
+    ],
+    "percentages": [
+      14,
+      53,
+      23,
+      10
+    ],
+    "tiers": [
+      "OUTLIER",
+      "FAMILIAR",
+      "UNUSUAL",
+      "WILDCARD"
+    ]
+  },
+  "lv_076": {
+    "questionId": "lv_076",
+    "packId": "social_circuit",
+    "totalVotes": 120,
+    "votes": [
+      54,
+      23,
+      7,
+      36
+    ],
+    "percentages": [
+      45,
+      19,
+      6,
+      30
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "OUTLIER",
+      "WILDCARD",
+      "UNUSUAL"
+    ]
+  },
+  "lv_077": {
+    "questionId": "lv_077",
+    "packId": "social_circuit",
+    "totalVotes": 102,
+    "votes": [
+      9,
+      48,
+      15,
+      30
+    ],
+    "percentages": [
+      9,
+      47,
+      15,
+      29
+    ],
+    "tiers": [
+      "WILDCARD",
+      "FAMILIAR",
+      "OUTLIER",
+      "UNUSUAL"
+    ]
+  },
+  "lv_078": {
+    "questionId": "lv_078",
+    "packId": "social_circuit",
+    "totalVotes": 210,
+    "votes": [
+      61,
+      98,
+      13,
+      38
+    ],
+    "percentages": [
+      29,
+      47,
+      6,
+      18
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "FAMILIAR",
+      "WILDCARD",
+      "OUTLIER"
+    ]
+  },
+  "lv_079": {
+    "questionId": "lv_079",
+    "packId": "social_circuit",
+    "totalVotes": 98,
+    "votes": [
+      47,
+      29,
+      15,
+      7
+    ],
+    "percentages": [
+      48,
+      30,
+      15,
+      7
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "UNUSUAL",
+      "OUTLIER",
+      "WILDCARD"
+    ]
+  },
+  "lv_080": {
+    "questionId": "lv_080",
+    "packId": "social_circuit",
+    "totalVotes": 171,
+    "votes": [
+      36,
+      17,
+      99,
+      19
+    ],
+    "percentages": [
+      21,
+      10,
+      58,
+      11
+    ],
+    "tiers": [
+      "OUTLIER",
+      "WILDCARD",
+      "FAMILIAR",
+      "WILDCARD"
+    ]
+  },
+  "lv_081": {
+    "questionId": "lv_081",
+    "packId": "social_circuit",
+    "totalVotes": 185,
+    "votes": [
+      96,
+      50,
+      13,
+      26
+    ],
+    "percentages": [
+      52,
+      27,
+      7,
+      14
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "UNUSUAL",
+      "WILDCARD",
+      "OUTLIER"
+    ]
+  },
+  "lv_082": {
+    "questionId": "lv_082",
+    "packId": "social_circuit",
+    "totalVotes": 200,
+    "votes": [
+      44,
+      116,
+      16,
+      24
+    ],
+    "percentages": [
+      22,
+      58,
+      8,
+      12
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "FAMILIAR",
+      "WILDCARD",
+      "OUTLIER"
+    ]
+  },
+  "lv_083": {
+    "questionId": "lv_083",
+    "packId": "social_circuit",
+    "totalVotes": 104,
+    "votes": [
+      8,
+      31,
+      15,
+      50
+    ],
+    "percentages": [
+      8,
+      30,
+      14,
+      48
+    ],
+    "tiers": [
+      "WILDCARD",
+      "UNUSUAL",
+      "OUTLIER",
+      "FAMILIAR"
+    ]
+  },
+  "lv_084": {
+    "questionId": "lv_084",
+    "packId": "social_circuit",
+    "totalVotes": 188,
+    "votes": [
+      49,
+      34,
+      92,
+      13
+    ],
+    "percentages": [
+      26,
+      18,
+      49,
+      7
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "OUTLIER",
+      "FAMILIAR",
+      "WILDCARD"
+    ]
+  },
+  "lv_085": {
+    "questionId": "lv_085",
+    "packId": "social_circuit",
+    "totalVotes": 216,
+    "votes": [
+      22,
+      58,
+      106,
+      30
+    ],
+    "percentages": [
+      10,
+      27,
+      49,
+      14
+    ],
+    "tiers": [
+      "WILDCARD",
+      "UNUSUAL",
+      "FAMILIAR",
+      "OUTLIER"
+    ]
+  },
+  "lv_086": {
+    "questionId": "lv_086",
+    "packId": "social_circuit",
+    "totalVotes": 83,
+    "votes": [
+      22,
+      10,
+      46,
+      5
+    ],
+    "percentages": [
+      27,
+      12,
+      55,
+      6
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "OUTLIER",
+      "FAMILIAR",
+      "WILDCARD"
+    ]
+  },
+  "lv_087": {
+    "questionId": "lv_087",
+    "packId": "social_circuit",
+    "totalVotes": 209,
+    "votes": [
+      25,
+      123,
+      46,
+      15
+    ],
+    "percentages": [
+      12,
+      59,
+      22,
+      7
+    ],
+    "tiers": [
+      "OUTLIER",
+      "FAMILIAR",
+      "UNUSUAL",
+      "WILDCARD"
+    ]
+  },
+  "lv_088": {
+    "questionId": "lv_088",
+    "packId": "social_circuit",
+    "totalVotes": 169,
+    "votes": [
+      41,
+      97,
+      17,
+      14
+    ],
+    "percentages": [
+      24,
+      57,
+      10,
+      8
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "FAMILIAR",
+      "WILDCARD",
+      "WILDCARD"
+    ]
+  },
+  "lv_089": {
+    "questionId": "lv_089",
+    "packId": "social_circuit",
+    "totalVotes": 171,
+    "votes": [
+      14,
+      51,
+      75,
+      31
+    ],
+    "percentages": [
+      8,
+      30,
+      44,
+      18
+    ],
+    "tiers": [
+      "WILDCARD",
+      "UNUSUAL",
+      "FAMILIAR",
+      "OUTLIER"
+    ]
+  },
+  "lv_090": {
+    "questionId": "lv_090",
+    "packId": "social_circuit",
+    "totalVotes": 91,
+    "votes": [
+      5,
+      28,
+      42,
+      16
+    ],
+    "percentages": [
+      5,
+      31,
+      46,
+      18
+    ],
+    "tiers": [
+      "WILDCARD",
+      "UNUSUAL",
+      "FAMILIAR",
+      "OUTLIER"
+    ]
+  },
+  "lv_091": {
+    "questionId": "lv_091",
+    "packId": "social_circuit",
+    "totalVotes": 142,
+    "votes": [
+      14,
+      61,
+      44,
+      23
+    ],
+    "percentages": [
+      10,
+      43,
+      31,
+      16
+    ],
+    "tiers": [
+      "WILDCARD",
+      "FAMILIAR",
+      "UNUSUAL",
+      "OUTLIER"
+    ]
+  },
+  "lv_092": {
+    "questionId": "lv_092",
+    "packId": "social_circuit",
+    "totalVotes": 157,
+    "votes": [
+      13,
+      49,
+      28,
+      67
+    ],
+    "percentages": [
+      8,
+      31,
+      18,
+      43
+    ],
+    "tiers": [
+      "WILDCARD",
+      "UNUSUAL",
+      "OUTLIER",
+      "FAMILIAR"
+    ]
+  },
+  "lv_093": {
+    "questionId": "lv_093",
+    "packId": "social_circuit",
+    "totalVotes": 148,
+    "votes": [
+      41,
+      65,
+      15,
+      27
+    ],
+    "percentages": [
+      28,
+      44,
+      10,
+      18
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "FAMILIAR",
+      "WILDCARD",
+      "OUTLIER"
+    ]
+  },
+  "lv_094": {
+    "questionId": "lv_094",
+    "packId": "social_circuit",
+    "totalVotes": 202,
+    "votes": [
+      16,
+      53,
+      38,
+      95
+    ],
+    "percentages": [
+      8,
+      26,
+      19,
+      47
+    ],
+    "tiers": [
+      "WILDCARD",
+      "UNUSUAL",
+      "OUTLIER",
+      "FAMILIAR"
+    ]
+  },
+  "lv_095": {
+    "questionId": "lv_095",
+    "packId": "social_circuit",
+    "totalVotes": 118,
+    "votes": [
+      12,
+      64,
+      31,
+      11
+    ],
+    "percentages": [
+      10,
+      54,
+      26,
+      9
+    ],
+    "tiers": [
+      "WILDCARD",
+      "FAMILIAR",
+      "UNUSUAL",
+      "WILDCARD"
+    ]
+  },
+  "lv_096": {
+    "questionId": "lv_096",
+    "packId": "social_circuit",
+    "totalVotes": 193,
+    "votes": [
+      93,
+      15,
+      56,
+      29
+    ],
+    "percentages": [
+      48,
+      8,
+      29,
+      15
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL",
+      "OUTLIER"
+    ]
+  },
+  "lv_097": {
+    "questionId": "lv_097",
+    "packId": "social_circuit",
+    "totalVotes": 129,
+    "votes": [
+      57,
+      21,
+      12,
+      39
+    ],
+    "percentages": [
+      44,
+      16,
+      9,
+      30
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "OUTLIER",
+      "WILDCARD",
+      "UNUSUAL"
+    ]
+  },
+  "lv_098": {
+    "questionId": "lv_098",
+    "packId": "social_circuit",
+    "totalVotes": 215,
+    "votes": [
+      22,
+      41,
+      96,
+      56
+    ],
+    "percentages": [
+      10,
+      19,
+      45,
+      26
+    ],
+    "tiers": [
+      "WILDCARD",
+      "OUTLIER",
+      "FAMILIAR",
+      "UNUSUAL"
+    ]
+  },
+  "lv_099": {
+    "questionId": "lv_099",
+    "packId": "social_circuit",
+    "totalVotes": 79,
+    "votes": [
+      39,
+      11,
+      23,
+      6
+    ],
+    "percentages": [
+      49,
+      14,
+      29,
+      8
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "OUTLIER",
+      "UNUSUAL",
+      "WILDCARD"
+    ]
+  },
+  "lv_100": {
+    "questionId": "lv_100",
+    "packId": "social_circuit",
+    "totalVotes": 112,
+    "votes": [
+      11,
+      25,
+      12,
+      64
+    ],
+    "percentages": [
+      10,
+      22,
+      11,
+      57
+    ],
+    "tiers": [
+      "WILDCARD",
+      "UNUSUAL",
+      "WILDCARD",
+      "FAMILIAR"
+    ]
+  },
+  "lv_101": {
+    "questionId": "lv_101",
+    "packId": "social_circuit",
+    "totalVotes": 182,
+    "votes": [
+      13,
+      78,
+      35,
+      56
+    ],
+    "percentages": [
+      7,
+      43,
+      19,
+      31
+    ],
+    "tiers": [
+      "WILDCARD",
+      "FAMILIAR",
+      "OUTLIER",
+      "UNUSUAL"
+    ]
+  },
+  "lv_102": {
+    "questionId": "lv_102",
+    "packId": "social_circuit",
+    "totalVotes": 114,
+    "votes": [
+      9,
+      63,
+      15,
+      27
+    ],
+    "percentages": [
+      8,
+      55,
+      13,
+      24
+    ],
+    "tiers": [
+      "WILDCARD",
+      "FAMILIAR",
+      "OUTLIER",
+      "UNUSUAL"
+    ]
+  },
+  "lv_103": {
+    "questionId": "lv_103",
+    "packId": "social_circuit",
+    "totalVotes": 112,
+    "votes": [
+      11,
+      32,
+      52,
+      17
+    ],
+    "percentages": [
+      10,
+      29,
+      46,
+      15
+    ],
+    "tiers": [
+      "WILDCARD",
+      "UNUSUAL",
+      "FAMILIAR",
+      "OUTLIER"
+    ]
+  },
+  "lv_104": {
+    "questionId": "lv_104",
+    "packId": "social_circuit",
+    "totalVotes": 117,
+    "votes": [
+      12,
+      53,
+      20,
+      32
+    ],
+    "percentages": [
+      10,
+      45,
+      17,
+      27
+    ],
+    "tiers": [
+      "WILDCARD",
+      "FAMILIAR",
+      "OUTLIER",
+      "UNUSUAL"
+    ]
+  },
+  "lv_105": {
+    "questionId": "lv_105",
+    "packId": "social_circuit",
+    "totalVotes": 101,
+    "votes": [
+      10,
+      30,
+      44,
+      17
+    ],
+    "percentages": [
+      10,
+      30,
+      44,
+      17
+    ],
+    "tiers": [
+      "WILDCARD",
+      "UNUSUAL",
+      "FAMILIAR",
+      "OUTLIER"
+    ]
+  },
+  "lv_106": {
+    "questionId": "lv_106",
+    "packId": "social_circuit",
+    "totalVotes": 67,
+    "votes": [
+      38,
+      6,
+      7,
+      16
+    ],
+    "percentages": [
+      57,
+      9,
+      10,
+      24
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "WILDCARD",
+      "UNUSUAL"
+    ]
+  },
+  "lv_107": {
+    "questionId": "lv_107",
+    "packId": "social_circuit",
+    "totalVotes": 214,
+    "votes": [
+      105,
+      60,
+      19,
+      30
+    ],
+    "percentages": [
+      49,
+      28,
+      9,
+      14
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "UNUSUAL",
+      "WILDCARD",
+      "OUTLIER"
+    ]
+  },
+  "lv_108": {
+    "questionId": "lv_108",
+    "packId": "social_circuit",
+    "totalVotes": 78,
+    "votes": [
+      41,
+      5,
+      21,
+      11
+    ],
+    "percentages": [
+      53,
+      6,
+      27,
+      14
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL",
+      "OUTLIER"
+    ]
+  },
+  "lv_109": {
+    "questionId": "lv_109",
+    "packId": "social_circuit",
+    "totalVotes": 216,
+    "votes": [
+      116,
+      22,
+      24,
+      54
+    ],
+    "percentages": [
+      54,
+      10,
+      11,
+      25
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "WILDCARD",
+      "UNUSUAL"
+    ]
+  },
+  "lv_110": {
+    "questionId": "lv_110",
+    "packId": "social_circuit",
+    "totalVotes": 170,
+    "votes": [
+      75,
+      46,
+      32,
+      17
+    ],
+    "percentages": [
+      44,
+      27,
+      19,
+      10
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "UNUSUAL",
+      "OUTLIER",
+      "WILDCARD"
+    ]
+  },
+  "lv_111": {
+    "questionId": "lv_111",
+    "packId": "social_circuit",
+    "totalVotes": 170,
+    "votes": [
+      81,
+      51,
+      12,
+      26
+    ],
+    "percentages": [
+      48,
+      30,
+      7,
+      15
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "UNUSUAL",
+      "WILDCARD",
+      "OUTLIER"
+    ]
+  },
+  "lv_112": {
+    "questionId": "lv_112",
+    "packId": "social_circuit",
+    "totalVotes": 159,
+    "votes": [
+      35,
+      98,
+      16,
+      10
+    ],
+    "percentages": [
+      22,
+      62,
+      10,
+      6
+    ],
+    "tiers": [
+      "UNUSUAL",
+      "FAMILIAR",
+      "WILDCARD",
+      "WILDCARD"
+    ]
+  },
+  "lv_113": {
+    "questionId": "lv_113",
+    "packId": "social_circuit",
+    "totalVotes": 150,
+    "votes": [
+      9,
+      38,
+      85,
+      18
+    ],
+    "percentages": [
+      6,
+      25,
+      57,
+      12
+    ],
+    "tiers": [
+      "WILDCARD",
+      "UNUSUAL",
+      "FAMILIAR",
+      "OUTLIER"
+    ]
+  },
+  "lv_114": {
+    "questionId": "lv_114",
+    "packId": "social_circuit",
+    "totalVotes": 99,
+    "votes": [
+      7,
+      30,
+      46,
+      16
+    ],
+    "percentages": [
+      7,
+      30,
+      46,
+      16
+    ],
+    "tiers": [
+      "WILDCARD",
+      "UNUSUAL",
+      "FAMILIAR",
+      "OUTLIER"
+    ]
+  },
+  "lv_115": {
+    "questionId": "lv_115",
+    "packId": "social_circuit",
+    "totalVotes": 134,
+    "votes": [
+      59,
+      12,
+      38,
+      25
+    ],
+    "percentages": [
+      44,
+      9,
+      28,
+      19
+    ],
+    "tiers": [
+      "FAMILIAR",
+      "WILDCARD",
+      "UNUSUAL",
+      "OUTLIER"
+    ]
+  }
+}
