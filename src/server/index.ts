@@ -354,10 +354,10 @@ async function startServer() {
   const root = resolveProjectRoot();
   const isProd = process.env.NODE_ENV === 'production';
 
-  // Always serve static OG images from /public/og
-  const publicOgDir = path.resolve(root, 'public', 'og');
-  if (fs.existsSync(publicOgDir)) {
-    app.use('/og', express.static(publicOgDir, { maxAge: '1d' }));
+  // Always serve static icons, OG images, and assets from /public
+  const publicDir = path.resolve(root, 'public');
+  if (fs.existsSync(publicDir)) {
+    app.use(express.static(publicDir, { index: false, maxAge: '1d' }));
   }
 
   if (!isProd) {

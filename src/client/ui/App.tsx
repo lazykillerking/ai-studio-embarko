@@ -1348,6 +1348,7 @@ export default function App() {
               ◀ HOME
             </button>
           )}
+          <img src="/icon.png" alt="BRAINPRINT Logo" className="brand-logo" />
           <div className="brand-text">
             <span className="brand">BRAINPRINT</span>
             <span className="tag">SAME QUESTIONS. DIFFERENT MINDS.</span>

@@ -124,6 +124,15 @@ header {
   gap: 10px;
 }
 
+.brand-logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.4);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
 .home-nav-btn {
   background: #141d31;
   color: #38bdf8;

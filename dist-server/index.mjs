@@ -3467,9 +3467,9 @@ async function startServer() {
   const app = createApp(db);
   const root = resolveProjectRoot();
   const isProd = process.env.NODE_ENV === "production";
-  const publicOgDir = path2.resolve(root, "public", "og");
-  if (fs2.existsSync(publicOgDir)) {
-    app.use("/og", express.static(publicOgDir, { maxAge: "1d" }));
+  const publicDir = path2.resolve(root, "public");
+  if (fs2.existsSync(publicDir)) {
+    app.use(express.static(publicDir, { index: false, maxAge: "1d" }));
   }
   if (!isProd) {
     const { createServer: createViteServer } = await import("vite");
