@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { sound } from './audio';
 import { CrewVerdictView } from './CrewVerdictView';
+import { ARCHETYPES } from '../../shared/archetypes';
 
 type Pack = { id: string; name: string };
 type Question = { id: string; prompt: string; options: { text: string }[] };
@@ -345,14 +346,15 @@ async function makeCard(
     c.restore();
 
     // Draw Avatar pixels (16x16, 9.5px per pixel = 152px)
-    const av = avatarPixels(avKey);
+    const normKey = normalizeArchetypeId(avKey);
+    const archDef = ARCHETYPES[normKey as keyof typeof ARCHETYPES] || ARCHETYPES.the_architect;
     const pxSize = 9.5;
     const pxStartX = avBoxX + (avBoxSize - 16 * pxSize) / 2;
     const pxStartY = avBoxY + (avBoxSize - 16 * pxSize) / 2;
-    c.fillStyle = primaryThemeColor;
-    av.forEach((row, y) => {
-      [...row].forEach((v, x) => {
-        if (v === '1') {
+    archDef.grid.forEach((row, y) => {
+      [...row].forEach((char, x) => {
+        if (char !== '.' && archDef.palette[char]) {
+          c.fillStyle = archDef.palette[char];
           c.fillRect(pxStartX + x * pxSize, pxStartY + y * pxSize, pxSize, pxSize);
         }
       });
@@ -737,46 +739,39 @@ function wrap(text: string, max: number) {
   return out;
 }
 
-function avatarPixels(key: string) {
-  const ids = ['architect', 'lone_oracle', 'dispatcher', 'anchor', 'rogue_tactician', 'free_agent', 'plot_twister', 'spark'],
-    i = Math.max(0, ids.indexOf(key)),
-    rows: string[] = [];
-  for (let y = 0; y < 16; y++) {
-    let row = '';
-    for (let x = 0; x < 16; x++) {
-      const headWidth = [4, 2, 3, 4, 3, 2, 4, 3][i],
-        bodyWidth = [5, 3, 5, 6, 4, 3, 6, 4][i],
-        head = y >= 2 && y <= 6 && Math.abs(x - 7.5) <= headWidth,
-        body = y >= 7 && y <= 14 && Math.abs(x - 7.5) <= bodyWidth + (i === 4 && y > 9 ? 1 : 0),
-        detail =
-          (i === 0 && y === 12 && x === 11) ||
-          (i === 1 && y === 1 && x === 8) ||
-          (i === 2 && y === 7 && (x === 2 || x === 13)) ||
-          (i === 3 && y === 14 && (x === 4 || x === 11)) ||
-          (i === 4 && y === 6 && (x === 3 || x === 12)) ||
-          (i === 5 && y === 1 && x === 7) ||
-          (i === 6 && y === 8 && x === 2) ||
-          (i === 7 && y === 2 && (x === 4 || x === 11));
-      row += head || body || detail ? '1' : '0';
-    }
-    rows.push(row);
-  }
-  return rows;
-}
-
-const avatarColors = ['#38bdf8', '#a78bfa', '#60a5fa', '#34d399', '#fbbf24', '#e879f9', '#fb7185', '#f43f5e'];
+const normalizeArchetypeId = (id: string): string => {
+  const clean = (id || '').toLowerCase().trim();
+  if (clean.startsWith('the_')) return clean;
+  return `the_${clean}`;
+};
 
 function PixelAvatar({ id }: { id: string }) {
-  const i = Math.max(
-    0,
-    ['architect', 'lone_oracle', 'dispatcher', 'anchor', 'rogue_tactician', 'free_agent', 'plot_twister', 'spark'].indexOf(id)
-  );
-  const pixels = avatarPixels(id);
+  const normKey = normalizeArchetypeId(id);
+  const arch = ARCHETYPES[normKey as keyof typeof ARCHETYPES] || ARCHETYPES.the_architect;
   return (
-    <svg className="pixel-avatar" viewBox="0 0 16 16" role="img" aria-label={`${id.replace('_', ' ')} pixel avatar`} shapeRendering="crispEdges">
-      <rect width="16" height="16" fill="#111a2d" />
-      {pixels.flatMap((row, y) =>
-        [...row].map((v, x) => (v === '1' ? <rect key={`${x}-${y}`} x={x} y={y} width="1" height="1" fill={avatarColors[i]} /> : null))
+    <svg
+      className="pixel-avatar"
+      viewBox="0 0 16 16"
+      role="img"
+      aria-label={`${arch.name} pixel avatar`}
+      shapeRendering="crispEdges"
+      style={{ width: '100%', height: '100%', display: 'block', borderRadius: '4px' }}
+    >
+      <rect width="16" height="16" fill="#0f172a" />
+      {arch.grid.flatMap((row, y) =>
+        [...row].map((char, x) => {
+          if (char === '.' || !arch.palette[char]) return null;
+          return (
+            <rect
+              key={`${x}-${y}`}
+              x={x}
+              y={y}
+              width="1"
+              height="1"
+              fill={arch.palette[char]}
+            />
+          );
+        })
       )}
     </svg>
   );

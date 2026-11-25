@@ -36,10 +36,28 @@ Whether playing alone in the **Daily Solo Vibe Check** or in a room of friends i
 - **7 Deterministic Daily Questions:** Refreshed every 24 hours at midnight **Indian Standard Time (IST / UTC+5:30)** using a deterministic Mulberry32 PRNG seed with 3-day recency exclusion.
 - **Live IST Reset Countdown:** Persistent HUD badge tracks exact hours, minutes, and seconds remaining until the next global question reset.
 - **30-Second Shot Clock:** Keeps gameplay fast and instinctual. Taking longer than 15 seconds flags the choice with an *Overthinker* marker.
-- **Contrarian Scoring Engine (10–50 pts):**
-  $$\text{Score} = \text{round}\left(10 + 40 \times (1 - \text{SmoothedShare})\right)$$
-  Using Bayesian Laplace smoothing to avoid cold-start distortions:
-  $$\text{SmoothedShare} = \frac{\text{optionVotes} + 1}{\text{totalVotes} + 4}$$
+- **Contrarian Scoring Engine:** Rewards original, unconventional minds. The rarer your selection across the global player base, the more points you score:
+
+#### Points Awarded Per Question (Based on Crowd Rarity)
+
+| Points | Rarity Tier | When Awarded | Words & Taglines Used |
+| :---: | :--- | :--- | :--- |
+| **5 pts** | **FAMILIAR** | Chosen by **> 40%** of players (the crowd favorite) | *"Right on the main frequency. Plenty of minds took this exact turn."*<br>*"Classic instinct. You and the crowd share a well-paved shortcut."*<br>*"High-traffic choice. Reliable signal with zero friction."* |
+| **20 pts** | **UNUSUAL** | Chosen by **20% – 40%** of players | *"Nice detour. You stepped off the default path without going off-grid."*<br>*"Distinctive call. Most players walked right past that door."*<br>*"Sharp side-channel pick. Definitely not the autopilot answer."* |
+| **45 pts** | **OUTLIER** | Chosen by **12% – 20%** of players | *"Rare frequency detected. Only a sliver of minds went this route."*<br>*"Bold zig while the lobby zagged. Certified contrarian radar."*<br>*"Deep-cut decision. Almost nobody saw that line coming."* |
+| **80 pts** | **WILDCARD** | Chosen by **< 12%** of players (extreme contrarian) | *"Total anomaly! Barely anyone on Earth pressed that button."*<br>*"Off-the-charts signal. You practically own this wavelength solo."*<br>*"Pure wildcard energy. You broke away from the entire crowd."* |
+| **20 pts** | **PROVISIONAL** | When fewer than 5 people have answered the question | *"Early beacon locked. You are calibrating this signal for the next wave."* |
+
+#### Total Score Titles (Out of 560 Max Points over 7 Questions)
+
+| Total Points Range | Score Title | Rarity Band |
+| :---: | :--- | :---: |
+| **0 – 95 pts** | **The Familiar Mind** | Low |
+| **96 – 165 pts** | **The Steady Signal** | Low |
+| **166 – 245 pts** | **The Unconventional** | Mid |
+| **246 – 335 pts** | **The Maverick** | High |
+| **336+ pts** | **The Wildcard Mind** | High |
+
 - **Instant Crowd Reveal:** Locking in an answer immediately reveals global vote percentages, highlights your selection, and offers tap-to-inspect breakdowns of why people picked each quadrant.
 - **Signal Dossier & Street Rep Verdict:** At the end of 7 questions, players receive their primary Archetype, Street Rep score tier, 1–5 flame heat rating, personalized compliment, razor-sharp roast, 3D axis sliders, and question-by-question review.
 - **Replay & Themed Packs:** Players can replay a fresh 7-question set anytime or delve into specific genre packs without waiting for the daily reset.
@@ -49,25 +67,60 @@ Whether playing alone in the **Daily Solo Vibe Check** or in a room of friends i
 ### 2. Crew Mode (Squad Social Sync & Roast System)
 In Crew Mode, the game objective flips: **matching your squad's instincts earns maximum synchronization!**
 
-- **Instant Room Creation:** Room codes use an unambiguous 32-character alphabet (strictly omitting confusing characters like `0`, `O`, `1`, `I`).
+- **Crew Room / Lobby Window**:
+  - **Live Top-Left Counter**: Displays connected players live (e.g., `👥 2/12`).
+  - **Room Join Code & 1-Tap Copy**: Prominently features the 6-character room code with a dedicated `COPY CODE` button.
+  - **Direct Invite Link & WhatsApp Sharing**: Features a `COPY INVITE LINK` button with clipboard feedback and direct WhatsApp sharing.
+  - **Connected Players Roster**: Shows all connected members in real-time, tagging `YOU` and `HOST`, and showing live status (`Connected` or `Finished 7/7`).
+  - **Independent Quiz Start**: Each player starts whenever they are ready. **The host's start does not force anyone else to start, and vice versa.** Players can also toggle between their active quiz and the crew room at any point.
 - **Mixed or Themed Modes:** Host can launch a run using questions from a specific pack or a balanced mixed deck pulling across the entire question library.
 - **Real-Time Synchronous / Asynchronous Flow:** Friends can take the quiz simultaneously or join asynchronously throughout the day.
 - **Complete Crew Verdict & Personality Roast Dossier (`CrewVerdictView`):**
-  Once the squad finishes, BRAINPRINT generates a comprehensive 4-tab dossier:
+  Once at least 2 squad members finish, BRAINPRINT unlocks a comprehensive 4-tab dossier:
 
-#### 1. Hero Verdict & Sync Tiers
+#### 1. Hero Verdict & Overall Crew Sync Tiers (0% – 100%)
 Displays the squad's overall sync percentage (0–100%) mapped to 1 of 7 customized Sync Tiers:
-| Sync % | Tier Title | Tone & Vibe | Squad Diagnosis |
-| :---: | :--- | :--- | :--- |
-| **90–100%** | **Literally Same Person** | Telepathic / Uncanny | A collective hivemind. Terrifyingly identical instincts. |
-| **80–89%** | **Mind Meld** | Deep Connection | High-level frequency match. Finishes each other’s worst ideas. |
-| **65–79%** | **One Braincell** | Shared Chaos | Functional squad synergy with just enough chaos to stay interesting. |
-| **50–64%** | **Unlikely Alliance** | Volatile Compromise | Different worldviews holding together through pure stubborn loyalty. |
-| **35–49%** | **Somehow a Crew** | Controlled Catastrophe | Disagrees on nearly everything, yet somehow orders food together. |
-| **20–34%** | **Different Planets** | Polar Opposites | Completely incompatible instincts. Every decision is a debate. |
-| **0–19%** | **Hostile Takeover** | Pure Anarchy | Total mutual confusion. An FBI negotiation would be smoother. |
 
-#### 2. The 4 Dossier Exploration Tabs
+| Sync % | Tier Title | Tone & Vibe | Words & Squad Diagnosis |
+| :---: | :--- | :--- | :--- |
+| **0% – 24%** | **The Hostile Takeover** | Savage / Chaotic | *"Pure anarchy. Nobody agreed on anything, and that was probably deliberate."*<br>*"You didn’t form a squad. You signed an open-ended mutual restraining order."*<br>*"This friendship is held together exclusively by screenshots and spite."* |
+| **25% – 39%** | **Different Planets** | Heavy Teasing | *"You share a group chat, but your brains live in different solar systems."*<br>*"Conversations require three layers of translation; deciding where to eat takes 45 minutes and a poll."*<br>*"Your synchronisation is like intermittent Bluetooth in an underground car park."* |
+| **40% – 54%** | **Somehow a Crew** | Playful Roasting | *"Chaotic equilibrium. Half the room plans, the other half improvise."*<br>*"Somehow functional, completely unhinged, and miraculously intact."*<br>*"A group project where one person wrote the bibliography and three gave the presentation."* |
+| **55% – 69%** | **The Unlikely Alliance** | Balanced | *"Solid chemistry with just enough friction to stay interesting."*<br>*"You think alike on major instincts without becoming an echo chamber."*<br>*"Capable of pulling off a heist, provided everyone gets their choice of snack."* |
+| **70% – 84%** | **One Braincell, Shared** | Complimentary | *"Dangerous telepathy. You reach the same conclusions before the question finishes."*<br>*"One braincell passed around like a shared hot potato."*<br>*"The kind of sync where eye contact across a crowded room counts as a full monologue."* |
+| **85% – 94%** | **Mind Meld** | Strong Praise | *"Subconscious cloning. You are operating off a single central nervous system."*<br>*"Terrifyingly in sync. You are one matching jacket away from being a syndicate."*<br>*"A frequency lock so clean it makes twin telepathy look amateur."* |
+| **95% – 100%** | **Literally the Same Person** | Legendary / Suspicious | *"Statistically suspicious. Are you sure you didn’t pass one phone around?"*<br>*"Two bodies, one identical operating system. Unsettling and magnificent."*<br>*"The rarest frequency in BRAINPRINT history. Uncanny, illegal, and iconic."* |
+
+#### 2. Pairwise Chemistry Tiers (Between Any Two Players)
+
+| Pair Sync % | Relationship Label | Commentary Line |
+| :---: | :--- | :--- |
+| **0% – 24%** | **Natural Enemies** | *"Please do not put these two in charge of anything requiring consensus."* |
+| **25% – 39%** | **Unresolved Tension** | *"They agree just often enough to make the next disagreement sting even more."* |
+| **40% – 54%** | **Acquaintances at Best** | *"They share about half a braincell, but neither has custody this weekend."* |
+| **55% – 69%** | **Decent Chemistry** | *"They disagree on the seasoning, but they both like the meal."* |
+| **70% – 84%** | **Same Wavelength** | *"Dangerous co-op energy. They validate each other’s worst impulses instantly."* |
+| **85% – 94%** | **Shared Braincell** | *"Basically operating as a dual-core processor in two separate bodies."* |
+| **95% – 100%** | **Suspicious Connection** | *"A cosmic glitch where two minds downloaded the exact same save file."* |
+
+#### 3. Complete Crew Superlatives & Awards Bank
+
+| Award | Icon | Tagline | Criteria / Description |
+| :--- | :---: | :--- | :--- |
+| **The Human Mirror** | 🪞 | Highest Pairwise Sync | Highest match percentage with another player in the session. |
+| **Walking Red Flag** | 🚩 | Most Extreme Answers | Picked the most anomalous, high-risk, or rare options. |
+| **The Voice of Reason** | 🧠 | Plan & Logic Focused | Highest combined score on Plan and Logic poles. |
+| **The Main Character** | 👑 | Most Distinctive Profile | Furthest distance from the crew's average personality vector. |
+| **The Diplomat** | 🕊️ | Closest to Crew Mean | Nearest to the center of the crew's collective average. |
+| **The Wildcard** | 🃏 | Most Unpredictable Profile | Highest variance across choices and poles. |
+| **The Clone** | 🧬 | Strongest Similarity | Nearly identical 3-axis slider profile to a teammate. |
+| **The Contrarian** | ⚡ | Most Disagreements | Voted against the majority pick more than anyone else. |
+| **The Therapist** | ☕ | Most Balanced | Centered closest to 0 across all 3 personality axes. |
+| **The Instigator** | 🧨 | Extreme Tendencies | Leaned heavily into Chaos and Instinct on almost every turn. |
+| **The Lone Wolf** | 🐺 | Strongest Solo Tendency | Leaned furthest toward the Solo pole in the squad. |
+| **The Glue** | 🧲 | High Sync & Crew Focus | Combined strong crew orientation with high average pairwise agreement. |
+
+#### 4. The 4 Dossier Exploration Tabs
 1. **DYNAMICS Tab:**
    - **Dominant Squad Archetype:** Identifies the overarching personality controlling the room.
    - **3D Axis Dynamic Sliders:** Visualizes the room's group average and consensus score across Plan vs Chaos, Solo vs Crew, and Logic vs Instinct.
@@ -86,7 +139,7 @@ Displays the squad's overall sync percentage (0–100%) mapped to 1 of 7 customi
    - ⚔️ **Civil War:** The question that shattered the group into hostile factions.
    - 🐺 **Lone Signal:** The player who consistently diverged from the majority.
    - 🎯 **Perfect Sync:** Awarded when the entire squad locks in the exact same answer.
-   - Plus individual superlatives: *The Human Mirror*, *Walking Red Flag*, *The Voice of Reason*, *The Main Character*, *The Diplomat*, *The Wildcard*, *The Clone*, *The Contrarian*, *The Therapist*, *The Instigator*, *The Lone Wolf*, and *The Glue*.
+   - Plus the 12 squad superlatives listed in the table above.
 
 ---
 
@@ -103,16 +156,19 @@ Every answer in the game maps to a calibrated 3-dimensional vector in $[-2, +2]$
 ### The 8 Player Archetypes
 The vector sums resolve deterministically into one of eight distinct personalities:
 
-| Archetype | Vector Coordinates | Motto & Cognitive Signature |
-| :--- | :---: | :--- |
-| 🏛️ **THE ARCHITECT** | `[Plan, Solo, Logic]` | *“Blueprints every exit before entering the room.”* Calculating, strategic, self-sufficient. |
-| 🔮 **THE LONE ORACLE** | `[Plan, Solo, Instinct]` | *“Quietly predicts the plot twist three scenes early.”* Intuitive, perceptive, enigmatic loner. |
-| 📋 **THE DISPATCHER** | `[Plan, Crew, Logic]` | *“Turns group chaos into an actual itinerary.”* The operational backbone and logistics commander. |
-| ⚓ **THE ANCHOR** | `[Plan, Crew, Instinct]` | *“Reads the room and keeps the squad intact.”* Empathetic rock, emotional stabilizer, reliable ally. |
-| 🎯 **THE ROGUE TACTICIAN**| `[Chaos, Solo, Logic]` | *“Improvises absurd plans that somehow work.”* High-risk optimizer, unpredictable problem-solver. |
-| 🌪️ **THE FREE AGENT** | `[Chaos, Solo, Instinct]` | *“Follows pure curiosity off the map.”* Free spirit, impulsive explorer, allergic to itineraries. |
-| 🎭 **THE PLOT TWISTER** | `[Chaos, Crew, Logic]` | *“Engineers unforgettable group detours on purpose.”* Social chess player, agent of entertaining drama. |
-| ⚡ **THE SPARK** | `[Chaos, Crew, Instinct]` | *“First to say 'trust me' before an iconic bad decision.”* Catalyst, hype machine, adrenaline core. |
+| Archetype | Vector Coordinates | Accent Color & Visual Theme | Motto & Cognitive Signature |
+| :--- | :---: | :---: | :--- |
+| 🏛️ **THE ARCHITECT** | `[Plan, Solo, Logic]` | `#38BDF8` (Blueprint Cyan & Compass Gold) | *“Blueprints every exit before entering the room.”* Calculating, strategic, self-sufficient. |
+| 🔮 **THE LONE ORACLE** | `[Plan, Solo, Instinct]` | `#C084FC` (Mystic Violet & Third-Eye Gold) | *“Quietly predicts the plot twist three scenes early.”* Intuitive, perceptive, enigmatic loner. |
+| 📋 **THE DISPATCHER** | `[Plan, Crew, Logic]` | `#34D399` (Signal Green & Headset White) | *“Turns group chaos into an actual itinerary.”* The operational backbone and logistics commander. |
+| ⚓ **THE ANCHOR** | `[Plan, Crew, Instinct]` | `#60A5FA` (Cobalt Shield & Warm Pearl) | *“Reads the room and keeps the squad intact.”* Empathetic rock, emotional stabilizer, reliable ally. |
+| 🎯 **THE ROGUE TACTICIAN**| `[Chaos, Solo, Logic]` | `#FBBF24` (Tactical Amber & Laser Eye) | *“Improvises absurd plans that somehow work.”* High-risk optimizer, unpredictable problem-solver. |
+| 🌪️ **THE FREE AGENT** | `[Chaos, Solo, Instinct]` | `#2DD4BF` (Nomad Teal & Coral Scarf) | *“Follows pure curiosity off the map.”* Free spirit, impulsive explorer, allergic to itineraries. |
+| 🎭 **THE PLOT TWISTER** | `[Chaos, Crew, Logic]` | `#E879F9` (Neon Magenta & Electric Mask) | *“Engineers unforgettable group detours on purpose.”* Social chess player, agent of entertaining drama. |
+| ⚡ **THE SPARK** | `[Chaos, Crew, Instinct]` | `#F43F5E` (Inferno Crimson & Flame Glow) | *“First to say 'trust me' before an iconic bad decision.”* Catalyst, hype machine, adrenaline core. |
+
+### 👾 Bespoke 16×16 Retro Pixel-Art Portrait System
+Every archetype features an authentic 16×16 palette-indexed retro pixel-art character portrait (`src/shared/archetypes.ts`). Rendered with crisp edges, dark contrast outlines, and dedicated multi-color palettes, each archetype possesses its own unique character silhouette, headgear, visor, and expression both in the web UI and across the 1080×1920 social share cards.
 
 ---
 
